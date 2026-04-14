@@ -1,7 +1,9 @@
+import { EquityCurvePanel } from "@/features/equity-curve/EquityCurvePanel";
+
 export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-0 px-sp8x py-sp8y">
-      <section className="flex w-1/2 flex-col gap-sp6 rounded-r7 border border-line-c bg-bg-1 p-sp5">
+      <section className="flex flex-col gap-sp6 rounded-r7 border border-line-c bg-bg-1 p-sp5">
 
         <h1 className="text-title">
           DG Terminal Frontend Homepage
@@ -22,6 +24,8 @@ export default function HomePage() {
           <div className="bg-orange h-full w-1/3 rounded-r2" />
         </div>
 
+
+        <EquityCurvePanel />
       </section>
     </main>
   );
