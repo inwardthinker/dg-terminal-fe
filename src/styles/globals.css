@@ -1,0 +1,314 @@
+@import "tailwindcss";
+
+/* =========================
+ROOT DESIGN TOKENS
+========================= */
+:root {
+  color-scheme: light;
+  /* =========================
+   SURFACE LAYERS
+  ========================= */
+  --bg0: #080808; /* App background (root layer) */
+  --bg1: #121212; /* Primary surface (panels, nav) */
+  --bg2: #1c1b16; /* Secondary surface (cards, tiles) */
+  --bg3: #41403a; /* Disabled / deep surface */
+
+  /* =========================
+   TEXT COLORS
+  ========================= */
+  --t1: #f5f2e8; /* Primary text */
+  --t2: #c9c3b4; /* Secondary text */
+  --t3: #9a9488; /* Muted / labels */
+
+  /* =========================
+   ACCENTS & DIVIDERS
+  ========================= */
+  --g3: #cdbd70; /* Brand gold */
+  --linec: #ffffff14; /* rgba(255,255,255,0.08) subtle divider */
+  --lineg: #cdbd7066; /* rgba(205,189,112,0.4) gold divider */
+
+  /* =========================
+   SEMANTIC COLORS
+  ========================= */
+  --pos: #4caf7d; /* Positive / profit */
+  --neg: #e05c5c; /* Negative / loss */
+  --warn: #cdbd70; /* Warning */
+  --blue: #4a90d9; /* Informational */
+
+  /* =========================
+   CATEGORY COLORS
+  ========================= */
+  --pur: #b496dc; /* Rank 5 */
+  --cyan: #3ec6c6; /* Rank 6 */
+  --orange: #f97316; /* Rank 7 */
+
+  /* =========================
+   SPACING SCALE
+  ========================= */
+  --sp-1: 2px; /* tight inline gaps */
+  --sp-2: 4px; /* small gaps */
+  --sp-3: 6px; /* KPI / nav gaps */
+  --sp-4: 8px; /* section gaps */
+  --sp-5: 10px; /* padding (horizontal) */
+  --sp-6: 12px; /* vertical padding */
+  --sp-7: 16px; /* layout padding */
+
+  /* split sp-8 properly */
+  --sp-8x: 24px; /* horizontal large padding */
+  --sp-8y: 20px; /* vertical large padding */
+
+  /* =========================
+   BORDER RADIUS SCALE
+  ========================= */
+  --radius-1: 3px; /* kbd, inline code */
+  --radius-2: 4px; /* badges, checkbox */
+  --radius-3: 5px; /* small buttons */
+  --radius-4: 6px; /* callouts, banners */
+  --radius-5: 7px; /* confirm/cancel buttons */
+  --radius-6: 8px; /* KPI tiles, table wrapper */
+  --radius-7: 10px; /* panels (primary cards) */
+  --radius-8: 13px; /* modals, drawers */
+  --radius-9: 20px; /* portfolio pill */
+
+  /* special */
+  --radius-full: 9999px; /* circles */
+
+  /* =========================
+   TYPE SCALE (ROLE BASED)
+  ========================= */
+  /* 1. Title */
+  --type-title-size: 18px;
+  --type-title-weight: 700;
+  --type-title-track: -0.3px;
+  --type-title-color: var(--t1);
+
+  /* 2. Panel heading */
+  --type-panel-size: 11.5px;
+  --type-panel-weight: 600;
+  --type-panel-color: var(--t1);
+
+  /* 3. Label group */
+  --type-label-size: 10px;
+  --type-label-weight: 700;
+  --type-label-track: 0.08em;
+  --type-label-color: var(--t3);
+
+  /* 4. Primary data */
+  --type-primary-size: 15px;
+  --type-primary-weight: 700;
+  --type-primary-color: var(--t1);
+
+  /* 5. Secondary data */
+  --type-secondary-size: 12px;
+  --type-secondary-weight: 600;
+  --type-secondary-color: var(--t1);
+
+  /* 6. Supporting text */
+  --type-support-size: 10px;
+  --type-support-weight: 400;
+  --type-support-color: var(--t3);
+
+  /* 7. Action text */
+  --type-action-size: 10.5px;
+  --type-action-weight: 600;
+  --type-action-color: var(--g3);
+
+  /* 8. Badge text */
+  --type-badge-size: 10px;
+  --type-badge-weight: 700;
+  --type-badge-track: 0.04em;
+
+  /* 9. Monospace */
+  --type-mono-size: 11px;
+  --type-mono-weight: 400;
+  --type-mono-color: var(--t2);
+
+  /* 10. Button text */
+  --type-button-size: 11px;
+  --type-button-weight: 700;
+}
+
+/* =========================
+TAILWIND v4 THEME MAPPING
+========================= */
+@theme {
+  /* =========================
+     SURFACES
+  ========================= */
+  --color-bg-0: var(--bg0);
+  --color-bg-1: var(--bg1);
+  --color-bg-2: var(--bg2);
+  --color-bg-3: var(--bg3);
+
+  /* =========================
+     TEXT
+  ========================= */
+  --color-t-1: var(--t1);
+  --color-t-2: var(--t2);
+  --color-t-3: var(--t3);
+
+  /* =========================
+     ACCENTS & DIVIDERS
+  ========================= */
+  --color-g-3: var(--g3);
+  --color-line-c: var(--linec);
+  --color-line-g: var(--lineg);
+
+  /* =========================
+     SEMANTIC
+  ========================= */
+  --color-pos: var(--pos);
+  --color-neg: var(--neg);
+  --color-warn: var(--warn);
+  --color-blue: var(--blue);
+
+  /* =========================
+     CATEGORY COLORS
+  ========================= */
+  --color-pur: var(--pur);
+  --color-cyan: var(--cyan);
+  --color-orange: var(--orange);
+
+  /* =========================
+     SPACING SCALE
+  ========================= */
+  --spacing-sp1: var(--sp-1);
+  --spacing-sp2: var(--sp-2);
+  --spacing-sp3: var(--sp-3);
+  --spacing-sp4: var(--sp-4);
+  --spacing-sp5: var(--sp-5);
+  --spacing-sp6: var(--sp-6);
+  --spacing-sp7: var(--sp-7);
+
+  /* split */
+  --spacing-sp8x: var(--sp-8x);
+  --spacing-sp8y: var(--sp-8y);
+
+  /* =========================
+     RADIUS SCALE
+  ========================= */
+  --radius-r1: var(--radius-1);
+  --radius-r2: var(--radius-2);
+  --radius-r3: var(--radius-3);
+  --radius-r4: var(--radius-4);
+  --radius-r5: var(--radius-5);
+  --radius-r6: var(--radius-6);
+  --radius-r7: var(--radius-7);
+  --radius-r8: var(--radius-8);
+  --radius-r9: var(--radius-9);
+
+  --radius-full: var(--radius-full);
+
+  /* =========================
+     FONT SIZE SCALE
+  ========================= */
+  --font-size-title: var(--type-title-size);
+  --font-size-panel: var(--type-panel-size);
+  --font-size-label: var(--type-label-size);
+  --font-size-primary: var(--type-primary-size);
+  --font-size-secondary: var(--type-secondary-size);
+  --font-size-support: var(--type-support-size);
+  --font-size-action: var(--type-action-size);
+  --font-size-badge: var(--type-badge-size);
+  --font-size-button: var(--type-button-size);
+  --font-size-mono: var(--type-mono-size);
+}
+
+/* =========================
+BASE STYLES
+========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    var(--font-inter),
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg0);
+  color: var(--t1);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================
+   TYPOGRAPHY UTILITIES
+========================= */
+.text-title {
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  letter-spacing: var(--type-title-track);
+  color: var(--type-title-color);
+}
+
+.text-panel {
+  font-size: var(--type-panel-size);
+  font-weight: var(--type-panel-weight);
+  color: var(--type-panel-color);
+}
+
+.text-label {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-track);
+  color: var(--type-label-color);
+  text-transform: uppercase;
+}
+
+.text-primary {
+  font-size: var(--type-primary-size);
+  font-weight: var(--type-primary-weight);
+  color: var(--type-primary-color);
+}
+
+.text-secondary {
+  font-size: var(--type-secondary-size);
+  font-weight: var(--type-secondary-weight);
+  color: var(--type-secondary-color);
+}
+
+.text-support {
+  font-size: var(--type-support-size);
+  font-weight: var(--type-support-weight);
+  color: var(--type-support-color);
+}
+
+.text-action {
+  font-size: var(--type-action-size);
+  font-weight: var(--type-action-weight);
+  color: var(--type-action-color);
+  cursor: pointer;
+}
+
+.text-badge {
+  font-size: var(--type-badge-size);
+  font-weight: var(--type-badge-weight);
+  letter-spacing: var(--type-badge-track);
+}
+
+.text-mono {
+  font-size: var(--type-mono-size);
+  font-weight: var(--type-mono-weight);
+  color: var(--type-mono-color);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.text-button {
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+}
