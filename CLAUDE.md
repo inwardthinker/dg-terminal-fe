@@ -193,3 +193,51 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 - API calls only inside `service.ts` files — never directly in components
 - Components use Tailwind classes (not inline styles) going forward
 - New pages use App Router conventions (route groups in parentheses)
+
+---
+
+## Portfolio Feature (`src/features/portfolio/`)
+
+Added April 2026. Implements the `/portfolio` page based on the DGPredict canonical screen spec v1.4.
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `types.ts` | `PortfolioKpis`, `ExposureCategory`, `RiskMetric`, `TradeHistoryEntry`, `PortfolioData`, `UsePortfolioResult` |
+| `service.ts` | `fetchPortfolio()` — calls `/portfolio/summary` via `apiFetch` |
+| `hooks.ts` | `usePortfolio()` — returns mock data now; replace `setTimeout` block with `fetchPortfolio()` for live data |
+| `components/KpiTile.tsx` | Reusable KPI tile: label, value (with optional colour class), sub-label, tooltip, footer slot |
+| `components/ExposureCategoryPanel.tsx` | Scrollable exposure-by-category list with colour-coded dot + bar chart |
+| `components/RiskMetricsPanel.tsx` | 6-row risk metrics panel with inline tooltips |
+| `components/TradeHistoryPanel.tsx` | Trade history table with period tabs, 8-column grid, pagination |
+| `components/PortfolioTopBar.tsx` | App-wide top bar: brand, quick stats, search, deposit button, portfolio pill, avatar |
+
+### Page layout (`src/app/(dashboard)/portfolio/page.tsx`)
+
+```
+PortfolioTopBar            — fixed-height header (48px)
+Breadcrumb                 — 32px bar
+main
+  grid-cols-5              — KPI tiles (Balance, Open Exposure, Unrealized P&L, Realized 30D, Rewards)
+  grid-cols-[1.4fr_1fr]   — EquityCurvePanel | ExposureCategoryPanel
+  grid-cols-[1fr_1.85fr]  — RiskMetricsPanel | SummaryPanelContainer (open-positions)
+  TradeHistoryPanel        — full-width trade history
+```
+
+### API-readiness
+
+`usePortfolio()` mocks data with a 500 ms delay (matching existing hook patterns). To connect to a real API, replace the `setTimeout` block in `hooks.ts` with:
+
+```ts
+const data = await fetchPortfolio();
+setPortfolio(data);
+```
+
+The `PORTFOLIO_ENDPOINTS.summary` path and the `PortfolioData` type mirror the expected backend contract.
+
+### Reused components (do not recreate)
+
+- `EquityCurvePanel` — self-contained, manages own data via `useEquityCurve`
+- `SummaryPanelContainer` — self-contained, manages own data via `usePositions`
+- `InfoTooltip` — shared UI component used in KpiTile and RiskMetricsPanel
