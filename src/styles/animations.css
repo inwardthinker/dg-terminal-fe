@@ -1,0 +1,26 @@
+/* =========================
+   KEYFRAMES
+========================= */
+
+@keyframes stroke-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =========================
+   ANIMATION TOKENS
+========================= */
+@theme {
+  --animate-draw: stroke-draw 0.6s ease-out forwards;
+  --animation-enter-fade: enter-fade 0.4s ease-out forwards;
+}

@@ -114,7 +114,7 @@ function EquityCurveChartComponent({ data, width, loading, color }: EquityCurveC
                     key={`area-${d}`}
                     d={`${d} L ${width} ${CHART_HEIGHT} L 0 ${CHART_HEIGHT} Z`}
                     fill="url(#area)"
-                    className="opacity-0 animate-fade-in"
+                    className="opacity-0 animation-enter-fade"
                 />
 
                 {/* Line */}
@@ -127,7 +127,7 @@ function EquityCurveChartComponent({ data, width, loading, color }: EquityCurveC
                     strokeWidth="1.8"
                     strokeDasharray={length}
                     strokeDashoffset={length}
-                    className="animate-draw"
+                    className="animation-stroke-draw"
                 />
 
                 {hoveredPoint && (

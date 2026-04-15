@@ -40,7 +40,7 @@ ROOT DESIGN TOKENS
   ========================= */
   --pur: #b496dc; /* Rank 5 */
   --cyan: #3ec6c6; /* Rank 6 */
-  --orange: #f97316; /* Rank 7 */
+  --orange: #e08c30; /* Rank 7 */
 
   /* =========================
    SPACING SCALE
@@ -311,27 +311,4 @@ a {
 .text-button {
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
-}
-
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-draw {
-  animation: draw 0.6s ease-out forwards;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
 }

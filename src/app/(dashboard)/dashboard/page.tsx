@@ -1,8 +1,9 @@
-export default function DashboardPage() {
-  return (
-    <main style={{ padding: 24 }}>
-      <h1>Dashboard</h1>
-      <p>Protected dashboard content goes here.</p>
-    </main>
-  );
+import React from 'react'
+
+const page = () => {
+    return (
+        <div>page</div>
+    )
 }
+
+export default page

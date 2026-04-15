@@ -1,3 +1,4 @@
+import { SummaryPanelContainer } from "@/features/open-positions";
 import { EquityCurvePanel } from "@/features/equity-curve/EquityCurvePanel";
 
 export default function HomePage() {
@@ -25,6 +26,7 @@ export default function HomePage() {
         </div>
 
 
+        <SummaryPanelContainer />
         <EquityCurvePanel />
       </section>
     </main>
