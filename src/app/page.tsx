@@ -1,3 +1,5 @@
+import { SummaryPanelContainer } from "@/features/open-positions";
+
 export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-0 px-sp8x py-sp8y">
@@ -22,6 +24,8 @@ export default function HomePage() {
           <div className="bg-orange h-full w-1/3 rounded-r2" />
         </div>
 
+
+        <SummaryPanelContainer />
       </section>
     </main>
   );
