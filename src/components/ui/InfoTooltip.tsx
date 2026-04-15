@@ -11,7 +11,7 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
             <button
                 type="button"
                 aria-label="More information"
-                className="w-4 h-4 rounded-full border border-line-c text-t-3 text-[10px] flex items-center justify-center opacity-80 transition hover:opacity-100 focus:opacity-100"
+                className="w-4 h-4 rounded-full border border-line-c text-t-3 text-[10px] flex items-center justify-center opacity-80 transition hover:opacity-100 focus:opacity-100 italic"
             >
                 i
             </button>

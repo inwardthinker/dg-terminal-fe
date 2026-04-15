@@ -20,7 +20,11 @@ type RootLayoutProps = Readonly<{
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+      <body>
+        <div className="mx-auto w-full max-w-[1200px] px-4">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

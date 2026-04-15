@@ -1,5 +1,5 @@
 import { SummaryPanelContainer } from "@/features/open-positions";
-import { EquityCurvePanel } from "@/features/equity-curve/EquityCurvePanel";
+import { EquityCurvePanel } from "@/features/equity-curve/components/EquityCurvePanel";
 
 export default function HomePage() {
   return (

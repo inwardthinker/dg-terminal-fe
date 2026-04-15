@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { getChartPoints } from "./utils";
+import { getChartPoints } from "../utils";
 
 type EquityCurvePoint = {
     date: string;

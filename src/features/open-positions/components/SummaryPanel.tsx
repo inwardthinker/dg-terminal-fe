@@ -10,6 +10,7 @@ import {
   SUMMARY_GRID_COLUMNS,
   SUMMARY_GRID_COLUMNS_MOBILE,
 } from "../constants/layout";
+import { InfoTooltip } from "@/components/ui/InfoTooltip";
 
 type SummaryPanelProps = {
   positions: Position[];
@@ -17,6 +18,48 @@ type SummaryPanelProps = {
   onOpenPosition: (position: Position) => void;
   onClosePosition: (position: Position) => void;
 };
+
+const OPEN_POSITIONS_URL = "/portfolio/open-positions";
+
+const SUMMARY_COLUMNS = [
+  {
+    key: "market",
+    label: "Market",
+    tooltip: "The event or outcome you have a position on.",
+    align: "left",
+  },
+  {
+    key: "category",
+    label: "Cat.",
+    tooltip: "The topic area this market belongs to.",
+    align: "left",
+  },
+  {
+    key: "side",
+    label: "Side",
+    tooltip:
+      "Whether you bet YES (outcome happens) or NO (outcome does not happen).",
+    align: "left",
+  },
+  {
+    key: "size",
+    label: "Size",
+    tooltip: "Total amount paid to open this position (cost basis).",
+    align: "right",
+    hideOnMobile: true,
+  },
+  {
+    key: "pnl",
+    label: "P&L",
+    tooltip: "Unrealized gain or loss in dollars at current price.",
+    align: "right",
+  },
+  {
+    key: "action",
+    label: "Action",
+    align: "left",
+  },
+]
 
 export function SummaryPanel({
   positions,
@@ -39,10 +82,11 @@ export function SummaryPanel({
           <DotSeparator size={4} />
           <h2 className="">{totalCount}</h2>
           <DotSeparator size={8} color="bg-pos" className="animate-pulse" />
+          <InfoTooltip text="Total number of open positions in the portfolio" />
         </div>
         {remaining > 0 &&
           <div className="text-secondary">
-            <ArrowLink href="#positions-table" label="View all" direction="down" />
+            <ArrowLink href={OPEN_POSITIONS_URL} label="View all" direction="down" />
           </div>
         }
       </div>
@@ -51,12 +95,20 @@ export function SummaryPanel({
         <div
           className={`grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary tracking-wide text-t-3! ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2`}
         >
-          <span className="pb-2 text-left">Market</span>
-          <span className="pb-2 text-left">Cat.</span>
-          <span className="pb-2 text-left">Side</span>
-          <span className="pb-2 max-sm:hidden">Size</span>
-          <span className="pb-2">P&amp;L</span>
-          <span className="pb-2">Act</span>
+          {SUMMARY_COLUMNS.map((col) => (
+            <div
+              key={col.key}
+              className={`
+        pb-2 flex items-center gap-1
+        ${col.align === "right" ? "justify-end text-right" : "text-left"}
+        ${col.hideOnMobile ? "max-sm:hidden" : ""}
+      `}
+            >
+              <span>{col.label}</span>
+              {col.tooltip && <InfoTooltip text={col.tooltip} />}
+            </div>
+          ))}
+
         </div>
         {positions.map((position) => (
           <PositionRow
@@ -72,7 +124,7 @@ export function SummaryPanel({
           <div className="py-2 text-support text-xs! flex items-center">
             <span>+{remaining} more positions</span>
             <DotSeparator size={2} />
-            <ArrowLink href="#positions-table" label="View all" direction="down" />
+            <ArrowLink href={OPEN_POSITIONS_URL} label="View all" direction="down" />
           </div>
         )}
       </div>

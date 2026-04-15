@@ -2,10 +2,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useEquityCurve } from "./useEquityCurve";
-import { EquityCurveChart } from "./EquityCurveChart";
+
+import { EquityCurveChart } from "@/features/equity-curve/components/EquityCurveChart";
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import { getXAxisLabels, type Period } from "./utils";
+import { getXAxisLabels, type Period } from "../utils";
+import { useEquityCurve } from "@/features/equity-curve/hooks/useEquityCurve";
+import { DotSeparator } from "@/components/ui/DotSeparator";
 
 const periods = ["7d", "30d", "90d", "All"] as const;
 
@@ -54,11 +56,9 @@ export function EquityCurvePanel() {
 
             {/* Header */}
             <div className="flex flex-col gap-sp3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-sp2">
+                <div className="flex items-center gap-1">
                     <span className="text-primary leading-none">Equity curve</span>
-
-                    <span className="text-support text-t-3 leading-none">· {period}</span>
-
+                    <DotSeparator size={4} />
                     <span className={`leading-none text-secondary ${changeClassName}`}>
                         {sign}
                         {change.toFixed(1)}%

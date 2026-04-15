@@ -21,3 +21,22 @@ export type UsePositionsResult = {
   loading: boolean
   error: string | null
 }
+
+export interface ApiKpis {
+  totalOpen: number
+  totalExposure: number
+  unrealizedPnl: number
+  largestPositionValue: number
+  largestPositionPct: number
+}
+
+export type Variant = "default" | "positive" | "negative" | "accent"
+
+export type KpiCardData = {
+  id: string
+  label: string
+  value: string
+  tooltip?: string
+  valueVariant?: Variant
+  meta?: string
+}

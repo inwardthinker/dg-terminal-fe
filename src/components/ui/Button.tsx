@@ -20,12 +20,30 @@ const buttonVariants = cva(
           "p-0 h-auto hover:bg-transparent " +
           "focus-visible:ring-0 focus-visible:outline-none " +
           "transition-colors duration-200",
+
+        accent:
+          "text-g-3 font-semibold " +
+          "border border-[rgba(205,189,112,0.35)] " +
+          "bg-[rgba(205,189,112,0.12)] " +
+          "hover:bg-[rgba(205,189,112,0.18)] " +
+          "transition-colors duration-200",
+
+        // ✅ NEW: Withdraw button
+        muted:
+          "text-t-3 " +
+          "border border-line-c " +
+          "bg-transparent " +
+          "hover:text-t-2 " +
+          "hover:border-[rgba(255,255,255,0.18)] " +
+          "transition-all duration-200",
+
         secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
         outline: "border border-gray-300 hover:bg-gray-100",
         ghost: "hover:bg-gray-100",
         link: "text-blue-600 underline-offset-4 hover:underline",
       },
       size: {
+        xs: "h-[22px] px-2 text-[10px]",
         sm: "h-6 px-3 text-xs",
         md: "h-8 px-4 py-2 text-sm",
         lg: "h-12 px-6 text-base",
