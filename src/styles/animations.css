@@ -17,10 +17,10 @@
   }
 }
 
-/* =========================
-   ANIMATION TOKENS
-========================= */
-@theme {
-  --animate-draw: stroke-draw 0.6s ease-out forwards;
-  --animation-enter-fade: enter-fade 0.4s ease-out forwards;
+.animate-draw {
+  animation: stroke-draw 0.6s ease-out forwards;
+}
+
+.animate-enter-fade {
+  animation: enter-fade 0.4s ease-out forwards;
 }
