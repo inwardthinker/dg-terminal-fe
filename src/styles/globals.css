@@ -312,22 +312,3 @@ a {
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
 }
-
-@keyframes flash {
-  0% {
-    box-shadow: 0 0 0 0 rgba(205, 189, 112, 0);
-  }
-  28% {
-    box-shadow: 0 0 0 2px rgba(205, 189, 112, 0.42);
-  }
-  55% {
-    box-shadow: 0 0 0 5px rgba(205, 189, 112, 0.14);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(205, 189, 112, 0);
-  }
-}
-
-.animate-flash {
-  animation: flash 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
-}
