@@ -24,13 +24,6 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
-function truncateMarketName(market: string) {
-  if (market.length <= 28) {
-    return market;
-  }
-  return `${market.slice(0, 28)}...`;
-}
-
 function pnlTextClass(pnl: number) {
   return pnl >= 0 ? "text-pos" : "text-neg";
 }
@@ -58,15 +51,15 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
   const handleOpen = () => onOpen(position)
 
   const gridClass =
-    `grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary transition-colors ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2`;
+    `grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary transition-colors ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2 max-sm:text-[11px]`;
 
   return (
     <div className={gridClass}>
       <div className="contents cursor-pointer" onClick={handleOpen}>
-        <div className="truncate py-2 text-left" title={position.market}>
-          {truncateMarketName(position.market)}
+        <div className="truncate py-2 text-left max-sm:text-[10px] text-white" title={position.market}>
+          {position.market}
         </div>
-        <div className="flex justify-start py-2">
+        <div className="flex justify-start py-2 max-sm:hidden">
           <CategoryPill
             label={categoryStyle.label}
             colorClass={categoryStyle.colorClass}

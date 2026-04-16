@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { PositionRowSummary } from "./PositionRowSummary";
+import {PositionRowSummary } from "./PositionRowSummary";
 import type { Position } from "../types";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { DotSeparator } from "@/components/ui/DotSeparator";
@@ -33,6 +33,7 @@ const SUMMARY_COLUMNS = [
     label: "Cat.",
     tooltip: "The topic area this market belongs to.",
     align: "left",
+    hideOnMobile: true,
   },
   {
     key: "side",
@@ -93,13 +94,13 @@ export function SummaryPanel({
 
       <div className="space-y-2">
         <div
-          className={`grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary tracking-wide text-t-3! ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2`}
+          className={`grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-support ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2 max-sm:text-[10px]`}
         >
           {SUMMARY_COLUMNS.map((col) => (
             <div
               key={col.key}
               className={`
-        pb-2 flex items-center gap-1
+        py-2 flex items-center gap-1
         ${col.align === "right" ? "justify-end text-right" : "text-left"}
         ${col.hideOnMobile ? "max-sm:hidden" : ""}
       `}
