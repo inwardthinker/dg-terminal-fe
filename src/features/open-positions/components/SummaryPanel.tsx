@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { PositionRow } from "./PositionRow";
+import { PositionRowSummary } from "./PositionRowSummary";
 import type { Position } from "../types";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { DotSeparator } from "@/components/ui/DotSeparator";
@@ -111,10 +111,9 @@ export function SummaryPanel({
 
         </div>
         {positions.map((position) => (
-          <PositionRow
+          <PositionRowSummary
             key={position.id}
             position={position}
-            variant="summary"
             categoryPresentation={categoryPresentation}
             onOpen={onOpenPosition}
             onClose={onClosePosition}

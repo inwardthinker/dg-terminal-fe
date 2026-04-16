@@ -18,7 +18,7 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
 
             <div
                 role="tooltip"
-                className="pointer-events-none absolute top-6 left-0 z-10 w-[240px] bg-bg-1 border border-line-c rounded-r4 p-sp3 text-support text-t-2 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                className="normal-case text-left pointer-events-none absolute top-6 left-0 z-10 max-w-[240px] min-w-[164px] bg-bg-1 border border-line-c rounded-r4 p-sp3 text-support text-t-2 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
             >
                 {text}
             </div>

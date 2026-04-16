@@ -112,7 +112,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Row 2: Equity curve (wider) + Exposure by category */}
-        <div className="grid grid-cols-[1.4fr_1fr] gap-sp4">
+        <div className="grid gap-sp4 xl:grid-cols-[1.4fr_1fr]">
           <EquityCurvePanel />
           <ExposureCategoryPanel
             exposure={portfolio?.exposure ?? []}
@@ -121,7 +121,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Row 3: Risk metrics + Open positions */}
-        <div className="grid grid-cols-[1fr_1.85fr] gap-sp4">
+        <div className="grid gap-sp4 xl:grid-cols-[1fr_1.85fr]">
           <RiskMetricsPanel
             metrics={portfolio?.riskMetrics ?? []}
             loading={loading}

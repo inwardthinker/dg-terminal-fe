@@ -21,7 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <div className="mx-auto w-full max-w-[1200px] px-4">
+        <div className="mx-auto w-full max-w-[1280px] px-4 max-sm:px-0">
           {children}
         </div>
       </body>

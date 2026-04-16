@@ -13,7 +13,7 @@ const buttonVariants = cva(
         destructive:
           "bg-neg/10 hover:bg-neg/20 " +
           "text-neg font-semibold " +
-          "border border-neg " +
+          "border border-neg/40 hover:border-neg/60 " +
           "transition-all duration-200",
         subtle: "text-g-3 hover:text-[#e6c97a] " +
           "bg-transparent border-none shadow-none " +
