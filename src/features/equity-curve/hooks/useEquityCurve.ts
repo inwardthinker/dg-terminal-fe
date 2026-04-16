@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { type Period, type Point } from "./utils";
+import { type Period, type Point } from "@/features/equity-curve/utils";
 
 type EquityCurveDataByPeriod = Record<Period, Point[]>;
 type RangeSummary = {

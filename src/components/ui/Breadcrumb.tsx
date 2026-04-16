@@ -19,7 +19,7 @@ export function Breadcrumb({
     className,
 }: BreadcrumbProps) {
     return (
-        <div className="flex justify-between py-sp4 px-sp3 items-center bg-bg-1 border-y border-line-c">
+        <div className="flex justify-between p-sp6 items-center bg-bg-1 border-y border-line-c">
             <nav aria-label="Breadcrumb" className={className}>
                 <ol className="flex items-center gap-1 text-secondary text-t-3!">
                     {items.map((item, index) => {
@@ -54,7 +54,7 @@ export function Breadcrumb({
                     })}
                 </ol>
             </nav>
-            <div className="text-secondary text-t-3/20! border border-line-c rounded-r2 px-sp3 py-sp1">cmdP to close</div>
+            <div className="text-secondary text-t-3/20! border border-line-c rounded-r2 px-sp3 py-sp1 max-sm:hidden">cmdP to close</div>
         </div>
     )
 }
