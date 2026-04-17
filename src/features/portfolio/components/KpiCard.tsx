@@ -57,7 +57,7 @@ export function KpiCard({
     >
       {/* Top: label + value + sub */}
       <div className="flex flex-col gap-[2px]">
-        <div className="flex items-center gap-sp2 text-label">
+        <div className="flex items-center gap-sp2 text-badge-muted">
           <span>{label}</span>
           {tooltip && <InfoTooltip text={tooltip} />}
         </div>

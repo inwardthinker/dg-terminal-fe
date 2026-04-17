@@ -308,6 +308,12 @@ a {
   font-weight: var(--type-badge-weight);
   letter-spacing: var(--type-badge-track);
 }
+.text-badge-muted {
+  font-size: var(--type-badge-size);
+  font-weight: var(--type-badge-weight);
+  letter-spacing: var(--type-badge-track);
+  color: var(--type-support-color);
+}
 
 .text-mono {
   font-size: var(--type-mono-size);
