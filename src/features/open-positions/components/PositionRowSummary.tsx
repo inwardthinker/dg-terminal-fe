@@ -28,6 +28,12 @@ function pnlTextClass(pnl: number) {
   return pnl >= 0 ? "text-pos" : "text-neg";
 }
 
+function sideTextClass(side: string) {
+  if (side === "YES") return "text-pos!";
+  if (side === "NO") return "text-neg!";
+  return "text-secondary";
+}
+
 function stopAndClose(
   event: MouseEvent<HTMLButtonElement>,
   position: Position,
@@ -65,7 +71,7 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
             colorClass={categoryStyle.colorClass}
           />
         </div>
-        <span className={`font-bold text-left ${position.side === "YES" ? "text-pos!" : "text-neg!"}`}>
+        <span className={`font-bold text-left ${sideTextClass(position.side)}`}>
           {position.side}
         </span>
         <span className="py-2 text-right max-sm:hidden">

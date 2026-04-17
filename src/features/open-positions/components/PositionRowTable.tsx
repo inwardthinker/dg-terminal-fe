@@ -26,6 +26,12 @@ function pnlTextClass(value: number) {
     return value >= 0 ? "text-pos" : "text-neg";
 }
 
+function sideTextClass(side: string) {
+    if (side === "YES") return "text-pos";
+    if (side === "NO") return "text-neg";
+    return "text-secondary";
+}
+
 export const PositionRowTable = React.memo(function PositionRowTable({
     position,
     categoryPresentation,
@@ -114,8 +120,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
             {/* Side */}
             <td
-                className={`px-3 py-0 align-middle font-bold max-sm:text-[11px] ${position.side === "YES" ? "text-pos" : "text-neg"
-                    }`}
+                className={`px-3 py-0 align-middle font-bold max-sm:text-[11px] ${sideTextClass(position.side)}`}
             >
                 {position.side}
             </td>

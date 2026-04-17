@@ -15,7 +15,7 @@ import { DotSeparator } from "@/components/ui/DotSeparator";
 type Category = Position["category"] | "All"
 
 export function PositionsTableContainer() {
-    const { positions, loading, error } = usePositions();
+    const { positions, loading, error } = usePositions({ realtimeOnly: true });
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All")
     const [selectedSide, setSelectedSide] = useState<"All" | "YES" | "NO">("All")
@@ -56,7 +56,7 @@ export function PositionsTableContainer() {
     }
 
     if (loading) return <PositionsTableSkeleton />;
-    if (error) return <SummaryError />;
+    if (error) return <SummaryError message={error} />;
 
     return (
         <div className="w-full space-y-4">

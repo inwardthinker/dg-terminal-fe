@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Position, UsePositionsParams, UsePositionsResult } from "../types";
+import {
+  connectPositionsPriceSocket,
+  parseSocketError,
+  resolvePositionsPriceSocketUserAddress,
+  type PositionPriceEvent,
+} from "../socket";
 
 const mockPositions: Position[] = [
   {
@@ -138,24 +144,163 @@ const mockPositions: Position[] = [
     pnlPct: 15.38,
   },
 ];
+const POSITION_STALE_MS = 6 * 60 * 1000;
 
-export function usePositions({ limit, sortBy = "pnl" }: UsePositionsParams = {}): UsePositionsResult {
+function applyPriceEvent(position: Position, event: PositionPriceEvent): Position {
+  return {
+    ...position,
+    market: event.title ?? position.market,
+    side: event.outcome ?? position.side,
+    entryPrice: asNumber(event.avg_price, position.entryPrice),
+    currentPrice: asNumber(event.current_price, position.currentPrice),
+    size: asNumber(event.position_value, position.size),
+    pnl: asNumber(event.pnl_amount, position.pnl),
+    pnlPct: asNumber(event.pnl_percent, position.pnlPct),
+    priceStale: event.stale,
+  };
+}
+
+function buildPositionFromPriceEvent(event: PositionPriceEvent): Position {
+  const side = event.outcome ?? "UNKNOWN";
+  return {
+    id: event.position_id,
+    market: event.title ?? "Untitled market",
+    category: "Other",
+    side,
+    entryPrice: asNumber(event.avg_price, 0),
+    currentPrice: asNumber(event.current_price, 0),
+    size: asNumber(event.position_value, 0),
+    pnl: asNumber(event.pnl_amount, 0),
+    pnlPct: asNumber(event.pnl_percent, 0),
+    priceStale: event.stale,
+  };
+}
+
+function normalizePositionId(positionId: string): string {
+  return positionId.trim();
+}
+
+function asNumber(value: number | null, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+export function usePositions({
+  limit,
+  sortBy = "pnl",
+  userAddress,
+  realtimeOnly = false,
+}: UsePositionsParams = {}): UsePositionsResult {
+  const resolvedAddress = resolvePositionsPriceSocketUserAddress(userAddress);
+  const isLiveSocketMode = Boolean(resolvedAddress) || realtimeOnly;
+  const lastSeenByPositionIdRef = useRef<Record<string, number>>({});
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [positionsState, setPositionsState] = useState<Position[]>(
+    isLiveSocketMode ? [] : mockPositions
+  )
 
   useEffect(() => {
+    setPositionsState(isLiveSocketMode ? [] : mockPositions);
+    lastSeenByPositionIdRef.current = {};
+    setError(null);
+    setLoading(!isLiveSocketMode);
+
+    if (isLiveSocketMode) {
+      if (realtimeOnly && !resolvedAddress) {
+        setError("Live positions socket requires a valid wallet address");
+      }
+      return;
+    }
+
     const timeoutId = window.setTimeout(() => {
       setLoading(false)
       setError(null)
     }, 500)
 
     return () => window.clearTimeout(timeoutId)
-  }, [])
+  }, [isLiveSocketMode, realtimeOnly, resolvedAddress])
 
-  const totalCount = mockPositions.length
+  useEffect(() => {
+    if (!resolvedAddress) {
+      return;
+    }
+
+    const socket = connectPositionsPriceSocket(resolvedAddress);
+
+    socket.on("connect", () => {
+      // Clear stale rows from prior disconnected sessions before fresh snapshot events arrive.
+      setPositionsState([]);
+      lastSeenByPositionIdRef.current = {};
+      setError(null);
+      setLoading(false);
+      console.info("[positions-socket] connected", { socketId: socket.id, user: resolvedAddress });
+    });
+
+    socket.on("subscribed", (payload: { user: string }) => {
+      console.info("[positions-socket] subscribed", payload);
+    });
+
+    socket.on("position_price", (event: PositionPriceEvent) => {
+      console.info("[positions-socket] position_price", event);
+      const positionId = normalizePositionId(event.position_id);
+      lastSeenByPositionIdRef.current[positionId] = Date.now();
+
+      setPositionsState((previous) => {
+        const existingIndex = previous.findIndex((position) => position.id === positionId);
+        if (existingIndex === -1) {
+          return [...previous, { ...buildPositionFromPriceEvent(event), id: positionId }];
+        }
+
+        return previous.map((position) =>
+          position.id === positionId ? applyPriceEvent(position, event) : position
+        );
+      });
+      setLoading(false);
+    });
+
+    socket.on("error", (payload: unknown) => {
+      console.error("[positions-socket] error-event", payload);
+      setError(parseSocketError(payload));
+    });
+
+    socket.on("connect_error", (errorPayload) => {
+      console.error("[positions-socket] connect_error", errorPayload);
+      setError(errorPayload.message || "Failed to connect to live positions socket");
+    });
+
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [resolvedAddress]);
+
+  useEffect(() => {
+    if (!isLiveSocketMode) {
+      return;
+    }
+
+    const pruneIntervalId = window.setInterval(() => {
+      const now = Date.now();
+      setPositionsState((previous) =>
+        previous.filter((position) => {
+          if (position.priceStale) {
+            // Stale means price feed is unavailable, not that position is closed.
+            return true;
+          }
+          const lastSeen = lastSeenByPositionIdRef.current[position.id];
+          return typeof lastSeen === "number" && now - lastSeen <= POSITION_STALE_MS;
+        })
+      );
+    }, 30_000);
+
+    return () => window.clearInterval(pruneIntervalId);
+  }, [isLiveSocketMode]);
+
+  const totalCount = positionsState.length
 
   const positions = useMemo(() => {
-    let data = [...mockPositions]
+    let data = [...positionsState]
 
     if (sortBy === "pnl") {
       data.sort((a, b) => b.pnl - a.pnl)
@@ -166,7 +311,7 @@ export function usePositions({ limit, sortBy = "pnl" }: UsePositionsParams = {})
     }
 
     return data
-  }, [limit, sortBy])
+  }, [limit, sortBy, positionsState])
 
   return { positions, totalCount, loading, error }
 }
