@@ -52,7 +52,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
     return (
         <tr
-            className="cursor-pointer overflow-hidden border-b border-line-c align-middle text-support transition-colors hover:bg-bg-2 max-sm:text-[11px]"
+            className="cursor-pointer overflow-hidden border-b border-line-c align-middle text-support transition-colors hover:bg-bg-2 max-sm:text-[13px]"
             onClick={handleOpen}
             style={{
                 height: POSITION_TABLE_ROW_HEIGHT_PX,
@@ -86,7 +86,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                         before:items-center
                         before:justify-center
                         before:text-black
-                        before:text-[10px]
+                        before:text-[13px]
                         before:font-bold
 
                         checked:before:content-['✓']
@@ -96,7 +96,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
 
                     <span
-                        className="block min-w-0 truncate max-sm:text-[10px]"
+                        className="block min-w-0 truncate max-sm:text-[13px]"
                         title={position.market}
                     >
                         {position.market}

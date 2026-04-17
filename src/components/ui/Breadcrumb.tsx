@@ -19,7 +19,7 @@ export function Breadcrumb({
     className,
 }: BreadcrumbProps) {
     return (
-        <div className="flex justify-between p-sp6 items-center bg-bg-1 border-y border-line-c">
+        <div className="flex justify-between px-sp7 py-[5px] items-center bg-bg-1 border-y border-line-c">
             <nav aria-label="Breadcrumb" className={className}>
                 <ol className="flex items-center gap-1 text-secondary text-t-3!">
                     {items.map((item, index) => {
