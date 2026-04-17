@@ -22,8 +22,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body className="flex flex-col min-h-screen">
+        <TopBar />
         <div className="mx-auto w-full max-w-[1400px]">
-          <TopBar />
           {children}
         </div>
       </body>

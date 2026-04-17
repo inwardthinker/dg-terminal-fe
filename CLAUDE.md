@@ -196,6 +196,42 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 
 ---
 
+## Layout & Responsiveness
+
+### Root layout (`src/app/layout.tsx`)
+
+- `TopBar` renders **outside** the `max-w-[1400px]` wrapper so its bottom border stretches edge-to-edge.
+- Page content renders inside `<div className="mx-auto w-full max-w-[1400px]">`.
+- Both `TopBar` and `Breadcrumb` use `bg-bg-0` (screen bg) with `border-line-c` hairlines.
+
+### Full-bleed pattern (used by Breadcrumb)
+
+When a component sits **inside** the 1400px container but needs edge-to-edge bg/border, wrap with:
+```
+w-screen relative left-1/2 -ml-[50vw]
+```
+then constrain inner content with `mx-auto w-full max-w-[1400px]`.
+
+### TopBar (`src/components/layout/TopBar.tsx`)
+
+- Height: `h-16` (bumped from `h-12`). Brand text 17px, avatar 30×30.
+- Outer `<header>` is full-width (border stretches); inner div is capped at `max-w-[1400px]` with `px-sp5 sm:px-sp7`.
+- Responsive visibility:
+  - Quick stats (Balance / Today P&L / Open): `hidden lg:flex`
+  - Search bar: `hidden sm:flex`
+  - Portfolio pill: `hidden sm:flex`
+  - Brand, Deposit button, avatar: always visible
+
+### Responsive breakpoints used across pages
+
+- Portfolio page KPI row: `grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5` (replaced older horizontal-scroll workaround).
+- Two-column rows (EquityCurve+Exposure, RiskMetrics+OpenPositions): stack by default, `lg:grid-cols-[...]` on wide.
+- `TradeHistoryPanel`: header stacks on mobile (`flex-col sm:flex-row`); 8-column grid wrapped in `overflow-x-auto` with `min-w-[720px]` inner so the table scrolls horizontally rather than breaking.
+- OpenPositions page KPI grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`.
+- `PositionsTable`: already responsive via `max-sm:` utilities (hides Category/Entry/Current/Size/P&L% columns on mobile).
+
+---
+
 ## Portfolio Feature (`src/features/portfolio/`)
 
 Added April 2026. Implements the `/portfolio` page based on the DGPredict canonical screen spec v1.4.

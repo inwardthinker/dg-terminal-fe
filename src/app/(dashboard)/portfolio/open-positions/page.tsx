@@ -29,8 +29,8 @@ const page = () => {
                 ]}
             />
 
-            <div className="max-w-[1280px] mx-auto px-4 space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="w-full px-sp5 sm:px-sp7 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {cards.map(({ id, ...rest }) => (
                         <KpiCard key={id} {...rest} />
                     ))}

@@ -44,11 +44,10 @@ export default function PortfolioPage() {
 
 
       {/* ── Page body ── */}
-      <main className="px-sp7 py-sp4 flex flex-col gap-sp4 bg-bg-0">
+      <main className="px-sp5 sm:px-sp7 py-sp4 flex flex-col gap-sp4 bg-bg-0">
 
-        {/* KPI row — 5 equal columns, scrollable on narrow screens */}
-        <div className="overflow-x-auto -mx-sp7 px-sp7">
-        <div className="grid grid-cols-5 gap-2 min-w-[640px]">
+        {/* KPI row — responsive: 1 col on xs, 2 on sm, 3 on md, 5 on lg */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
 
           {/* Balance */}
           <KpiCard
@@ -107,10 +106,9 @@ export default function PortfolioPage() {
             tooltip="Maker rebates and referral bonuses earned in the last 30 days."
           />
         </div>
-        </div>
 
         {/* Row 2: Equity curve (wider) + Exposure by category */}
-        <div className="grid gap-sp4 xl:grid-cols-[1.4fr_1fr]">
+        <div className="grid gap-sp4 lg:grid-cols-[1.4fr_1fr]">
           <EquityCurvePanel />
           <ExposureCategoryPanel
             exposure={portfolio?.exposure ?? []}
@@ -119,7 +117,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Row 3: Risk metrics + Open positions */}
-        <div className="grid gap-sp4 xl:grid-cols-[1fr_1.85fr]">
+        <div className="grid gap-sp4 lg:grid-cols-[1fr_1.85fr]">
           <RiskMetricsPanel
             metrics={portfolio?.riskMetrics ?? []}
             loading={loading}

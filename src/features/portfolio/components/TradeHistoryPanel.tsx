@@ -110,10 +110,10 @@ export function TradeHistoryPanel({
   return (
     <div className="bg-bg-1 border border-line-c rounded-r7 p-sp5">
       {/* Header */}
-      <div className="flex items-center justify-between mb-sp4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-sp3 mb-sp4">
         <span className="text-primary">Trade history</span>
 
-        <div className="flex items-center gap-sp7">
+        <div className="flex items-center gap-sp5 sm:gap-sp7 flex-wrap">
           {/* Period tabs */}
           <div className="flex gap-[3px]">
             {PERIODS.map((p) => (
@@ -141,6 +141,8 @@ export function TradeHistoryPanel({
         </div>
       </div>
 
+      <div className="overflow-x-auto -mx-sp5 px-sp5">
+      <div className="min-w-[720px]">
       {/* Column headers */}
       <div className={`${TRADE_HISTORY_GRID_CLASS} text-support pb-[5px] border-b border-line-c mb-[2px]`}>
         <span>Date</span>
@@ -201,8 +203,11 @@ export function TradeHistoryPanel({
         ))
       )}
 
+      </div>
+      </div>
+
       {/* Pagination */}
-      <div className="flex justify-between items-center pt-[7px] border-t border-[rgba(255,255,255,0.05)] text-support mt-[3px]">
+      <div className="flex justify-between items-center pt-[7px] border-t border-[rgba(255,255,255,0.05)] text-support mt-[3px] gap-sp3 flex-wrap">
         <span>
           {filtered.length === 0
             ? "No trades"
