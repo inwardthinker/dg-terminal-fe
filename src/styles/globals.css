@@ -77,55 +77,55 @@ ROOT DESIGN TOKENS
   /* =========================
    TYPE SCALE (ROLE BASED)
   ========================= */
-  /* 1. Title */
+  /* 1. Title — main page headings */
   --type-title-size: 18px;
   --type-title-weight: 700;
   --type-title-track: -0.3px;
   --type-title-color: var(--t1);
 
-  /* 2. Panel heading */
-  --type-panel-size: 11.5px;
+  /* 2. Panel heading — section/panel headings */
+  --type-panel-size: 14px;
   --type-panel-weight: 600;
   --type-panel-color: var(--t1);
 
   /* 3. Label group */
-  --type-label-size: 10px;
+  --type-label-size: 9px;
   --type-label-weight: 700;
   --type-label-track: 0.08em;
   --type-label-color: var(--t3);
 
-  /* 4. Primary data */
-  --type-primary-size: 15px;
+  /* 4. Primary data — heading-level values */
+  --type-primary-size: 22px;
   --type-primary-weight: 700;
   --type-primary-color: var(--t1);
 
-  /* 5. Secondary data */
-  --type-secondary-size: 12px;
+  /* 5. Secondary data — sub-headings */
+  --type-secondary-size: 13px;
   --type-secondary-weight: 600;
   --type-secondary-color: var(--t1);
 
-  /* 6. Supporting text */
-  --type-support-size: 10px;
+  /* 6. Supporting text — descriptions */
+  --type-support-size: 12px;
   --type-support-weight: 400;
   --type-support-color: var(--t3);
 
   /* 7. Action text */
-  --type-action-size: 10.5px;
+  --type-action-size: 12px;
   --type-action-weight: 600;
   --type-action-color: var(--g3);
 
   /* 8. Badge text */
-  --type-badge-size: 10px;
+  --type-badge-size: 11px;
   --type-badge-weight: 700;
   --type-badge-track: 0.04em;
 
   /* 9. Monospace */
-  --type-mono-size: 11px;
+  --type-mono-size: 12px;
   --type-mono-weight: 400;
   --type-mono-color: var(--t2);
 
   /* 10. Button text */
-  --type-button-size: 11px;
+  --type-button-size: 12px;
   --type-button-weight: 700;
 }
 
@@ -282,6 +282,12 @@ a {
   font-size: var(--type-secondary-size);
   font-weight: var(--type-secondary-weight);
   color: var(--type-secondary-color);
+}
+
+.text-secondary-muted {
+  font-size: var(--type-secondary-size);
+  font-weight: var(--type-secondary-weight);
+  color: var(--type-support-color);
 }
 
 .text-support {

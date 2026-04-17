@@ -7,7 +7,6 @@ import { KpiCard } from "@/features/portfolio/components/KpiCard";
 import { ExposureCategoryPanel } from "@/features/portfolio/components/ExposureCategoryPanel";
 import { RiskMetricsPanel } from "@/features/portfolio/components/RiskMetricsPanel";
 import { TradeHistoryPanel } from "@/features/portfolio/components/TradeHistoryPanel";
-import { PortfolioTopBar } from "@/features/portfolio/components/PortfolioTopBar";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/Button";
 
@@ -34,10 +33,7 @@ export default function PortfolioPage() {
 
 
   return (
-    <div className="min-h-screen bg-bg-0 flex flex-col">
-      {/* ── Top bar ── */}
-      <PortfolioTopBar kpis={kpis} loading={loading} />
-
+    <>
       {/* ── Breadcrumb ── */}
       <Breadcrumb
         items={[
@@ -48,10 +44,11 @@ export default function PortfolioPage() {
 
 
       {/* ── Page body ── */}
-      <main className="px-sp7 py-[12px] flex flex-col gap-sp4 bg-bg-0">
+      <main className="px-sp7 py-sp4 flex flex-col gap-sp4 bg-bg-0">
 
-        {/* KPI row — 5 equal columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+        {/* KPI row — 5 equal columns, scrollable on narrow screens */}
+        <div className="overflow-x-auto -mx-sp7 px-sp7">
+        <div className="grid grid-cols-5 gap-2 min-w-[640px]">
 
           {/* Balance */}
           <KpiCard
@@ -62,7 +59,7 @@ export default function PortfolioPage() {
             footer={
               <div className="flex gap-sp2">
                 <Button variant="accent" size="sm" className="flex-1">
-                  + Deposit
+                  Deposit
                 </Button>
                 <Button variant="muted" size="sm" className="flex-1">
                   Withdraw
@@ -110,6 +107,7 @@ export default function PortfolioPage() {
             tooltip="Maker rebates and referral bonuses earned in the last 30 days."
           />
         </div>
+        </div>
 
         {/* Row 2: Equity curve (wider) + Exposure by category */}
         <div className="grid gap-sp4 xl:grid-cols-[1.4fr_1fr]">
@@ -136,6 +134,6 @@ export default function PortfolioPage() {
           loading={loading}
         />
       </main>
-    </div>
+    </>
   );
 }

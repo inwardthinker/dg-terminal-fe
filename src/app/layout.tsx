@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { TopBar } from "@/components/layout/TopBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,8 +21,9 @@ type RootLayoutProps = Readonly<{
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>
-        <div className="mx-auto w-full max-w-[1280px] px-4 max-sm:px-0">
+      <body className="flex flex-col min-h-screen">
+        <div className="mx-auto w-full max-w-[1400px]">
+          <TopBar />
           {children}
         </div>
       </body>
