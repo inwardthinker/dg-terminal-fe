@@ -22,7 +22,7 @@ export function SummaryPanelContainer({ limit = 3 }: Props) {
     }
 
     if (loading) return <SummarySkeleton />;
-    if (error) return <SummaryError />;
+    if (error) return <SummaryError message={error} />;
 
     return (
         <SummaryPanel

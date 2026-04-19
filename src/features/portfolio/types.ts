@@ -64,6 +64,8 @@ export type TradeHistoryEntry = {
   id: string;
   /** Display date string, e.g. "Apr 7" */
   date: string;
+  /** ISO 8601 date string for filtering, e.g. "2026-04-07" */
+  isoDate: string;
   market: string;
   side: TradeSide;
   /** Entry price (0–1 probability) */

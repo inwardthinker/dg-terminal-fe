@@ -64,7 +64,7 @@ export function CategoryPill({ label, colorClass }: CategoryPillProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.02em] ${tone.borderClass} ${tone.textClass} ${tone.backgroundClass}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-bold tracking-[0.02em] ${tone.borderClass} ${tone.textClass} ${tone.backgroundClass}`}
     >
       {label}
     </span>

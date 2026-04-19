@@ -2,17 +2,20 @@ export type Position = {
   id: string;
   market: string;
   category: "Sports" | "Politics" | "Crypto" | "Macro" | "Other";
-  side: "YES" | "NO";
+  side: string;
   entryPrice: number;
   currentPrice: number;
   size: number;
   pnl: number;
   pnlPct: number;
+  priceStale?: boolean;
 };
 
 export type UsePositionsParams = {
   limit?: number
   sortBy?: "pnl" | "recent"
+  userAddress?: string
+  realtimeOnly?: boolean
 }
 
 export type UsePositionsResult = {

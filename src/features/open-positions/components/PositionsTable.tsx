@@ -59,8 +59,8 @@ export function PositionsTable({
                         : undefined
                 }
             >
-            <table className="w-full text-sm max-sm:text-[11px]">
-                <thead className="sticky top-0 z-10 border-b border-line-c bg-bg-1 text-support max-sm:text-[10px]">
+            <table className="w-full text-sm max-sm:text-[13px]">
+                <thead className="sticky top-0 z-10 border-b border-line-c bg-bg-1 text-support max-sm:text-[12px]">
                     <tr>
                         <th className="px-3 py-2 text-left pl-9 max-sm:pl-3">
                             <span className="inline-flex items-center gap-1">
@@ -152,7 +152,7 @@ export function PositionsTable({
                                         return (
                                             <table
                                                 key={virtualRow.key}
-                                                className="w-full table-fixed text-sm max-sm:text-[11px]"
+                                                className="w-full table-fixed text-sm max-sm:text-[13px]"
                                                 style={{
                                                     position: "absolute",
                                                     top: 0,
