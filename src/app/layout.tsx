@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { ModalRenderer } from "@/components/modals/ModalRenderer";
+import { Toaster } from "@/components/ui/Toaster";
 import { TopBar } from "@/components/layout/TopBar";
 
 const inter = Inter({
@@ -26,6 +28,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <div className="mx-auto w-full max-w-[1400px]">
           {children}
         </div>
+        <ModalRenderer />
+        <Toaster />
       </body>
     </html>
   );

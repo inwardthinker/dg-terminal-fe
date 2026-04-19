@@ -13,7 +13,10 @@ type PositionRowTableProps = {
     categoryPresentation?: Record<Position["category"], CategoryPresentation>;
     onOpen: (position: Position) => void;
     onClose: (position: Position) => void;
+    isSelected?: boolean;
+    onToggleSelect?: (position: Position, checked: boolean) => void;
     style?: CSSProperties;
+    isClosing?: boolean;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -37,7 +40,10 @@ export const PositionRowTable = React.memo(function PositionRowTable({
     categoryPresentation,
     onOpen,
     onClose,
+    isSelected = false,
+    onToggleSelect,
     style,
+    isClosing = false,
 }: PositionRowTableProps) {
     const categoryStyle = categoryPresentation?.[position.category] ?? {
         label: position.category,
@@ -61,8 +67,8 @@ export const PositionRowTable = React.memo(function PositionRowTable({
             className="cursor-pointer overflow-hidden border-b border-line-c align-middle text-support transition-colors hover:bg-bg-2 max-sm:text-[13px]"
             onClick={handleOpen}
             style={{
-                height: POSITION_TABLE_ROW_HEIGHT_PX,
-                maxHeight: POSITION_TABLE_ROW_HEIGHT_PX,
+                height: isClosing ? 0 : POSITION_TABLE_ROW_HEIGHT_PX,
+                maxHeight: isClosing ? 0 : POSITION_TABLE_ROW_HEIGHT_PX,
                 ...style,
             }}
         >
@@ -71,6 +77,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                 <div className="flex w-full min-w-0 items-center gap-3 text-secondary max-sm:max-w-[132px] max-sm:gap-1">
                     <input
                         type="checkbox"
+                        checked={isSelected}
                         aria-label={`Select ${position.market}`}
                         className="
                         h-[16px] w-[16px]
@@ -98,6 +105,9 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                         checked:before:content-['✓']
                         max-sm:hidden"
                         onClick={(e) => e.stopPropagation()}
+                        onChange={(event) =>
+                            onToggleSelect?.(position, event.target.checked)
+                        }
                     />
 
 

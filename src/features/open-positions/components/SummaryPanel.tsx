@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import {PositionRowSummary } from "./PositionRowSummary";
+import { PositionRowSummary } from "./PositionRowSummary";
 import type { Position } from "../types";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { DotSeparator } from "@/components/ui/DotSeparator";
@@ -58,7 +58,7 @@ const SUMMARY_COLUMNS = [
   {
     key: "action",
     label: "Action",
-    align: "left",
+    align: "right",
   },
 ]
 

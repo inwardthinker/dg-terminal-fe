@@ -4,7 +4,7 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PositionsTableContainer } from '@/features/open-positions/components/PositionTableContainer'
 import { mapKpisToCards } from '@/features/open-positions/utils/mapKpisToCards'
 import { KpiCard } from '@/features/portfolio/components/KpiCard'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 
 const kpis = {
@@ -36,7 +36,9 @@ const page = () => {
                     ))}
 
                 </div>
-                <PositionsTableContainer />
+                <Suspense fallback={null}>
+                    <PositionsTableContainer />
+                </Suspense>
             </div>
         </div>
     )
