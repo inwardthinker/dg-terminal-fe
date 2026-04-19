@@ -30,7 +30,7 @@ const buttonVariants = cva(
 
         // ✅ NEW: Withdraw button
         muted:
-          "text-t-3 " +
+          "text-t-3 text-secondary text-t-3! " +
           "border border-line-c " +
           "bg-transparent " +
           "hover:text-t-2 " +
@@ -45,7 +45,7 @@ const buttonVariants = cva(
       size: {
         xs: "h-[22px] px-2 text-[10px]",
         sm: "h-6 px-3 text-xs",
-        md: "h-8 px-4 py-2 text-sm",
+        md: "h-9 px-4 py-2 text-sm",
         lg: "h-12 px-6 text-base",
         icon: "h-10 w-10 text-sm",
       },

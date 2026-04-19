@@ -6,6 +6,7 @@ import { CategoryPill } from "./CategoryPill";
 import type { Position } from "../types";
 import { Button } from "@/components/ui/Button";
 import type { CategoryPresentation } from "../utils/categoryExposure";
+import { useModal } from "@/lib/modals/hooks/useModal";
 import {
   SUMMARY_GRID_COLUMNS,
   SUMMARY_GRID_COLUMNS_MOBILE,
@@ -31,18 +32,21 @@ function pnlTextClass(pnl: number) {
 function stopAndClose(
   event: MouseEvent<HTMLButtonElement>,
   position: Position,
-  onClose: (position: Position) => void,
+  openModal: ReturnType<typeof useModal>["openModal"],
 ) {
   event.stopPropagation();
-  onClose(position);
+  openModal("close", {
+    id: position.id,
+    position,
+  });
 }
 
 export const PositionRowSummary = React.memo(function PositionRowSummary({
   position,
   categoryPresentation,
   onOpen,
-  onClose,
 }: PositionRowSummaryProps) {
+  const { openModal } = useModal();
   const categoryStyle = categoryPresentation?.[position.category] ?? {
     label: position.category,
     colorClass: "bg-t-3",
@@ -84,7 +88,7 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
       <Button
         variant="destructive"
         size="sm"
-        onClick={(event) => stopAndClose(event, position, onClose)}
+        onClick={(event) => stopAndClose(event, position, openModal)}
       >
         Close
       </Button>

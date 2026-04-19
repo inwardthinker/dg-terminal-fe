@@ -20,6 +20,9 @@ type Props = {
     categoryPresentation: Record<Position["category"], CategoryPresentation>;
     onOpenPosition: (position: Position) => void;
     onClosePosition: (position: Position) => void;
+    selectedPositionIds?: Set<string>;
+    onTogglePositionSelect?: (position: Position, checked: boolean) => void;
+    closingPositionIds?: Set<string>;
 };
 
 export function PositionsTable({
@@ -27,6 +30,9 @@ export function PositionsTable({
     categoryPresentation,
     onOpenPosition,
     onClosePosition,
+    selectedPositionIds,
+    onTogglePositionSelect,
+    closingPositionIds,
 }: Props) {
     const shouldVirtualize = positions.length > VIRTUALIZATION_THRESHOLD;
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -160,6 +166,9 @@ export function PositionsTable({
                                                         categoryPresentation={categoryPresentation}
                                                         onOpen={onOpenPosition}
                                                         onClose={onClosePosition}
+                                                        isSelected={selectedPositionIds?.has(position.id)}
+                                                        onToggleSelect={onTogglePositionSelect}
+                                                        isClosing={closingPositionIds?.has(position.id)}
                                                     />
                                                 </tbody>
                                             </table>
@@ -176,6 +185,9 @@ export function PositionsTable({
                                 categoryPresentation={categoryPresentation}
                                 onOpen={onOpenPosition}
                                 onClose={onClosePosition}
+                                isSelected={selectedPositionIds?.has(position.id)}
+                                onToggleSelect={onTogglePositionSelect}
+                                isClosing={closingPositionIds?.has(position.id)}
                             />
                         ))
                     )}

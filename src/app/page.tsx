@@ -1,7 +1,12 @@
+"use client"
+
 import { SummaryPanelContainer } from "@/features/open-positions";
 import { EquityCurvePanel } from "@/features/equity-curve/components/EquityCurvePanel";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter()
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-0 px-sp8x py-sp8y">
       <section className="flex flex-col gap-sp6 rounded-r7 border border-line-c bg-bg-1 p-sp5">
@@ -28,6 +33,14 @@ export default function HomePage() {
 
         <SummaryPanelContainer />
         <EquityCurvePanel />
+
+        <button
+          onClick={() => router.push("/?modal=close&id=456")}
+          className="ml-3 rounded-lg border border-zinc-300 px-4 py-2 text-sm"
+        >
+          Close position #456
+        </button>
+
       </section>
     </main>
   );
