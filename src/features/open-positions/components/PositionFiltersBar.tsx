@@ -95,11 +95,11 @@ export function PositionsFiltersBar({
                 <div className="shrink-0">
                 <div className="relative inline-flex h-8 items-center justify-center rounded border border-line-c bg-bg-2 px-2 text-xs text-secondary">
                     <span className="inline-flex items-center justify-center leading-none sm:hidden">
-                        <ArrowDownWideNarrow size={16} />
+                        <ArrowDownWideNarrow size={16} aria-hidden="true" />
                     </span>
                     <span className="hidden sm:inline-flex sm:items-center sm:gap-1">
                         {sortLabelByValue[sortBy as "pnl" | "size" | "entry" | "current"]}
-                        <ArrowDownWideNarrow size={16} />
+                        <ArrowDownWideNarrow size={16} aria-hidden="true" />
                     </span>
                     <select
                         aria-label="Sort positions"
