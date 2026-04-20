@@ -1,6 +1,6 @@
 import { ApiKpis, KpiCardData } from "../types";
 
-export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
+export function mapKpisToCards(kpis: ApiKpis, venueUnavailable = false): KpiCardData[] {
     return [
         {
             id: "totalOpen",
@@ -17,9 +17,10 @@ export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
         {
             id: "unrealizedPnl",
             label: "Total Unrealized P&L",
-            value: `${kpis.unrealizedPnl >= 0 ? "+" : ""}$${kpis.unrealizedPnl}`,
-            valueVariant: kpis.unrealizedPnl >= 0 ? "positive" : "negative",
-            tooltip: "Unrealized profit or loss",
+            value: venueUnavailable ? "?" : `${kpis.unrealizedPnl >= 0 ? "+" : ""}$${kpis.unrealizedPnl}`,
+            valueVariant: venueUnavailable ? "default" : (kpis.unrealizedPnl >= 0 ? "positive" : "negative"),
+            tooltip: venueUnavailable ? "Prices are stale while venue API is unavailable" : "Unrealized profit or loss",
+            dimmed: venueUnavailable,
         },
         {
             id: "largestPosition",

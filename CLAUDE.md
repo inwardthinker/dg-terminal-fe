@@ -277,3 +277,74 @@ The `PORTFOLIO_ENDPOINTS.summary` path and the `PortfolioData` type mirror the e
 - `EquityCurvePanel` — self-contained, manages own data via `useEquityCurve`
 - `SummaryPanelContainer` — self-contained, manages own data via `usePositions`
 - `InfoTooltip` — shared UI component used in KpiTile and RiskMetricsPanel
+
+---
+
+## Recent Portfolio Refactor + UI States (Apr 2026)
+
+### Structural updates
+
+- Portfolio feature moved to a modular layout under `src/features/portfolio/components/`:
+  - `cards/` (`KpiCard`)
+  - `containers/` (`PortfolioContainer`)
+  - `hooks/` (`usePortfolio`)
+  - `layout/` (`PortfolioTopBar`)
+  - `panels/` (`ExposureCategoryPanel`, `RiskMetricsPanel`, `TradeHistoryPanel`)
+  - `sections/` (`KpiSection`, `ExposureSection`, `RiskSection`, `TradeHistorySection`)
+  - `ui/` (`EmptyState`)
+  - `api/` (`getPortfolio`)
+  - `utils/` (`formatters`)
+- Legacy portfolio files were removed/replaced:
+  - removed `src/features/portfolio/hooks.ts`
+  - removed `src/features/portfolio/service.ts`
+- `PortfolioView` now orchestrates section composition and scenario-specific layout switching.
+
+### Dashboard behavior states
+
+The portfolio dashboard now supports explicit UI states:
+
+1. **New user, no trades ever**
+   - KPI row visible (Balance populated, other tiles placeholder-style)
+   - Shows full-width Open Positions empty CTA block
+   - Trade history shown as empty state
+   - Exposure + Risk row hidden in this state
+
+2. **Has history, no open positions**
+   - Equity curve, Exposure by category, Risk metrics, Trade history remain populated
+   - Open Positions shows empty CTA only
+   - Empty Open Positions height now matches neighboring panel height (no fixed-height mismatch)
+
+3. **Open positions, no settled trades**
+   - Open Positions and other non-history modules populated
+   - Trade history panel shows empty state only
+
+### Empty-state UI conventions
+
+- Equity curve, Exposure by category, Risk metrics, and Trade history now own their own empty rendering.
+- Empty cards use dimmed styling:
+  - softer background (`bg-bg-1/35`)
+  - muted header tone
+  - centered empty-message body
+
+### Open Positions empty-state behavior
+
+- `SummaryPanelContainer` accepts `forceEmptyState` to bypass socket/error/loading fallbacks for controlled portfolio scenarios.
+- `RiskSection` now keys Open Positions emptiness from `portfolio.kpis.openCount === 0` (instead of trade-history checks).
+- Empty Open Positions CTA is responsive:
+  - **Desktop:** prior `Go to terminal` style retained
+  - **Mobile:** `+ Deposit funds` primary CTA + secondary market-discovery link
+
+### Loading skeletons
+
+- Initial loading state includes:
+  - pulsing grey skeleton KPI tiles (5 cards)
+  - existing equity-curve grey rectangle skeleton
+  - trade-history skeleton with 5 rows
+
+### Notes for local UI previews
+
+- `PortfolioContainer` exposes `PREVIEW_STATE` for scenario-driven rendering:
+  - `"live"`
+  - `"newUserNoTrades"`
+  - `"hasHistoryNoOpenPositions"`
+  - `"openPositionsNoSettledTrades"`

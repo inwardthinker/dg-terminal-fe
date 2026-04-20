@@ -5,16 +5,21 @@ import type { PortfolioData } from "@/features/portfolio/types";
 type ExposureSectionProps = {
     portfolio: PortfolioData | null;
     loading: boolean;
+    venueUnavailable?: boolean;
 };
 
-export function ExposureSection({ portfolio, loading }: ExposureSectionProps) {
+export function ExposureSection({
+    portfolio,
+    loading,
+    venueUnavailable = false,
+}: ExposureSectionProps) {
     const hasHistory = (portfolio?.tradeHistory.length ?? 0) > 0;
     const exposure = portfolio?.exposure ?? [];
 
     return (
         <div className="grid min-w-0 gap-sp4 lg:grid-cols-[1.4fr_1fr]">
             {loading || hasHistory ? (
-                <EquityCurvePanel />
+                <EquityCurvePanel venueUnavailable={venueUnavailable} />
             ) : (
                 <div className="bg-bg-1/35 border border-line-c rounded-r7 p-sp5 flex flex-col gap-sp4">
                     <div className="text-primary-muted leading-none">Equity curve</div>

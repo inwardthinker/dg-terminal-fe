@@ -20,6 +20,7 @@ type SummaryPanelProps = {
   totalCount: number;
   onOpenPosition: (position: Position) => void;
   onClosePosition: (position: Position) => void;
+  venueUnavailable?: boolean;
 };
 
 const OPEN_POSITIONS_URL = "/portfolio/open-positions";
@@ -70,6 +71,7 @@ export function SummaryPanel({
   totalCount,
   onOpenPosition,
   onClosePosition,
+  venueUnavailable = false,
 }: SummaryPanelProps) {
   const isEmpty = totalCount === 0;
 
@@ -88,7 +90,11 @@ export function SummaryPanel({
               <h2 className="">Open Positions </h2>
               <DotSeparator size={4} />
               <h2 className="">{totalCount}</h2>
-              <DotSeparator size={8} color="bg-pos" className="animate-pulse" />
+              <DotSeparator
+                size={8}
+                color={venueUnavailable ? "bg-neg" : "bg-pos"}
+                className={venueUnavailable ? undefined : "animate-pulse"}
+              />
               <InfoTooltip text="Total number of open positions in the portfolio" />
             </>
           )}
@@ -157,6 +163,7 @@ export function SummaryPanel({
               categoryPresentation={categoryPresentation}
               onOpen={onOpenPosition}
               onClose={onClosePosition}
+              showStalePnl={venueUnavailable || Boolean(position.priceStale)}
             />
           ))}
           {remaining > 0 && (

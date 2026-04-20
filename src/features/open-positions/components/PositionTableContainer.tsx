@@ -13,12 +13,14 @@ import { buildCategoryData } from "../utils/categoryExposure";
 import { DotSeparator } from "@/components/ui/DotSeparator";
 import { useModal } from "@/lib/modals/hooks/useModal";
 import { Button } from "@/components/ui/Button";
+import { VenueUnavailableBanner } from "@/components/ui/VenueUnavailableBanner";
 
 type Category = Position["category"] | "All"
 
 export function PositionsTableContainer() {
     const { openModal } = useModal();
     const { positions, loading, error } = usePositions({ realtimeOnly: true });
+    const venueUnavailable = Boolean(error);
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All")
     const [selectedSide, setSelectedSide] = useState<"All" | "YES" | "NO">("All")
@@ -132,10 +134,16 @@ export function PositionsTableContainer() {
     }
 
     if (loading) return <PositionsTableSkeleton />;
-    if (error) return <SummaryError message={error} />;
+    if (error && positions.length === 0) return <SummaryError message={error} />;
 
     return (
         <div className="w-full space-y-4">
+            {venueUnavailable && <VenueUnavailableBanner />}
+            {venueUnavailable && (
+                <div className="text-support text-xs border border-line-c rounded-r4 bg-bg-1/40 px-3 py-2">
+                    P&amp;L values are stale. Close actions remain available.
+                </div>
+            )}
             <PositionsFiltersBar
                 categories={categoryData.counts}
                 totalCount={positions.length}
@@ -178,6 +186,7 @@ export function PositionsTableContainer() {
                 selectedPositionIds={selectedPositionIds}
                 onTogglePositionSelect={handleTogglePositionSelect}
                 closingPositionIds={closingPositionIds}
+                venueUnavailable={venueUnavailable}
             />
 
             <div className="text-support text-t-3!/20! items-center hidden max-sm:flex my-4 justify-center">

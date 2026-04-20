@@ -13,6 +13,7 @@ import {
 type KpiSectionProps = {
   kpis?: PortfolioKpis;
   loading?: boolean;
+  venueUnavailable?: boolean;
 };
 
 function KpiSkeletonTile() {
@@ -25,7 +26,7 @@ function KpiSkeletonTile() {
   );
 }
 
-export function KpiSection({ kpis, loading }: KpiSectionProps) {
+export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSectionProps) {
   if (loading) {
     return (
       <div className="grid max-md:grid-cols-6 gap-2 md:grid-cols-3 lg:grid-cols-5">
@@ -96,11 +97,11 @@ export function KpiSection({ kpis, loading }: KpiSectionProps) {
       <div className="h-full max-md:order-2 max-md:col-span-3 md:col-span-1">
         <KpiCard
           label="Unrealized P&L"
-          value={formatKpiFallback(kpis?.unrealizedPnl, formatSignedCurrency)}
-          valueVariant={getKpiVariant(kpis?.unrealizedPnl)}
-          sub={formatKpiFallback(kpis?.unrealizedPct, formatSignedPercent)}
-          subVariant={getKpiVariant(kpis?.unrealizedPct)}
-          dimmed={isEmptyState}
+          value={venueUnavailable ? "?" : formatKpiFallback(kpis?.unrealizedPnl, formatSignedCurrency)}
+          valueVariant={venueUnavailable ? "default" : getKpiVariant(kpis?.unrealizedPnl)}
+          sub={venueUnavailable ? "Prices are stale" : formatKpiFallback(kpis?.unrealizedPct, formatSignedPercent)}
+          subVariant={venueUnavailable ? "default" : getKpiVariant(kpis?.unrealizedPct)}
+          dimmed={isEmptyState || venueUnavailable}
           tooltip="Mark-to-market gain or loss on open positions at current mid price."
         />
       </div>

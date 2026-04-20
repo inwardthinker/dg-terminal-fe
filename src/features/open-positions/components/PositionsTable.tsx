@@ -23,6 +23,7 @@ type Props = {
     selectedPositionIds?: Set<string>;
     onTogglePositionSelect?: (position: Position, checked: boolean) => void;
     closingPositionIds?: Set<string>;
+    venueUnavailable?: boolean;
 };
 
 export function PositionsTable({
@@ -33,6 +34,7 @@ export function PositionsTable({
     selectedPositionIds,
     onTogglePositionSelect,
     closingPositionIds,
+    venueUnavailable = false,
 }: Props) {
     const shouldVirtualize = positions.length > VIRTUALIZATION_THRESHOLD;
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -169,6 +171,7 @@ export function PositionsTable({
                                                         isSelected={selectedPositionIds?.has(position.id)}
                                                         onToggleSelect={onTogglePositionSelect}
                                                         isClosing={closingPositionIds?.has(position.id)}
+                                                        showStalePnl={venueUnavailable || Boolean(position.priceStale)}
                                                     />
                                                 </tbody>
                                             </table>
@@ -188,6 +191,7 @@ export function PositionsTable({
                                 isSelected={selectedPositionIds?.has(position.id)}
                                 onToggleSelect={onTogglePositionSelect}
                                 isClosing={closingPositionIds?.has(position.id)}
+                                showStalePnl={venueUnavailable || Boolean(position.priceStale)}
                             />
                         ))
                     )}

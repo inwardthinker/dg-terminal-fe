@@ -42,4 +42,5 @@ export type KpiCardData = {
   tooltip?: string
   valueVariant?: Variant
   meta?: string
+  dimmed?: boolean
 }

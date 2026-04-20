@@ -23,7 +23,7 @@ export function Toaster() {
     <section
       aria-live="polite"
       aria-label="Notifications"
-      className="pointer-events-none fixed inset-x-3 top-3 z-120 sm:inset-x-auto sm:right-4 sm:top-4 sm:w-[380px]"
+      className="pointer-events-none fixed inset-x-3 top-3 z-120 sm:inset-x-auto sm:right-4 sm:top-auto sm:bottom-4 sm:w-[380px]"
     >
       <div className="pointer-events-auto flex w-full flex-col gap-2">
         {toasts.map((toast) => (

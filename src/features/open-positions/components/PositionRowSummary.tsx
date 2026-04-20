@@ -17,6 +17,7 @@ type PositionRowSummaryProps = {
   categoryPresentation?: Record<Position["category"], CategoryPresentation>;
   onOpen: (position: Position) => void;
   onClose: (position: Position) => void;
+  showStalePnl?: boolean;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -51,6 +52,7 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
   position,
   categoryPresentation,
   onOpen,
+  showStalePnl = false,
 }: PositionRowSummaryProps) {
   const { openModal } = useModal();
   const categoryStyle = categoryPresentation?.[position.category] ?? {
@@ -94,15 +96,26 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
           {currencyFormatter.format(position.size)}
         </span>
         <span
-          className={`inline-flex flex-col items-end leading-tight transition-colors duration-200 py-2 ${pnlTextClass(position.pnl)}`}
+          className={`inline-flex flex-col items-end leading-tight transition-colors duration-200 py-2 ${
+            showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnl)
+          }`}
           aria-live="polite"
           aria-atomic="true"
         >
-          <span className="whitespace-nowrap">{position.pnl >= 0 ? "+" : ""}{currencyFormatter.format(position.pnl)}</span>
-          <span className="text-[0.82em] max-sm:text-[0.78em]">
-            {position.pnlPct >= 0 ? "+" : ""}
-            {position.pnlPct.toFixed(1)}%
-          </span>
+          {showStalePnl ? (
+            <>
+              <span className="whitespace-nowrap">?</span>
+              <span className="text-[0.82em] max-sm:text-[0.78em]">Stale</span>
+            </>
+          ) : (
+            <>
+              <span className="whitespace-nowrap">{position.pnl >= 0 ? "+" : ""}{currencyFormatter.format(position.pnl)}</span>
+              <span className="text-[0.82em] max-sm:text-[0.78em]">
+                {position.pnlPct >= 0 ? "+" : ""}
+                {position.pnlPct.toFixed(1)}%
+              </span>
+            </>
+          )}
         </span>
       </div>
       <Button

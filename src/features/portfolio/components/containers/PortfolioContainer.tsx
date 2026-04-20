@@ -3,9 +3,7 @@
 import { usePortfolio } from "@/features/portfolio/components/hooks/usePortfolio";
 import { PortfolioView } from "@/features/portfolio/components/PortfolioView";
 import type { PortfolioData } from "@/features/portfolio/types";
-
-type PortfolioPreviewState = "live" | "newUserNoTrades" | "hasHistoryNoOpenPositions";
-const PREVIEW_STATE: PortfolioPreviewState = "newUserNoTrades";
+import { PORTFOLIO_PREVIEW_STATE } from "@/features/portfolio/constants/previewState";
 
 type PortfolioContainerProps = {
     userWalletAddress: string;
@@ -15,11 +13,12 @@ export default function PortfolioContainer({
     userWalletAddress,
 }: PortfolioContainerProps) {
     const { portfolio, loading } = usePortfolio(userWalletAddress);
+    const venueUnavailable = PORTFOLIO_PREVIEW_STATE === "venueApiUnavailable";
 
     const effectivePortfolio: PortfolioData | null = (() => {
         if (!portfolio) return portfolio;
 
-        if (PREVIEW_STATE === "newUserNoTrades") {
+        if (PORTFOLIO_PREVIEW_STATE === "newUserNoTrades") {
             return {
                 ...portfolio,
                 kpis: {
@@ -32,7 +31,7 @@ export default function PortfolioContainer({
             };
         }
 
-        if (PREVIEW_STATE === "hasHistoryNoOpenPositions") {
+        if (PORTFOLIO_PREVIEW_STATE === "hasHistoryNoOpenPositions") {
             return {
                 ...portfolio,
                 kpis: {
@@ -46,8 +45,25 @@ export default function PortfolioContainer({
             };
         }
 
+        if (PORTFOLIO_PREVIEW_STATE === "venueApiUnavailable") {
+            return {
+                ...portfolio,
+                kpis: {
+                    ...portfolio.kpis,
+                    unrealizedPnl: undefined,
+                    unrealizedPct: undefined,
+                },
+            };
+        }
+
         return portfolio;
     })();
 
-    return <PortfolioView portfolio={effectivePortfolio} loading={loading} />;
+    return (
+        <PortfolioView
+            portfolio={effectivePortfolio}
+            loading={loading}
+            venueUnavailable={venueUnavailable}
+        />
+    );
 }
