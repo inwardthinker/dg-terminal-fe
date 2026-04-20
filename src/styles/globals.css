@@ -95,12 +95,12 @@ ROOT DESIGN TOKENS
   --type-label-color: var(--t3);
 
   /* 4. Primary data — heading-level values */
-  --type-primary-size: 22px;
+  --type-primary-size: 18px;
   --type-primary-weight: 700;
   --type-primary-color: var(--t1);
 
   /* 5. Secondary data — sub-headings */
-  --type-secondary-size: 13px;
+  --type-secondary-size: 14px;
   --type-secondary-weight: 600;
   --type-secondary-color: var(--t1);
 
@@ -284,6 +284,12 @@ select {
   font-size: var(--type-primary-size);
   font-weight: var(--type-primary-weight);
   color: var(--type-primary-color);
+}
+
+.text-primary-muted {
+  font-size: var(--type-primary-size);
+  font-weight: var(--type-primary-weight);
+  color: var(--type-support-color);
 }
 
 .text-secondary {

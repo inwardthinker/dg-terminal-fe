@@ -89,7 +89,6 @@ export function EquityCurvePanel() {
 
             {/* Chart */}
             <div>
-
                 <div ref={ref} className="h-[180px]">
                     {loading && (
                         <div className="w-full h-full bg-bg-2 rounded-r4 animate-pulse" />

@@ -1,7 +1,7 @@
-import type { PortfolioKpis } from "../types";
+import type { PortfolioKpis } from "../../types";
 
 type PortfolioTopBarProps = {
-  kpis: PortfolioKpis | undefined;
+  kpis?: PortfolioKpis;
   loading?: boolean;
   userInitials?: string;
 };
@@ -20,7 +20,10 @@ export function PortfolioTopBar({
   loading,
   userInitials = "DC",
 }: PortfolioTopBarProps) {
-  const ready = !loading && kpis != null;
+  const balance = !loading ? kpis?.balance : undefined;
+  const todayPnl = !loading ? kpis?.todayPnl : undefined;
+  const openCount = !loading ? kpis?.openCount : undefined;
+  const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
 
   return (
     <header className="bg-bg-1 border-b border-line-c h-12 flex items-center px-sp7 flex-shrink-0">
@@ -37,25 +40,24 @@ export function PortfolioTopBar({
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Balance</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {ready ? fmtCurrency(kpis.balance) : "--"}
+              {balance !== undefined ? fmtCurrency(balance) : "--"}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Today P&amp;L</span>
             <span
-              className={`text-[11.5px] font-[600] leading-[1.2] ${
-                ready && kpis.todayPnl < 0 ? "text-neg" : "text-pos"
-              }`}
+              className={`text-[11.5px] font-[600] leading-[1.2] ${todayPnl !== undefined && todayPnl < 0 ? "text-neg" : "text-pos"
+                }`}
             >
-              {ready ? fmtSigned(kpis.todayPnl) : "--"}
+              {todayPnl !== undefined ? fmtSigned(todayPnl) : "--"}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Open</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {ready ? kpis.openCount : "--"}
+              {openCount !== undefined ? openCount : "--"}
             </span>
           </div>
         </div>
@@ -99,11 +101,10 @@ export function PortfolioTopBar({
         <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px]">
           <span className="text-[9px] text-t-3">Portfolio</span>
           <span
-            className={`font-[700] text-[11px] ${
-              ready && kpis.portfolioPct < 0 ? "text-neg" : "text-pos"
-            }`}
+            className={`font-[700] text-[11px] ${portfolioPct !== undefined && portfolioPct < 0 ? "text-neg" : "text-pos"
+              }`}
           >
-            {ready ? fmtPct(kpis.portfolioPct) : "--"}
+            {portfolioPct !== undefined ? fmtPct(portfolioPct) : "--"}
           </span>
         </div>
 
