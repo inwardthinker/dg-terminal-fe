@@ -3,7 +3,8 @@
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PositionsTableContainer } from '@/features/open-positions/components/PositionTableContainer'
 import { mapKpisToCards } from '@/features/open-positions/utils/mapKpisToCards'
-import { KpiCard } from '@/features/portfolio/components/KpiCard'
+import { KpiCard } from '@/features/portfolio/components/cards/KpiCard'
+import { isVenueApiUnavailablePreview } from '@/features/portfolio/constants/previewState'
 import React, { Suspense } from 'react'
 
 
@@ -17,7 +18,7 @@ const kpis = {
 
 const page = () => {
 
-    const cards = kpis ? mapKpisToCards(kpis) : []
+    const cards = kpis ? mapKpisToCards(kpis, isVenueApiUnavailablePreview) : []
 
     return (
         <div className="w-full space-y-4">

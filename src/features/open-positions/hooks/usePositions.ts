@@ -207,7 +207,11 @@ export function usePositions({
 
     if (isLiveSocketMode) {
       if (realtimeOnly && !resolvedAddress) {
-        setError("Live positions socket requires a valid wallet address");
+        setPositionsState(
+          mockPositions.map((position) => ({ ...position, priceStale: true }))
+        );
+        setLoading(false);
+        setError("Venue API unavailable");
       }
       return;
     }

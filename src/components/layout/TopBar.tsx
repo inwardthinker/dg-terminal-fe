@@ -1,6 +1,6 @@
 "use client";
 
-import { usePortfolio } from "@/features/portfolio/hooks";
+import { usePortfolio } from "@/features/portfolio/components/hooks/usePortfolio";
 
 const fmtCurrency = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmtSigned = (n: number) =>
@@ -14,7 +14,10 @@ type TopBarProps = {
 export function TopBar({ userInitials = "DC" }: TopBarProps) {
   const { portfolio, loading } = usePortfolio();
   const kpis = portfolio?.kpis;
-  const ready = !loading && kpis != null;
+  const balance = !loading ? kpis?.balance : undefined;
+  const todayPnl = !loading ? kpis?.todayPnl : undefined;
+  const openCount = !loading ? kpis?.openCount : undefined;
+  const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
 
   return (
     <header className="w-full shrink-0 border-b border-line-c bg-bg-0">
@@ -32,24 +35,24 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             <div className="flex flex-col">
               <span className="text-label">Balance</span>
               <span className="text-secondary leading-[1.2]">
-                {ready ? fmtCurrency(kpis.balance) : "--"}
+                {balance !== undefined ? fmtCurrency(balance) : "--"}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-label">Today P&amp;L</span>
               <span
-                className={`text-secondary leading-[1.2] ${ready && kpis.todayPnl < 0 ? "text-neg" : "text-pos"
+                className={`text-secondary leading-[1.2] ${todayPnl !== undefined && todayPnl < 0 ? "text-neg" : "text-pos"
                   }`}
               >
-                {ready ? fmtSigned(kpis.todayPnl) : "--"}
+                {todayPnl !== undefined ? fmtSigned(todayPnl) : "--"}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-label">Open</span>
               <span className="text-secondary leading-[1.2]">
-                {ready ? kpis.openCount : "--"}
+                {openCount !== undefined ? openCount : "--"}
               </span>
             </div>
           </div>
@@ -92,10 +95,10 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
           <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px]">
             <span className="text-label">Portfolio</span>
             <span
-              className={`text-secondary ${ready && kpis.portfolioPct < 0 ? "text-neg" : "text-pos"
+              className={`text-secondary ${portfolioPct !== undefined && portfolioPct < 0 ? "text-neg" : "text-pos"
                 }`}
             >
-              {ready ? fmtPct(kpis.portfolioPct) : "--"}
+              {portfolioPct !== undefined ? fmtPct(portfolioPct) : "--"}
             </span>
           </div>
 

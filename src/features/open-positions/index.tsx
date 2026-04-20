@@ -8,10 +8,19 @@ import type { Position } from "@/features/open-positions/types";
 
 type Props = {
     limit?: number;
+    forceEmptyState?: boolean;
+    venueUnavailableOverride?: boolean;
 };
 
-export function SummaryPanelContainer({ limit = 3 }: Props) {
-    const { positions, totalCount, loading, error } = usePositions({ limit });
+export function SummaryPanelContainer({
+    limit = 3,
+    forceEmptyState = false,
+    venueUnavailableOverride = false,
+}: Props) {
+    const { positions, totalCount, loading, error } = usePositions(
+        forceEmptyState ? { limit: 0, userAddress: "" } : { limit }
+    );
+    const venueUnavailable = venueUnavailableOverride || Boolean(error);
 
     function handleOpen(position: Position) {
         console.info("M5 open trigger", position.id);
@@ -21,15 +30,16 @@ export function SummaryPanelContainer({ limit = 3 }: Props) {
         console.info("M1 close trigger", position.id);
     }
 
-    if (loading) return <SummarySkeleton />;
-    if (error) return <SummaryError message={error} />;
+    if (!forceEmptyState && loading) return <SummarySkeleton />;
+    if (!forceEmptyState && error && positions.length === 0) return <SummaryError message={error} />;
 
     return (
         <SummaryPanel
-            positions={positions}
-            totalCount={totalCount}
+            positions={forceEmptyState ? [] : positions}
+            totalCount={forceEmptyState ? 0 : totalCount}
             onOpenPosition={handleOpen}
             onClosePosition={handleClose}
+            venueUnavailable={venueUnavailable}
         />
     );
 }

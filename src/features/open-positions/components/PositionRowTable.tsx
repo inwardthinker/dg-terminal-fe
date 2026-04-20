@@ -17,6 +17,7 @@ type PositionRowTableProps = {
     onToggleSelect?: (position: Position, checked: boolean) => void;
     style?: CSSProperties;
     isClosing?: boolean;
+    showStalePnl?: boolean;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -44,6 +45,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
     onToggleSelect,
     style,
     isClosing = false,
+    showStalePnl = false,
 }: PositionRowTableProps) {
     const categoryStyle = categoryPresentation?.[position.category] ?? {
         label: position.category,
@@ -167,24 +169,32 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
             {/* P&L */}
             <td
-                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${pnlTextClass(
-                    position.pnl
-                )}`}
+                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${
+                    showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnl)
+                }`}
                 aria-live="polite"
                 aria-atomic="true"
             >
-                {position.pnl >= 0 ? "+" : ""}
-                {currencyFormatter.format(position.pnl)}
+                {showStalePnl ? "?" : (
+                    <>
+                        {position.pnl >= 0 ? "+" : ""}
+                        {currencyFormatter.format(position.pnl)}
+                    </>
+                )}
             </td>
 
             {/* P&L % */}
             <td
-                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${pnlTextClass(
-                    position.pnlPct
-                )} max-sm:hidden`}
+                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${
+                    showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnlPct)
+                } max-sm:hidden`}
             >
-                {position.pnlPct >= 0 ? "+" : ""}
-                {position.pnlPct.toFixed(2)}%
+                {showStalePnl ? "Stale" : (
+                    <>
+                        {position.pnlPct >= 0 ? "+" : ""}
+                        {position.pnlPct.toFixed(2)}%
+                    </>
+                )}
             </td>
 
             {/* Action */}
