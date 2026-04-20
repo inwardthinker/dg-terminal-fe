@@ -49,7 +49,7 @@ export function KpiCard({
   return (
     <div
       className={clsx(
-        "relative rounded-r6 px-sp5 py-sp4 flex flex-col justify-between",
+        "relative h-full rounded-r6 px-sp5 py-sp4 flex flex-col justify-between",
         "bg-linear-to-b transition-transform from-[#1a1914] to-[#14130f]",
         "border border-[rgba(255,255,255,0.04)]",
         dimmed && "opacity-[0.35]"
