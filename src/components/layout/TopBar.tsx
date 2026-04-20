@@ -17,8 +17,8 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
   const ready = !loading && kpis != null;
 
   return (
-    <header className="bg-bg-0 border-b border-line-c h-16 flex-shrink-0 w-full">
-      <div className="mx-auto w-full max-w-[1400px] h-full flex items-center px-sp5 sm:px-sp7 gap-sp4">
+    <header className="w-full flex-shrink-0 border-b border-line-c bg-bg-0">
+      <div className="mx-auto flex h-[52px] w-full max-w-[1400px] items-center gap-sp4 px-sp5 sm:px-sp7 md:h-16">
       {/* ── Left: brand + quick stats ── */}
       <div className="flex items-center gap-sp5 md:gap-sp7 flex-shrink-0">
         {/* Brand */}
@@ -56,8 +56,8 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
         </div>
       </div>
 
-      {/* ── Centre: search ── */}
-      <div className="flex-1 hidden sm:flex justify-center px-sp4 md:px-[20px]">
+      {/* ── Centre: search (hidden below md — mobile uses FAB + sheet) ── */}
+      <div className="hidden flex-1 justify-center px-sp4 md:flex md:px-[20px]">
         <div className="bg-bg-2 border border-[rgba(255,255,255,0.1)] rounded-r5 py-[6px] px-[10px] flex items-center gap-[7px] w-full max-w-[300px] cursor-text">
           <svg
             width="12"
@@ -81,15 +81,18 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
         </div>
       </div>
 
-      {/* ── Right: actions ── */}
-      <div className="flex items-center gap-sp3 sm:gap-sp4 flex-shrink-0 ml-auto">
-        {/* Deposit */}
-        <button className="px-[11px] py-[6px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-button text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
+      {/* ── Right: actions (mobile: pill + avatar only) ── */}
+      <div className="ml-auto flex flex-shrink-0 items-center gap-sp3 sm:gap-sp4">
+        {/* Deposit — hidden on narrow mobile */}
+        <button
+          type="button"
+          className="hidden cursor-pointer whitespace-nowrap rounded-r4 border border-line-g bg-[rgba(205,189,112,0.15)] px-[11px] py-[6px] text-button text-g-3 transition-colors hover:bg-[rgba(205,189,112,0.22)] md:inline-flex"
+        >
           <span className="hidden xs:inline">+ </span>Deposit
         </button>
 
-        {/* Portfolio pill */}
-        <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px] cursor-pointer">
+        {/* Portfolio pill — always visible */}
+        <div className="flex cursor-pointer items-center gap-[6px] rounded-r9 border border-line-g px-[11px] py-[5px] text-[10.5px]">
           <span className="text-label">Portfolio</span>
           <span
             className={`text-secondary ${

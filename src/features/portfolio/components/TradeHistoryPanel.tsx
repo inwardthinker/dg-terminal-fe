@@ -81,7 +81,6 @@ function exportCsv(trades: TradeHistoryEntry[]) {
 
 export function TradeHistoryPanel({
   trades,
-  total: _total,
   loading,
 }: TradeHistoryPanelProps) {
   const [period, setPeriod] = useState<TradeHistoryPeriod>("30d");
