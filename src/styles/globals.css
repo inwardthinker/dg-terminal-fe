@@ -248,6 +248,14 @@ a {
   text-decoration: none;
 }
 
+button,
+input[type="checkbox"],
+input[type="radio"],
+select {
+  min-width: 32px;
+  min-height: 32px;
+}
+
 /* =========================
    TYPOGRAPHY UTILITIES
 ========================= */
@@ -330,7 +338,7 @@ a {
 .close-position-slider {
   appearance: none;
   -webkit-appearance: none;
-  height: 14px;
+  height: 32px;
 }
 
 .close-position-slider::-webkit-slider-runnable-track {

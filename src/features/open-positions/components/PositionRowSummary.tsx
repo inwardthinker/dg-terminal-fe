@@ -59,13 +59,25 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
   };
 
   const handleOpen = () => onOpen(position)
+  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      handleOpen()
+    }
+  }
 
   const gridClass =
     `grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary transition-colors ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2 max-sm:text-[11px]`;
 
   return (
-    <div className={gridClass}>
-      <div className="contents cursor-pointer" onClick={handleOpen}>
+    <div
+      className={gridClass}
+      onClick={handleOpen}
+      onKeyDown={handleRowKeyDown}
+      role="button"
+      tabIndex={0}
+    >
+      <div className="contents cursor-pointer">
         <div className="truncate py-2 text-left max-sm:text-[10px] text-white" title={position.market}>
           {position.market}
         </div>
@@ -83,6 +95,8 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
         </span>
         <span
           className={`inline-flex flex-col items-end leading-tight transition-colors duration-200 py-2 ${pnlTextClass(position.pnl)}`}
+          aria-live="polite"
+          aria-atomic="true"
         >
           <span className="whitespace-nowrap">{position.pnl >= 0 ? "+" : ""}{currencyFormatter.format(position.pnl)}</span>
           <span className="text-[0.82em] max-sm:text-[0.78em]">

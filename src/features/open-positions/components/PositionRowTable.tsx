@@ -62,10 +62,23 @@ export const PositionRowTable = React.memo(function PositionRowTable({
         [onClose, position]
     );
 
+    const handleRowKeyDown = useCallback(
+        (event: React.KeyboardEvent<HTMLTableRowElement>) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                handleOpen();
+            }
+        },
+        [handleOpen]
+    );
+
     return (
         <tr
             className="cursor-pointer overflow-hidden border-b border-line-c align-middle text-support transition-colors hover:bg-bg-2 max-sm:text-[13px]"
             onClick={handleOpen}
+            onKeyDown={handleRowKeyDown}
+            role="button"
+            tabIndex={0}
             style={{
                 height: isClosing ? 0 : POSITION_TABLE_ROW_HEIGHT_PX,
                 maxHeight: isClosing ? 0 : POSITION_TABLE_ROW_HEIGHT_PX,
@@ -75,11 +88,12 @@ export const PositionRowTable = React.memo(function PositionRowTable({
             {/* Checkbox (Phase 0 hidden) */}
             <td className="px-3 py-0 align-middle">
                 <div className="flex w-full min-w-0 items-center gap-3 text-secondary max-sm:max-w-[132px] max-sm:gap-1">
-                    <input
-                        type="checkbox"
-                        checked={isSelected}
-                        aria-label={`Select ${position.market}`}
-                        className="
+                    <div className="inline-flex h-8 w-8 items-center justify-center">
+                        <input
+                            type="checkbox"
+                            checked={isSelected}
+                            aria-label={`Select ${position.market}`}
+                            className="
                         h-[16px] w-[16px]
                         rounded-[4px]
                         border border-line-c
@@ -104,11 +118,12 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
                         checked:before:content-['✓']
                         max-sm:hidden"
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(event) =>
-                            onToggleSelect?.(position, event.target.checked)
-                        }
-                    />
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(event) =>
+                                onToggleSelect?.(position, event.target.checked)
+                            }
+                        />
+                    </div>
 
 
                     <span
@@ -155,6 +170,8 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                 className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${pnlTextClass(
                     position.pnl
                 )}`}
+                aria-live="polite"
+                aria-atomic="true"
             >
                 {position.pnl >= 0 ? "+" : ""}
                 {currencyFormatter.format(position.pnl)}

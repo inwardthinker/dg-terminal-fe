@@ -20,6 +20,7 @@ export function BaseModal({
     variant = 'modal',
 }: BaseModalProps) {
     const sheetRef = useRef<HTMLDivElement>(null)
+    const lastFocusedElementRef = useRef<HTMLElement | null>(null)
 
     const startY = useRef(0)
     const currentY = useRef(0)
@@ -28,6 +29,7 @@ export function BaseModal({
     // 🔒 Scroll lock (iOS safe)
     useEffect(() => {
         const scrollY = window.scrollY
+        lastFocusedElementRef.current = document.activeElement as HTMLElement | null
 
         document.documentElement.style.overflow = 'hidden'
         document.body.style.position = 'fixed'
@@ -40,7 +42,44 @@ export function BaseModal({
             document.body.style.top = ''
             document.body.style.width = ''
             window.scrollTo(0, scrollY)
+            lastFocusedElementRef.current?.focus()
         }
+    }, [])
+
+    useEffect(() => {
+        const panel = sheetRef.current
+        if (!panel) return
+
+        panel.focus()
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== 'Tab') return
+
+            const focusableElements = panel.querySelectorAll<HTMLElement>(
+                'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+
+            if (focusableElements.length === 0) {
+                event.preventDefault()
+                panel.focus()
+                return
+            }
+
+            const first = focusableElements[0]
+            const last = focusableElements[focusableElements.length - 1]
+            const active = document.activeElement
+
+            if (event.shiftKey && active === first) {
+                event.preventDefault()
+                last.focus()
+            } else if (!event.shiftKey && active === last) {
+                event.preventDefault()
+                first.focus()
+            }
+        }
+
+        panel.addEventListener('keydown', handleKeyDown)
+        return () => panel.removeEventListener('keydown', handleKeyDown)
     }, [])
 
     // ESC close
@@ -108,6 +147,9 @@ export function BaseModal({
             <div
                 ref={sheetRef}
                 onClick={(e) => e.stopPropagation()}
+                role='dialog'
+                aria-modal='true'
+                tabIndex={-1}
                 className={`
           w-full bg-bg-0 shadow-xl border max-md:border-b-0 border-line-c
 
@@ -154,8 +196,13 @@ export function BaseModal({
                     <div className="flex items-center justify-between p-4 border-b">
                         {title && <h2 className="text-lg font-medium">{title}</h2>}
                         {showClose && (
-                            <button onClick={onClose}>
-                                <X size={18} />
+                            <button
+                                type='button'
+                                onClick={onClose}
+                                aria-label='Close modal'
+                                className='inline-flex h-11 w-11 items-center justify-center rounded-full'
+                            >
+                                <X size={9} aria-hidden='true' />
                             </button>
                         )}
                     </div>

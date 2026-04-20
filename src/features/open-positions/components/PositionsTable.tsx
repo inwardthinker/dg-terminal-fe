@@ -201,7 +201,7 @@ export function PositionsTable({
                 </div>
 
                 <Link href="/portfolio" className="text-g-3! text-xs! flex items-center px-2 py-2 space-x-1 max-sm:self-start">
-                    <ArrowLeftIcon className="w-4 h-4" />
+                    <ArrowLeftIcon className="w-4 h-4" aria-hidden="true" />
                     <span>Back to portfolio</span>
                 </Link>
             </div>

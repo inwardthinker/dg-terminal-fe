@@ -27,7 +27,7 @@ export function PortfolioTopBar({
       {/* ── Left: brand + quick stats ── */}
       <div className="flex items-center gap-sp7 flex-shrink-0">
         {/* Brand */}
-        <div className="flex items-center leading-none">
+        <div className="flex items-center leading-none" role="img" aria-label="DG Predict logo">
           <span className="text-[15px] font-[800] text-t-1 tracking-[0.04em]">DG</span>
           <span className="text-[15px] font-[800] text-g-3 tracking-[0.04em]">PREDICT</span>
         </div>
@@ -71,6 +71,7 @@ export function PortfolioTopBar({
             viewBox="0 0 12 12"
             fill="none"
             className="flex-shrink-0"
+            aria-hidden="true"
           >
             <circle cx="4.8" cy="4.8" r="3.3" stroke="#555" strokeWidth="1.4" />
             <line
@@ -90,12 +91,12 @@ export function PortfolioTopBar({
       {/* ── Right: actions ── */}
       <div className="flex items-center gap-sp4 flex-shrink-0">
         {/* Deposit */}
-        <button className="px-[11px] py-[5px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-[9.5px] font-[700] text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
+        <button className="min-h-8 px-[11px] py-[5px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-[9.5px] font-[700] text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
           + Deposit
         </button>
 
         {/* Portfolio pill */}
-        <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px] cursor-pointer">
+        <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px]">
           <span className="text-[9px] text-t-3">Portfolio</span>
           <span
             className={`font-[700] text-[11px] ${

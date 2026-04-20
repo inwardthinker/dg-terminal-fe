@@ -8,6 +8,7 @@ import type { ModalParams } from "@/lib/modals/types"
 import type { Position } from "@/features/open-positions/types"
 import { DotSeparator } from "../ui/DotSeparator"
 import { useToast } from "@/hooks/useToast"
+import { X } from "lucide-react"
 
 type Props = ModalParams & {
     onClose?: () => void
@@ -26,6 +27,7 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
     const [mode, setMode] = useState<"full" | "partial">("full")
     const [percent, setPercent] = useState(50)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
     const submitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const handleClose = onClose ?? closeModal
 
@@ -88,6 +90,22 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
         (sum, item) => sum + Math.abs(item.pnl),
         0
     )
+    const currentTabIndex = mode === "full" ? 0 : 1
+    const partialPercentLabel = `${percent}%`
+    const partialSharesLabel = `${shares.toLocaleString()} shares`
+
+    const handleModeTabsKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return
+        event.preventDefault()
+
+        const nextIndex =
+            event.key === "ArrowRight"
+                ? (currentTabIndex + 1) % 2
+                : (currentTabIndex + 2 - 1) % 2
+        const nextMode = nextIndex === 0 ? "full" : "partial"
+        setMode(nextMode)
+        tabRefs.current[nextIndex]?.focus()
+    }
 
     if (isBulkClose) {
         return (
@@ -188,24 +206,48 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                     </p>
                 </div>
 
-                <span
-                    className={`rounded-xl px-4 py-1 text-secondary ${displaySide === "NO"
-                        ? "border border-neg/30 bg-neg/10 text-neg!"
-                        : "border border-pos/30 bg-pos/10 text-pos!"
-                        }`}
-                >
-                    {displaySide}
-                </span>
+                <div className='flex items-center gap-2'>
+                    <span
+                        className={`rounded-xl px-4 py-1 text-secondary ${displaySide === "NO"
+                            ? "border border-neg/30 bg-neg/10 text-neg!"
+                            : "border border-pos/30 bg-pos/10 text-pos!"
+                            }`}
+                    >
+                        {displaySide}
+                    </span>
+                    <button
+                        type='button'
+                        onClick={handleClose}
+                        aria-label='Close modal'
+                        className='inline-flex h-11 w-11 items-center justify-center rounded-full'
+                    >
+                        <X size={9} aria-hidden='true' />
+                    </button>
+                </div>
             </div>
 
-            <div className='mb-5 flex overflow-hidden rounded-lg border border-g-3/10'>
-                {["full", "partial"].map((m) => (
+            <div
+                className='mb-5 flex overflow-hidden rounded-lg border border-g-3/10'
+                role='tablist'
+                aria-label='Close mode'
+                onKeyDown={handleModeTabsKeyDown}
+            >
+                {["full", "partial"].map((m, index) => (
                     <Button
                         key={m}
                         type='button'
+                        id={`close-mode-tab-${m}`}
+                        role='tab'
+                        aria-selected={mode === m}
+                        aria-controls={`close-mode-panel-${m}`}
+                        tabIndex={0}
+                        ref={(node) => {
+                            tabRefs.current[index] = node
+                        }}
                         onClick={() => setMode(m as "full" | "partial")}
                         className={`
-              flex-1 rounded-none py-2.5 text-secondary font-semibold transition-colors hover:bg-g-3/20 hover:text-g-3! 
+              relative z-0 flex-1 rounded-none py-2.5 text-secondary font-semibold transition-colors hover:bg-g-3/20 hover:text-g-3!
+              focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-inset
               ${mode === m
                                 ? "bg-g-3/10 text-g-3"
                                 : "bg-transparent text-[14px] text-t-3/70!"
@@ -218,13 +260,17 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
             </div>
 
             {mode === "partial" && (
-                <>
+                <div
+                    id='close-mode-panel-partial'
+                    role='tabpanel'
+                    aria-labelledby='close-mode-tab-partial'
+                >
                     <div className='mt-3 flex items-center justify-between'>
                         <span className='text-secondary text-t-3!'>Close how much?</span>
-                        <div className='flex items-center text-secondary font-semibold! text-g-3!'>
-                            <span>{percent}%</span>
+                        <div className='flex items-center text-secondary font-semibold! text-g-3!' aria-live='polite' aria-atomic='true'>
+                            <span>{partialPercentLabel}</span>
                             <DotSeparator size={4} color='bg-g-3' />
-                            <span>{shares.toLocaleString()} shares</span>
+                            <span>{partialSharesLabel}</span>
                         </div>
                     </div>
 
@@ -232,17 +278,33 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                         type='range'
                         min={0}
                         max={100}
+                        step={1}
+                        list='partial-close-ticks'
                         value={percent}
                         onChange={(e) => setPercent(Number(e.target.value))}
                         className='close-position-slider w-full accent-g-3!'
                         aria-label='Close percentage'
-                        aria-valuetext={`${percent}% (${shares.toLocaleString()} shares)`}
+                        aria-valuetext={`${percent} percent, closing ${shares.toLocaleString()} shares`}
                         style={
                             {
                                 "--slider-progress": `${percent}%`,
                             } as CSSProperties
                         }
                     />
+                    <datalist id='partial-close-ticks'>
+                        <option value='0' label='0%' />
+                        <option value='25' label='25%' />
+                        <option value='50' label='50%' />
+                        <option value='75' label='75%' />
+                        <option value='100' label='100%' />
+                    </datalist>
+                    <div className='mt-2 flex justify-between text-support text-t-3!'>
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
 
                     {/* Presets */}
                     <div className='mt-3 flex gap-2'>
@@ -265,7 +327,7 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                     </div>
 
                     <div className='mt-3 grid grid-cols-3 gap-2 text-center'>
-                        <div className='text-secondary text-t-3! bg-g-3/10 rounded-md px-3 py-2'>
+                        <div className='text-secondary text-t-3! bg-g-3/10 rounded-md px-3 py-2' aria-live='polite' aria-atomic='true'>
                             <span className='uppercase text-support font-semibold!'>
                                 Closing
                             </span>
@@ -289,18 +351,22 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                         <div className='text-secondary text-t-3!'>
                             Remaining after close
                         </div>
-                        <div className='flex items-center text-secondary font-semibold! text-t-1!'>
+                        <div className='flex items-center text-secondary font-semibold! text-t-1!' aria-live='polite' aria-atomic='true'>
                             <span>$2,500</span>
                             <DotSeparator size={4} color='bg-g-3' />
                             <span>4,3100 shares</span>
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
             {mode === "full" && (
-                <>
-                    <div className='mt-4 overflow-hidden rounded-lg'>
+                <div
+                    id='close-mode-panel-full'
+                    role='tabpanel'
+                    aria-labelledby='close-mode-tab-full'
+                >
+                    <div className='mt-4 overflow-hidden rounded-lg' aria-live='polite' aria-atomic='true'>
                         <InfoRow label='Current price' value={`${currentPrice.toFixed(2)} ↑`} />
                         <InfoRow
                             label='P&L if closed now'
@@ -322,7 +388,7 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                         <span className='mr-2'>⚡</span>
                         Current price updates live while modal is open
                     </div>
-                </>
+                </div>
             )}
 
             <div className='mt-2 space-y-2'>
