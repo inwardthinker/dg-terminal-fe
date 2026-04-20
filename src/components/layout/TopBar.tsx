@@ -22,7 +22,7 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
       {/* ── Left: brand + quick stats ── */}
       <div className="flex items-center gap-sp5 md:gap-sp7 flex-shrink-0">
         {/* Brand */}
-        <div className="flex items-center leading-none">
+        <div className="flex items-center leading-none" role="img" aria-label="DG Predict logo">
           <span className="text-[17px] font-[800] text-t-1 tracking-[0.04em]">DG</span>
           <span className="text-[17px] font-[800] text-g-3 tracking-[0.04em]">PREDICT</span>
         </div>
@@ -65,6 +65,7 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             viewBox="0 0 12 12"
             fill="none"
             className="flex-shrink-0"
+            aria-hidden="true"
           >
             <circle cx="4.8" cy="4.8" r="3.3" stroke="#555" strokeWidth="1.4" />
             <line
@@ -84,12 +85,12 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
       {/* ── Right: actions ── */}
       <div className="flex items-center gap-sp3 sm:gap-sp4 flex-shrink-0 ml-auto">
         {/* Deposit */}
-        <button className="px-[11px] py-[6px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-button text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
+        <button className="min-h-8 px-[11px] py-[6px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-button text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
           <span className="hidden xs:inline">+ </span>Deposit
         </button>
 
         {/* Portfolio pill */}
-        <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px] cursor-pointer">
+        <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px]">
           <span className="text-label">Portfolio</span>
           <span
             className={`text-secondary ${

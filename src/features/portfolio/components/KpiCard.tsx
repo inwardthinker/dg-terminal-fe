@@ -63,7 +63,11 @@ export function KpiCard({
         </div>
 
         <div className="flex items-center gap-1">
-          <span className={clsx("text-primary font-bold", valueClassMap[valueVariant])}>
+          <span
+            className={clsx("text-primary font-bold", valueClassMap[valueVariant])}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {value}
           </span>
 
