@@ -72,7 +72,7 @@ export function EquityCurvePanel({ venueUnavailable = false }: EquityCurvePanelP
                         </span>
                     )}
 
-                    <InfoTooltip text="Your total portfolio balance over time, including unrealized positions valued at current price." />
+                    <InfoTooltip text="Your total balance over time, using daily closing snapshots. Reflects deposits, withdrawals, and settled P&L." />
                 </div>
 
 
