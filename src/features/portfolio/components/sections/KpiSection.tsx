@@ -63,6 +63,7 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           value={formatKpiFallback(kpis?.balance, formatBalance)}
           sub={formatKpiFallback(kpis?.change24h, formatSignedCurrency)}
           subVariant={getKpiVariant(kpis?.change24h)}
+          tooltip="Cash available on your connected venues. Does not include the value of open positions."
           footer={
             <div className="flex gap-sp2">
               <Button variant="accent" size="sm" className="flex-1">
@@ -90,7 +91,7 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
               : formatKpiFallback(kpis?.deployedPct, formatSignedPercent)
           }
           dimmed={isEmptyState}
-          tooltip="Total cost basis of all open positions. Capital currently at risk."
+          tooltip="Total cost basis of all open positions. This is the capital currently at risk."
         />
       </div>
 
@@ -102,7 +103,7 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           sub={venueUnavailable ? "Prices are stale" : formatKpiFallback(kpis?.unrealizedPct, formatSignedPercent)}
           subVariant={venueUnavailable ? "default" : getKpiVariant(kpis?.unrealizedPct)}
           dimmed={isEmptyState || venueUnavailable}
-          tooltip="Mark-to-market gain or loss on open positions at current mid price."
+          tooltip="Mark-to-market gain or loss on open positions, calculated at current mid price."
         />
       </div>
 
@@ -136,7 +137,7 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           valueVariant="accent"
           sub={formatKpiFallback(kpis?.rewardsPct, formatRewardsShare)}
           dimmed={isEmptyState}
-          tooltip="Maker rebates and referral bonuses earned in the last 30 days."
+          tooltip="Maker rebates and volume bonuses earned. Paid out by the venue, not deducted from your P&L."
         />
       </div>
     </div>
