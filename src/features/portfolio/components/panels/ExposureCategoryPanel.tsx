@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ExposureCategory } from "@/features/portfolio/types";
+import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import clsx from "clsx";
 
 type ExposureCategoryPanelProps = {
@@ -64,7 +65,10 @@ export function ExposureCategoryPanel({
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-sp4">
-        <span className={clsx(isEmpty ? "text-primary-muted" : "text-primary")}>Exposure by category</span>
+        <div className="flex items-center gap-sp2">
+          <span className={clsx(isEmpty ? "text-primary-muted" : "text-primary")}>Exposure by category</span>
+          <InfoTooltip text="How your open capital is split across market categories. Based on cost basis of open positions only." />
+        </div>
       </div>
 
       {/* Scrollable category list — flex-1 fills available height */}
