@@ -2,10 +2,10 @@
 
 import { SummaryPanelContainer } from "@/features/open-positions";
 import { EquityCurvePanel } from "@/features/equity-curve/components/EquityCurvePanel";
-import { useRouter } from "next/navigation";
+import { useModal } from "@/lib/modals/hooks/useModal";
 
 export default function HomePage() {
-  const router = useRouter()
+  const { openModal } = useModal()
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-0 px-sp8x py-sp8y">
@@ -35,10 +35,10 @@ export default function HomePage() {
         <EquityCurvePanel />
 
         <button
-          onClick={() => router.push("/?modal=close&id=456")}
+          onClick={() => openModal("positionDetails", { id: "456" })}
           className="ml-3 rounded-lg border border-zinc-300 px-4 py-2 text-sm"
         >
-          Close position #456
+          Position details
         </button>
 
       </section>

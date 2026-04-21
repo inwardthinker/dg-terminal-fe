@@ -5,6 +5,12 @@ import { useCallback } from 'react'
 import type { ModalType, ModalParams } from '@/lib/modals/types'
 import { useModalStore } from '@/lib/modals/store'
 
+const CLEARABLE_MODAL_TYPES: ModalType[] = ['close', 'positionDetails']
+
+function isClearableModalType(value: string | null): value is ModalType {
+    return value !== null && CLEARABLE_MODAL_TYPES.includes(value as ModalType)
+}
+
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 // Use this hook anywhere you need to open or close a modal.
 // Never manipulate the Zustand store directly — always go through the router.
@@ -64,13 +70,13 @@ export function useModal() {
         if (next.has('over')) {
             // Pop the stacked modal, keep the base
             const overType = next.get('over')
-            if (overType === 'close') clearTransientParams(overType)
+            if (isClearableModalType(overType)) clearTransientParams(overType)
             next.delete('over')
             router.replace(`${pathname}?${next.toString()}`)
         } else {
             // No stack — close everything, go back to base path
             const modalType = next.get('modal')
-            if (modalType === 'close') clearTransientParams(modalType)
+            if (isClearableModalType(modalType)) clearTransientParams(modalType)
             router.replace(pathname)
         }
     }, [router, pathname, searchParams, clearTransientParams])
@@ -79,8 +85,8 @@ export function useModal() {
     const closeAll = useCallback(() => {
         const modalType = searchParams.get('modal')
         const overType = searchParams.get('over')
-        if (modalType === 'close') clearTransientParams(modalType)
-        if (overType === 'close') clearTransientParams(overType)
+        if (isClearableModalType(modalType)) clearTransientParams(modalType)
+        if (isClearableModalType(overType)) clearTransientParams(overType)
         router.replace(pathname)
     }, [router, pathname, searchParams, clearTransientParams])
 

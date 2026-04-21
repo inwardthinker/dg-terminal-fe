@@ -153,8 +153,18 @@ export function BaseModal({
                 className={`
           w-full bg-bg-0 shadow-xl border max-md:border-b-0 border-line-c
 
-          /* Mobile: bottom sheet */
-          rounded-t-2xl max-h-[85vh] overflow-y-auto
+          /* Mobile */
+          overflow-y-auto
+          ${variant === 'drawer'
+                        ? `
+                h-dvh
+                rounded-none
+              `
+                        : `
+                rounded-t-2xl
+                max-h-[85vh]
+              `
+                    }
           animate-slide-up
 
           /* Desktop: DRAWER */
