@@ -50,7 +50,11 @@ export function connectPositionsPriceSocket(userAddress: string): Socket {
     transports: ["websocket", "polling"],
     auth: { userAddress },
     withCredentials: false,
-    reconnection: false,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1_000,
+    reconnectionDelayMax: 16_000,
+    randomizationFactor: 0,
     timeout: 10_000,
   });
 }

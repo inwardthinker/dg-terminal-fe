@@ -61,72 +61,72 @@ export function PositionsTable({
                         : undefined
                 }
             >
-            <table className="w-full text-sm max-sm:text-[13px]">
+            <table className="w-full table-fixed text-sm max-sm:text-[13px]">
                 <thead className="sticky top-0 z-10 border-b border-line-c bg-bg-1 text-support max-sm:text-[12px]">
                     <tr>
-                        <th className="px-3 py-2 text-left pl-9 max-sm:pl-3">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center pl-9 max-sm:pl-3">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Market</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Market contract name for the position." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-left max-sm:hidden">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Category</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Exposure category assigned by ranked category mapping." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-left">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Side</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Your position direction: YES or NO." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right max-sm:hidden">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Entry</span>
                                 <InfoTooltip text="Average entry price of this position." />
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right max-sm:hidden">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Current</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Latest mark/current price." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right max-sm:hidden">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>Size</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Current notional exposure size." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>P&amp;L</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Unrealized profit/loss in absolute value." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right max-sm:hidden">
-                            <span className="inline-flex items-center gap-1">
+                        <th className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-center gap-1">
                                 <span>P&amp;L %</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Unrealized profit/loss as percentage return." />
                                 </span>
                             </span>
                         </th>
-                        <th className="px-3 py-2 text-right">Action</th>
+                        <th className="px-3 py-2 text-center">Action</th>
                     </tr>
                 </thead>
 

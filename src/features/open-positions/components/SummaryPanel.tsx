@@ -101,7 +101,7 @@ export function SummaryPanel({
               <h2 className="">Open Positions </h2>
               <DotSeparator size={4} />
               <h2 className="">{totalCount}</h2>
-              <span className="relative inline-flex items-center group">
+              <span className="relative mx-2 inline-flex items-center group">
                 <span
                   className={clsx(
                     "h-2 w-2 rounded-full",
@@ -113,7 +113,7 @@ export function SummaryPanel({
                       : "Live prices connected"
                   }
                 />
-                {showReconnectTooltip && !venueUnavailable ? (
+                {showReconnectTooltip ? (
                   <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-20 hidden w-max -translate-x-1/2 rounded-r3 border border-line-c bg-bg-2 px-2 py-1 text-support text-[11px] text-t-2 group-hover:block">
                     Live prices paused. Reconnecting...
                   </span>
