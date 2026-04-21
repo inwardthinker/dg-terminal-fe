@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { TradeHistoryEntry, TradeHistoryPeriod } from "@/features/portfolio/types";
+import { useModal } from "@/lib/modals/hooks/useModal";
 
 const PERIODS: TradeHistoryPeriod[] = ["7d", "30d", "90d", "All"];
 const PAGE_SIZE = 10;
@@ -86,6 +87,7 @@ export function TradeHistoryPanel({
   const isEmpty = trades.length === 0;
   const [period, setPeriod] = useState<TradeHistoryPeriod>("30d");
   const [page, setPage] = useState(1);
+  const { openModal } = useModal();
 
   // Filter by period
   const filtered = useMemo(() => {
@@ -170,6 +172,15 @@ export function TradeHistoryPanel({
             pageRows.map((trade) => (
               <div
                 key={trade.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => openModal("tradeDetail", { id: trade.id, trade })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === " ") e.preventDefault();
+                    openModal("tradeDetail", { id: trade.id, trade });
+                  }
+                }}
                 className={`${TRADE_HISTORY_GRID_CLASS} items-center py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0 text-secondary cursor-pointer hover:bg-[rgba(255,255,255,0.025)] transition-colors`}
               >
                 <span className="text-t-3">{trade.date}</span>

@@ -6,7 +6,7 @@ import { useModalStore } from '@/lib/modals/store'
 import type { ModalEntry, ModalType } from '@/lib/modals/types'
 
 // ─── Valid modal types (runtime guard) ───────────────────────────────────────
-const VALID_MODAL_TYPES = new Set<ModalType>(['close'])
+const VALID_MODAL_TYPES = new Set<ModalType>(['close', 'tradeDetail'])
 
 function isValidModalType(value: string | null): value is ModalType {
     return value !== null && VALID_MODAL_TYPES.has(value as ModalType)

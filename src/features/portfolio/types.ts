@@ -77,6 +77,14 @@ export type TradeHistoryEntry = {
   result: TradeResult;
   /** Realised P&L in USD (signed) */
   pnl: number;
+  /** Display date of settlement or manual exit, e.g. "Apr 8" */
+  settlementDate?: string;
+  /** Whether this was a market resolution or manual exit — controls price label */
+  closeType?: 'settlement' | 'manual';
+  /** Maker rebates / rewards earned on this trade (USD) */
+  rewardsEarned?: number;
+  /** True if the market is still open for trading */
+  isMarketLive?: boolean;
 };
 
 export type PortfolioData = {

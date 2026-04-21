@@ -4,6 +4,7 @@ import type { ModalType, ModalParams } from './types'
 // ─── Import modal components ──────────────────────────────────────────────────
 // Each modal receives the URL params as props.
 import { ClosePositionModal } from '@/components/modals/ClosePositionModal'
+import { TradeDetailModal } from '@/components/modals/TradeDetailModal'
 
 // ─── Registry ─────────────────────────────────────────────────────────────────
 // TypeScript enforces that every ModalType key has a matching component.
@@ -11,6 +12,7 @@ import { ClosePositionModal } from '@/components/modals/ClosePositionModal'
 export const MODAL_REGISTRY: Record<ModalType, ComponentType<ModalParams>> = {
 
     close: ClosePositionModal,
+    tradeDetail: TradeDetailModal,
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
