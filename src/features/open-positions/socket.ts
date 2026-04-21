@@ -43,12 +43,15 @@ export function resolvePositionsPriceSocketUserAddress(explicitUserAddress?: str
 }
 
 export function connectPositionsPriceSocket(userAddress: string): Socket {
-  const apiBaseUrl = env.apiBaseUrl || "http://localhost:3000";
+  const apiBaseUrl = env.apiBaseUrl.replace(/\/+$/, "");
 
   return io(`${apiBaseUrl}/positions-prices`, {
-    transports: ["websocket"],
+    path: "/socket.io",
+    transports: ["websocket", "polling"],
     auth: { userAddress },
-    autoConnect: false,
+    withCredentials: false,
+    reconnection: false,
+    timeout: 10_000,
   });
 }
 

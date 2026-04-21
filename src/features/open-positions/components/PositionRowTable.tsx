@@ -159,7 +159,9 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
             {/* Current */}
             <td className="px-3 py-0 align-middle text-right text-secondary max-sm:hidden">
-                {currencyFormatter.format(position.currentPrice)}
+                <span key={`current-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {currencyFormatter.format(position.currentPrice)}
+                </span>
             </td>
 
             {/* Size */}
@@ -175,12 +177,10 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                 aria-live="polite"
                 aria-atomic="true"
             >
-                {showStalePnl ? "?" : (
-                    <>
-                        {position.pnl >= 0 ? "+" : ""}
-                        {currencyFormatter.format(position.pnl)}
-                    </>
-                )}
+                <span key={`pnl-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {position.pnl >= 0 ? "+" : ""}
+                    {currencyFormatter.format(position.pnl)}
+                </span>
             </td>
 
             {/* P&L % */}
@@ -189,12 +189,10 @@ export const PositionRowTable = React.memo(function PositionRowTable({
                     showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnlPct)
                 } max-sm:hidden`}
             >
-                {showStalePnl ? "Stale" : (
-                    <>
-                        {position.pnlPct >= 0 ? "+" : ""}
-                        {position.pnlPct.toFixed(2)}%
-                    </>
-                )}
+                <span key={`pnlpct-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {position.pnlPct >= 0 ? "+" : ""}
+                    {position.pnlPct.toFixed(2)}%
+                </span>
             </td>
 
             {/* Action */}

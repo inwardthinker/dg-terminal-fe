@@ -9,7 +9,10 @@ export type Position = {
   pnl: number;
   pnlPct: number;
   priceStale?: boolean;
+  liveTick?: number;
 };
+
+export type PositionsConnectionState = "connected" | "reconnecting" | "disconnected";
 
 export type UsePositionsParams = {
   limit?: number
@@ -23,6 +26,7 @@ export type UsePositionsResult = {
   totalCount: number
   loading: boolean
   error: string | null
+  connectionState: PositionsConnectionState
 }
 
 export interface ApiKpis {

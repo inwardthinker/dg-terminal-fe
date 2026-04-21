@@ -102,20 +102,16 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
           aria-live="polite"
           aria-atomic="true"
         >
-          {showStalePnl ? (
-            <>
-              <span className="whitespace-nowrap">?</span>
-              <span className="text-[0.82em] max-sm:text-[0.78em]">Stale</span>
-            </>
-          ) : (
-            <>
-              <span className="whitespace-nowrap">{position.pnl >= 0 ? "+" : ""}{currencyFormatter.format(position.pnl)}</span>
-              <span className="text-[0.82em] max-sm:text-[0.78em]">
-                {position.pnlPct >= 0 ? "+" : ""}
-                {position.pnlPct.toFixed(1)}%
-              </span>
-            </>
-          )}
+          <>
+            <span key={`pnl-${position.liveTick ?? 0}`} className="whitespace-nowrap live-value-flash px-1">
+              {position.pnl >= 0 ? "+" : ""}
+              {currencyFormatter.format(position.pnl)}
+            </span>
+            <span key={`pnlpct-${position.liveTick ?? 0}`} className="text-[0.82em] max-sm:text-[0.78em] live-value-flash px-1">
+              {position.pnlPct >= 0 ? "+" : ""}
+              {position.pnlPct.toFixed(1)}%
+            </span>
+          </>
         </span>
       </div>
       <Button
