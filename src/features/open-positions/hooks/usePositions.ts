@@ -165,6 +165,13 @@ const POSITION_STALE_MS = 6 * 60 * 1000;
 const LIVE_UPDATE_THROTTLE_MS = 500;
 const DISCONNECTED_DOT_DELAY_MS = 10_000;
 const INITIAL_LIVE_DATA_GRACE_MS = 2500;
+const POSITION_CATEGORIES: Position["category"][] = [
+  "Sports",
+  "Politics",
+  "Crypto",
+  "Macro",
+  "Other",
+];
 
 function applyPriceEvent(position: Position, event: PositionPriceEvent): Position {
   return {
@@ -197,10 +204,14 @@ function hasPositionChanged(previous: Position, next: Position): boolean {
 
 function buildPositionFromPriceEvent(event: PositionPriceEvent): Position {
   const side = event.outcome ?? "UNKNOWN";
+  const category: Position["category"] =
+    event.category && POSITION_CATEGORIES.includes(event.category as Position["category"])
+      ? (event.category as Position["category"])
+      : "Other";
   return {
     id: event.position_id,
     market: event.title ?? "Untitled market",
-    category: "Other",
+    category,
     side,
     no_of_shares: asNumber(event.no_of_shares, 0),
     entryPrice: asNumber(event.avg_price, 0),
@@ -267,6 +278,7 @@ function normalizeIncomingPriceEvent(payload: unknown): PositionPriceEvent | nul
     pnl_amount: pickFirst(payload, ["pnl_amount", "pnlAmount", "pnl"], asOptionalNumber),
     pnl_percent: pickFirst(payload, ["pnl_percent", "pnlPercent", "pnl_pct", "pnlPct"], asOptionalNumber),
     stale: pickFirst(payload, ["stale", "is_stale", "isStale"], asOptionalBoolean) ?? false,
+    category: pickFirst(payload, ["category", "group", "type"], asOptionalString),
   };
 }
 

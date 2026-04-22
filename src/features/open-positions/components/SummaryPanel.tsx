@@ -187,7 +187,6 @@ export function SummaryPanel({
               categoryPresentation={categoryPresentation}
               onOpen={onOpenPosition}
               onClose={onClosePosition}
-              showStalePnl={venueUnavailable || Boolean(position.priceStale)}
             />
           ))}
           {remaining > 0 && (

@@ -25,7 +25,6 @@ type PositionsTableContainerProps = {
 export function PositionsTableContainer({ positions, loading, error }: PositionsTableContainerProps) {
     const { openModal } = useModal();
     const venueUnavailable = Boolean(error);
-
     const [selectedCategory, setSelectedCategory] = useState<Category>("All")
     const [selectedSide, setSelectedSide] = useState<"All" | "YES" | "NO">("All")
     const [sortBy, setSortBy] = useState<"pnl" | "size" | "entry" | "current">("pnl")
@@ -63,8 +62,20 @@ export function PositionsTableContainer({ positions, loading, error }: Positions
         }, 360)
     }
 
+    const rankedCategoryData = useMemo(() => buildCategoryData(positions), [positions])
+
+    const mappedPositions = useMemo(() => {
+        return positions.map((position) => ({
+            ...position,
+            category: (rankedCategoryData.presentation[position.category]?.label ??
+                position.category) as Position["category"],
+        }))
+    }, [positions, rankedCategoryData.presentation])
+
+    const categoryData = useMemo(() => buildCategoryData(mappedPositions), [mappedPositions])
+
     const processedPositions = useMemo(() => {
-        return positions
+        return mappedPositions
             .filter((p) => !closedPositionIds.has(p.id))
             .filter((p) => {
                 const categoryMatch =
@@ -86,9 +97,7 @@ export function PositionsTableContainer({ positions, loading, error }: Positions
                         return 0
                 }
             })
-    }, [positions, closedPositionIds, selectedCategory, selectedSide, sortBy])
-
-    const categoryData = useMemo(() => buildCategoryData(positions), [positions])
+    }, [mappedPositions, closedPositionIds, selectedCategory, selectedSide, sortBy])
     const selectedPositions = useMemo(
         () => processedPositions.filter((position) => selectedPositionIds.has(position.id)),
         [processedPositions, selectedPositionIds]

@@ -1,8 +1,8 @@
 export const SUMMARY_GRID_COLUMNS =
-  "grid-cols-[minmax(0,1.2fr)_100px_40px_72px_68px_60px]";
+  "grid-cols-[minmax(0,1.2fr)_100px_100px_100px_100px_60px]";
 
 export const SUMMARY_GRID_COLUMNS_MOBILE =
-  "max-sm:grid-cols-[minmax(0,1fr)_36px_48px_54px]";
+  "max-sm:grid-cols-[minmax(0,1fr)_64px_84px_54px]";
 
 export const POSITION_TABLE_GRID_COLUMNS =
   "grid-cols-[minmax(0,1fr)_90px_120px_90px_90px_120px_100px_100px_96px] gap-1";

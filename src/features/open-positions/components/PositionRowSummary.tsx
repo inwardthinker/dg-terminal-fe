@@ -17,7 +17,6 @@ type PositionRowSummaryProps = {
   categoryPresentation?: Record<Position["category"], CategoryPresentation>;
   onOpen: (position: Position) => void;
   onClose: (position: Position) => void;
-  showStalePnl?: boolean;
 };
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -52,7 +51,6 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
   position,
   categoryPresentation,
   onOpen,
-  showStalePnl = false,
 }: PositionRowSummaryProps) {
   const { openModal } = useModal();
   const categoryStyle = categoryPresentation?.[position.category] ?? {
@@ -80,7 +78,7 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
       tabIndex={0}
     >
       <div className="contents cursor-pointer">
-        <div className="truncate py-2 text-left max-sm:text-[10px] text-white" title={position.market}>
+        <div className="truncate py-2 text-left max-sm:text-[11px] text-white" title={position.market}>
           {position.market}
         </div>
         <div className="flex justify-start py-2 max-sm:hidden">
@@ -89,16 +87,14 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
             colorClass={categoryStyle.colorClass}
           />
         </div>
-        <span className={`font-bold text-left ${sideTextClass(position.side)}`}>
+        <span className={`font-bold text-left max-sm:text-[11px]! ${sideTextClass(position.side)}`}>
           {position.side}
         </span>
         <span className="py-2 text-right max-sm:hidden">
           {currencyFormatter.format(position.size)}
         </span>
         <span
-          className={`inline-flex flex-col items-end leading-tight transition-colors duration-200 py-2 ${
-            showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnl)
-          }`}
+          className={`inline-flex flex-col items-end leading-tight max-sm:leading-[1.15] transition-colors duration-200 py-2 max-sm:text-[11px] ${pnlTextClass(position.pnl)}`}
           aria-live="polite"
           aria-atomic="true"
         >
@@ -107,7 +103,7 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
               {position.pnl >= 0 ? "+" : ""}
               {currencyFormatter.format(position.pnl)}
             </span>
-            <span key={`pnlpct-${position.liveTick ?? 0}`} className="text-[0.82em] max-sm:text-[0.78em] live-value-flash px-1">
+            <span key={`pnlpct-${position.liveTick ?? 0}`} className="text-[0.82em] max-sm:text-[10px] live-value-flash px-1">
               {position.pnlPct >= 0 ? "+" : ""}
               {position.pnlPct.toFixed(1)}%
             </span>
