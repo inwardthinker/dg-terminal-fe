@@ -15,6 +15,7 @@ export type PositionPriceEvent = {
   pnl_amount: number | null;
   pnl_percent: number | null;
   stale: boolean;
+  category: string | null;
 };
 
 type SocketErrorPayload = {

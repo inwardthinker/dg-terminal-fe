@@ -51,6 +51,8 @@ export const PositionRowTable = React.memo(function PositionRowTable({
     isClosing = false,
     showStalePnl = false,
 }: PositionRowTableProps) {
+
+    console.log("🚀 ~ position.category:", position.category)
     const categoryStyle = categoryPresentation?.[position.category] ?? {
         label: position.category,
         colorClass: 'bg-t-3',
