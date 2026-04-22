@@ -45,17 +45,17 @@ export function PortfolioTopBar({
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Today P&amp;L</span>
             <span
               className={`text-[11.5px] font-[600] leading-[1.2] ${
-                ready && kpis.todayPnl < 0 ? "text-neg" : "text-pos"
+                ready && kpis.unrealized_pnl < 0 ? "text-neg" : "text-pos"
               }`}
             >
-              {ready ? fmtSigned(kpis.todayPnl) : "--"}
+              {ready ? fmtSigned(kpis.unrealized_pnl) : "--"}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Open</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {ready ? kpis.openCount : "--"}
+              {ready ? kpis.num_trades : "--"}
             </span>
           </div>
         </div>
@@ -99,10 +99,10 @@ export function PortfolioTopBar({
           <span className="text-[9px] text-t-3">Portfolio</span>
           <span
             className={`font-[700] text-[11px] ${
-              ready && kpis.portfolioPct < 0 ? "text-neg" : "text-pos"
+              ready && kpis.un_pnl_pc < 0 ? "text-neg" : "text-pos"
             }`}
           >
-            {ready ? fmtPct(kpis.portfolioPct) : "--"}
+            {ready ? fmtPct(kpis.un_pnl_pc) : "--"}
           </span>
         </div>
 
