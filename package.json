@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.23",
@@ -27,7 +29,9 @@
     "@types/react-dom": "19.1.2",
     "eslint": "9.25.1",
     "eslint-config-next": "15.3.1",
+    "eslint-config-prettier": "^10.1.8",
     "postcss": "^8.5.9",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4.2.2",
     "typescript": "5.8.3"
   }

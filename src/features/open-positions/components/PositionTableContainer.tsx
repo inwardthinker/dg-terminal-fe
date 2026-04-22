@@ -4,7 +4,6 @@
 
 import { PositionsTableSkeleton } from "./PositionsTableSkeleton";
 import { SummaryError } from "./SummaryError";
-import { usePositions } from "../hooks/usePositions";
 import type { Position } from "../types";
 import { PositionsTable } from "./PositionsTable";
 import { useMemo, useState } from "react";
@@ -17,11 +16,15 @@ import { VenueUnavailableBanner } from "@/components/ui/VenueUnavailableBanner";
 
 type Category = Position["category"] | "All"
 
-export function PositionsTableContainer() {
-    const { openModal } = useModal();
-    const { positions, loading, error } = usePositions({ realtimeOnly: true });
-    const venueUnavailable = Boolean(error);
+type PositionsTableContainerProps = {
+    positions: Position[];
+    loading: boolean;
+    error: string | null;
+}
 
+export function PositionsTableContainer({ positions, loading, error }: PositionsTableContainerProps) {
+    const { openModal } = useModal();
+    const venueUnavailable = Boolean(error);
     const [selectedCategory, setSelectedCategory] = useState<Category>("All")
     const [selectedSide, setSelectedSide] = useState<"All" | "YES" | "NO">("All")
     const [sortBy, setSortBy] = useState<"pnl" | "size" | "entry" | "current">("pnl")
@@ -59,8 +62,20 @@ export function PositionsTableContainer() {
         }, 360)
     }
 
+    const rankedCategoryData = useMemo(() => buildCategoryData(positions), [positions])
+
+    const mappedPositions = useMemo(() => {
+        return positions.map((position) => ({
+            ...position,
+            category: (rankedCategoryData.presentation[position.category]?.label ??
+                position.category) as Position["category"],
+        }))
+    }, [positions, rankedCategoryData.presentation])
+
+    const categoryData = useMemo(() => buildCategoryData(mappedPositions), [mappedPositions])
+
     const processedPositions = useMemo(() => {
-        return positions
+        return mappedPositions
             .filter((p) => !closedPositionIds.has(p.id))
             .filter((p) => {
                 const categoryMatch =
@@ -82,9 +97,7 @@ export function PositionsTableContainer() {
                         return 0
                 }
             })
-    }, [positions, closedPositionIds, selectedCategory, selectedSide, sortBy])
-
-    const categoryData = useMemo(() => buildCategoryData(positions), [positions])
+    }, [mappedPositions, closedPositionIds, selectedCategory, selectedSide, sortBy])
     const selectedPositions = useMemo(
         () => processedPositions.filter((position) => selectedPositionIds.has(position.id)),
         [processedPositions, selectedPositionIds]

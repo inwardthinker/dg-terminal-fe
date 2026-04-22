@@ -18,6 +18,7 @@ import {
 const mockPositions: Position[] = [
   {
     id: "pos-1",
+    no_of_shares: 420,
     market: "Will BTC close above $80k this quarter?",
     category: "Crypto",
     side: "YES",
@@ -29,6 +30,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-2",
+    no_of_shares: 360,
     market: "US CPI prints below 3.0% by June",
     category: "Macro",
     side: "YES",
@@ -40,6 +42,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-3",
+    no_of_shares: 300,
     market: "Premier League winner: Arsenal",
     category: "Sports",
     side: "NO",
@@ -51,6 +54,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-4",
+    no_of_shares: 280,
     market: "ETH ETF approval before year-end",
     category: "Crypto",
     side: "YES",
@@ -62,6 +66,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-5",
+    no_of_shares: 200,
     market: "US election winner: Democratic nominee",
     category: "Politics",
     side: "YES",
@@ -73,6 +78,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-6",
+    no_of_shares: 250,
     market: "Fed cuts rates 2+ times this year",
     category: "Macro",
     side: "NO",
@@ -84,6 +90,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-7",
+    no_of_shares: 300,
     market: "Lakers reach conference finals",
     category: "Sports",
     side: "YES",
@@ -95,6 +102,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-8",
+    no_of_shares: 260,
     market: "SOL closes above $250 by September",
     category: "Crypto",
     side: "NO",
@@ -106,6 +114,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-9",
+    no_of_shares: 190,
     market: "NATO expands membership this year",
     category: "Politics",
     side: "YES",
@@ -117,6 +126,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-10",
+    no_of_shares: 340,
     market: "S&P 500 closes above 6200 by Q4",
     category: "Macro",
     side: "YES",
@@ -128,6 +138,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-11",
+    no_of_shares: 210,
     market: "Oscar winner: Best Picture contender A",
     category: "Other",
     side: "NO",
@@ -139,6 +150,7 @@ const mockPositions: Position[] = [
   },
   {
     id: "pos-12",
+    no_of_shares: 260,
     market: "India GDP growth above 7% this FY",
     category: "Macro",
     side: "YES",
@@ -152,12 +164,21 @@ const mockPositions: Position[] = [
 const POSITION_STALE_MS = 6 * 60 * 1000;
 const LIVE_UPDATE_THROTTLE_MS = 500;
 const DISCONNECTED_DOT_DELAY_MS = 10_000;
+const INITIAL_LIVE_DATA_GRACE_MS = 2500;
+const POSITION_CATEGORIES: Position["category"][] = [
+  "Sports",
+  "Politics",
+  "Crypto",
+  "Macro",
+  "Other",
+];
 
 function applyPriceEvent(position: Position, event: PositionPriceEvent): Position {
   return {
     ...position,
     market: event.title ?? position.market,
     side: event.outcome ?? position.side,
+    no_of_shares: asNumber(event.no_of_shares, position.no_of_shares),
     entryPrice: asNumber(event.avg_price, position.entryPrice),
     currentPrice: asNumber(event.current_price, position.currentPrice),
     size: asNumber(event.position_value, position.size),
@@ -167,13 +188,32 @@ function applyPriceEvent(position: Position, event: PositionPriceEvent): Positio
   };
 }
 
+function hasPositionChanged(previous: Position, next: Position): boolean {
+  return (
+    previous.market !== next.market ||
+    previous.side !== next.side ||
+    previous.no_of_shares !== next.no_of_shares ||
+    previous.entryPrice !== next.entryPrice ||
+    previous.currentPrice !== next.currentPrice ||
+    previous.size !== next.size ||
+    previous.pnl !== next.pnl ||
+    previous.pnlPct !== next.pnlPct ||
+    previous.priceStale !== next.priceStale
+  );
+}
+
 function buildPositionFromPriceEvent(event: PositionPriceEvent): Position {
   const side = event.outcome ?? "UNKNOWN";
+  const category: Position["category"] =
+    event.category && POSITION_CATEGORIES.includes(event.category as Position["category"])
+      ? (event.category as Position["category"])
+      : "Other";
   return {
     id: event.position_id,
     market: event.title ?? "Untitled market",
-    category: "Other",
+    category,
     side,
+    no_of_shares: asNumber(event.no_of_shares, 0),
     entryPrice: asNumber(event.avg_price, 0),
     currentPrice: asNumber(event.current_price, 0),
     size: asNumber(event.position_value, 0),
@@ -231,12 +271,14 @@ function normalizeIncomingPriceEvent(payload: unknown): PositionPriceEvent | nul
     position_id: positionId,
     outcome: pickFirst(payload, ["outcome", "side"], asOptionalString),
     title: pickFirst(payload, ["title", "market", "market_title"], asOptionalString),
+    no_of_shares: pickFirst(payload, ["no_of_shares", "noOfShares", "shares", "quantity"], asOptionalNumber),
     avg_price: pickFirst(payload, ["avg_price", "avgPrice", "entry_price", "entryPrice"], asOptionalNumber),
     current_price: pickFirst(payload, ["current_price", "currentPrice", "mark_price", "markPrice"], asOptionalNumber),
     position_value: pickFirst(payload, ["position_value", "positionValue", "size", "notional"], asOptionalNumber),
     pnl_amount: pickFirst(payload, ["pnl_amount", "pnlAmount", "pnl"], asOptionalNumber),
     pnl_percent: pickFirst(payload, ["pnl_percent", "pnlPercent", "pnl_pct", "pnlPct"], asOptionalNumber),
     stale: pickFirst(payload, ["stale", "is_stale", "isStale"], asOptionalBoolean) ?? false,
+    category: pickFirst(payload, ["category", "group", "type"], asOptionalString),
   };
 }
 
@@ -255,11 +297,11 @@ function coercePriceEvents(payload: unknown): PositionPriceEvent[] {
   if (isRecord(payload)) {
     return coercePriceEvents(
       payload.data ??
-        payload.position ??
-        payload.positions ??
-        payload.position_price ??
-        payload.position_prices ??
-        payload.snapshot
+      payload.position ??
+      payload.positions ??
+      payload.position_price ??
+      payload.position_prices ??
+      payload.snapshot
     );
   }
 
@@ -292,7 +334,7 @@ export function usePositions({
     setPositionsState(isLiveSocketMode ? [] : mockPositions);
     lastSeenByPositionIdRef.current = {};
     setError(null);
-    setLoading(!isLiveSocketMode);
+    setLoading(isLiveSocketMode);
     setConnectionState(isLiveSocketMode ? "reconnecting" : "connected");
 
     if (isLiveSocketMode) {
@@ -324,6 +366,8 @@ export function usePositions({
     let pendingEvents: PositionPriceEvent[] = [];
     let flushTimerId: number | null = null;
     let disconnectedTimerId: number | null = null;
+    let initialDataGraceTimerId: number | null = null;
+    let hasReceivedFirstLivePayload = false;
 
     const flushBufferedEvents = () => {
       flushTimerId = null;
@@ -336,6 +380,11 @@ export function usePositions({
       const tick = Date.now();
       setPositionsState((previous) => {
         let next = previous;
+        const indexById = new Map<string, number>();
+        previous.forEach((position, index) => {
+          indexById.set(position.id, index);
+        });
+
         for (const event of events) {
           const positionId = normalizePositionId(event.position_id);
           if (!positionId) {
@@ -343,19 +392,35 @@ export function usePositions({
           }
 
           lastSeenByPositionIdRef.current[positionId] = tick;
-          const existingIndex = next.findIndex((position) => position.id === positionId);
+          const existingIndex = indexById.get(positionId) ?? -1;
           if (existingIndex === -1) {
-            next = [...next, { ...buildPositionFromPriceEvent(event), id: positionId, liveTick: tick }];
+            if (next === previous) {
+              next = [...previous];
+            }
+            next.push({ ...buildPositionFromPriceEvent(event), id: positionId, liveTick: tick });
+            indexById.set(positionId, next.length - 1);
             continue;
           }
 
-          next = next.map((position) =>
-            position.id === positionId ? { ...applyPriceEvent(position, event), liveTick: tick } : position
-          );
+          const currentPosition = next[existingIndex];
+          const updatedPosition = applyPriceEvent(currentPosition, event);
+          if (!hasPositionChanged(currentPosition, updatedPosition)) {
+            continue;
+          }
+
+          if (next === previous) {
+            next = [...previous];
+          }
+          next[existingIndex] = { ...updatedPosition, liveTick: tick };
         }
 
         return next;
       });
+      hasReceivedFirstLivePayload = true;
+      if (initialDataGraceTimerId !== null) {
+        window.clearTimeout(initialDataGraceTimerId);
+        initialDataGraceTimerId = null;
+      }
       setLoading(false);
       setError(null);
     };
@@ -391,7 +456,16 @@ export function usePositions({
       setPositionsState([]);
       lastSeenByPositionIdRef.current = {};
       setError(null);
-      setLoading(false);
+      hasReceivedFirstLivePayload = false;
+      if (initialDataGraceTimerId !== null) {
+        window.clearTimeout(initialDataGraceTimerId);
+      }
+      setLoading(true);
+      initialDataGraceTimerId = window.setTimeout(() => {
+        if (!hasReceivedFirstLivePayload) {
+          setLoading(false);
+        }
+      }, INITIAL_LIVE_DATA_GRACE_MS);
       setConnectionState("connected");
       clearDisconnectedTimer();
       didLogConnectError = false;
@@ -459,6 +533,9 @@ export function usePositions({
       flushBufferedEvents();
       if (flushTimerId !== null) {
         window.clearTimeout(flushTimerId);
+      }
+      if (initialDataGraceTimerId !== null) {
+        window.clearTimeout(initialDataGraceTimerId);
       }
       clearDisconnectedTimer();
       socket.disconnect();

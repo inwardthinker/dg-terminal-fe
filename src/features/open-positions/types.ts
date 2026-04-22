@@ -1,5 +1,6 @@
 export type Position = {
   id: string;
+  no_of_shares: number;
   market: string;
   category: "Sports" | "Politics" | "Crypto" | "Macro" | "Other";
   side: string;

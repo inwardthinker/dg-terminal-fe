@@ -10,6 +10,8 @@ import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
+    POSITION_TABLE_GRID_COLUMNS,
+    POSITION_TABLE_GRID_COLUMNS_MOBILE,
     POSITION_TABLE_ROW_HEIGHT_PX,
     VIRTUALIZATION_THRESHOLD,
     VIRTUAL_ROW_OVERSCAN,
@@ -61,125 +63,109 @@ export function PositionsTable({
                         : undefined
                 }
             >
-            <table className="w-full table-fixed text-sm max-sm:text-[13px]">
-                <thead className="sticky top-0 z-10 border-b border-line-c bg-bg-1 text-support max-sm:text-[12px]">
-                    <tr>
-                        <th className="px-3 py-2 text-center pl-9 max-sm:pl-3">
-                            <span className="inline-flex items-center justify-center gap-1">
+                <div className="text-sm max-sm:text-[13px]">
+                    <div className={`sticky top-0 z-10 grid ${POSITION_TABLE_GRID_COLUMNS} items-center border-b border-line-c bg-bg-1 text-support ${POSITION_TABLE_GRID_COLUMNS_MOBILE} max-sm:text-[12px]`}>
+                        <div className="px-3 py-2 text-left pl-9 max-sm:pl-3">
+                            <span className="inline-flex items-center justify-start gap-1">
                                 <span>Market</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Market contract name for the position." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center max-sm:hidden">
-                            <span className="inline-flex items-center justify-center gap-1">
+                        </div>
+                        <div className="px-3 py-2 text-center max-sm:hidden">
+                            <span className="inline-flex items-center justify-end gap-0">
                                 <span>Category</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Exposure category assigned by ranked category mapping." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center">
+                        </div>
+                        <div className="px-3 py-2 text-left">
                             <span className="inline-flex items-center justify-center gap-1">
                                 <span>Side</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Your position direction: YES or NO." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center max-sm:hidden">
-                            <span className="inline-flex items-center justify-center gap-1">
+                        </div>
+                        <div className="py-2 text-right max-sm:hidden">
+                            <span className="flex items-center justify-end">
                                 <span>Entry</span>
                                 <InfoTooltip text="Average entry price of this position." />
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center max-sm:hidden">
+                        </div>
+                        <div className="px-3 py-2 text-center max-sm:hidden">
                             <span className="inline-flex items-center justify-center gap-1">
                                 <span>Current</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Latest mark/current price." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center max-sm:hidden">
+                        </div>
+                        <div className="px-3 py-2 text-right max-sm:hidden">
                             <span className="inline-flex items-center justify-center gap-1">
                                 <span>Size</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Current notional exposure size." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center">
+                        </div>
+                        <div className="px-3 py-2 text-right">
                             <span className="inline-flex items-center justify-center gap-1">
                                 <span>P&amp;L</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Unrealized profit/loss in absolute value." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center max-sm:hidden">
+                        </div>
+                        <div className="px-3 py-2 text-center max-sm:hidden">
                             <span className="inline-flex items-center justify-center gap-1">
                                 <span>P&amp;L %</span>
                                 <span className="max-sm:hidden">
                                     <InfoTooltip text="Unrealized profit/loss as percentage return." />
                                 </span>
                             </span>
-                        </th>
-                        <th className="px-3 py-2 text-center">Action</th>
-                    </tr>
-                </thead>
+                        </div>
+                        <div className="px-3 py-2 text-center">Action</div>
+                    </div>
 
-                <tbody>
                     {positions.length === 0 ? (
-                        <tr>
-                            <td colSpan={9} className="py-6 text-center text-support">
-                                No positions found
-                            </td>
-                        </tr>
+                        <div className="py-6 text-center text-support">No positions found</div>
                     ) : shouldVirtualize ? (
-                        <tr>
-                            <td className="p-0" colSpan={9}>
-                                <div
-                                    style={{
-                                        height: `${rowVirtualizer.getTotalSize()}px`,
-                                        position: "relative",
-                                        width: "100%",
-                                    }}
-                                >
-                                    {virtualRows.map((virtualRow) => {
-                                        const position = positions[virtualRow.index];
-                                        if (!position) return null;
+                        <div
+                            style={{
+                                height: `${rowVirtualizer.getTotalSize()}px`,
+                                position: "relative",
+                                width: "100%",
+                            }}
+                        >
+                            {virtualRows.map((virtualRow) => {
+                                const position = positions[virtualRow.index];
+                                if (!position) return null;
 
-                                        return (
-                                            <table
-                                                key={virtualRow.key}
-                                                className="w-full table-fixed text-sm max-sm:text-[13px]"
-                                                style={{
-                                                    position: "absolute",
-                                                    top: 0,
-                                                    left: 0,
-                                                    transform: `translateY(${virtualRow.start}px)`,
-                                                }}
-                                            >
-                                                <tbody>
-                                                    <PositionRowTable
-                                                        position={position}
-                                                        categoryPresentation={categoryPresentation}
-                                                        onOpen={onOpenPosition}
-                                                        onClose={onClosePosition}
-                                                        isSelected={selectedPositionIds?.has(position.id)}
-                                                        onToggleSelect={onTogglePositionSelect}
-                                                        isClosing={closingPositionIds?.has(position.id)}
-                                                        showStalePnl={venueUnavailable || Boolean(position.priceStale)}
-                                                    />
-                                                </tbody>
-                                            </table>
-                                        );
-                                    })}
-                                </div>
-                            </td>
-                        </tr>
+                                return (
+                                    <PositionRowTable
+                                        key={virtualRow.key}
+                                        position={position}
+                                        categoryPresentation={categoryPresentation}
+                                        onOpen={onOpenPosition}
+                                        onClose={onClosePosition}
+                                        isSelected={selectedPositionIds?.has(position.id)}
+                                        onToggleSelect={onTogglePositionSelect}
+                                        isClosing={closingPositionIds?.has(position.id)}
+                                        showStalePnl={venueUnavailable || Boolean(position.priceStale)}
+                                        style={{
+                                            position: "absolute",
+                                            top: 0,
+                                            left: 0,
+                                            transform: `translateY(${virtualRow.start}px)`,
+                                            width: "100%",
+                                        }}
+                                    />
+                                );
+                            })}
+                        </div>
                     ) : (
                         positions.map((position) => (
                             <PositionRowTable
@@ -191,12 +177,11 @@ export function PositionsTable({
                                 isSelected={selectedPositionIds?.has(position.id)}
                                 onToggleSelect={onTogglePositionSelect}
                                 isClosing={closingPositionIds?.has(position.id)}
-                                showStalePnl={venueUnavailable || Boolean(position.priceStale)}
+                                showStalePnl={false}
                             />
                         ))
                     )}
-                </tbody>
-            </table>
+                </div>
             </div>
 
             <div className="flex justify-between max-sm:hidden">

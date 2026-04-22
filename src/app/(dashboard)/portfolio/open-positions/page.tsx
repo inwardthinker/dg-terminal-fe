@@ -4,13 +4,12 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PositionsTableContainer } from '@/features/open-positions/components/PositionTableContainer'
 import { mapKpisToCards } from '@/features/open-positions/utils/mapKpisToCards'
 import { KpiCard } from '@/features/portfolio/components/cards/KpiCard'
-import { isVenueApiUnavailablePreview } from '@/features/portfolio/constants/previewState'
 import { usePositions } from '@/features/open-positions/hooks/usePositions'
 import React, { Suspense, useMemo } from 'react'
 
 const Page = () => {
-    const { positions, error } = usePositions({ realtimeOnly: true })
-    const venueUnavailable = isVenueApiUnavailablePreview || Boolean(error)
+    const { positions, loading, error } = usePositions({ realtimeOnly: true })
+    const venueUnavailable = Boolean(error)
     const kpis = useMemo(() => {
         const totalOpen = positions.length
         const totalExposure = positions.reduce((sum, position) => sum + position.size, 0)
@@ -50,7 +49,11 @@ const Page = () => {
 
                 </div>
                 <Suspense fallback={null}>
-                    <PositionsTableContainer />
+                    <PositionsTableContainer
+                        positions={positions}
+                        loading={loading}
+                        error={error}
+                    />
                 </Suspense>
             </div>
         </div>
