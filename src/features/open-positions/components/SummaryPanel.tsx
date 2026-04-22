@@ -14,6 +14,7 @@ import {
 import { InfoTooltip } from "@/components/ui/InfoTooltip";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import clsx from "clsx";
+import type { PositionsConnectionState } from "../types";
 
 type SummaryPanelProps = {
   positions: Position[];
@@ -21,6 +22,7 @@ type SummaryPanelProps = {
   onOpenPosition: (position: Position) => void;
   onClosePosition: (position: Position) => void;
   venueUnavailable?: boolean;
+  connectionState?: PositionsConnectionState;
 };
 
 const OPEN_POSITIONS_URL = "/portfolio/open-positions";
@@ -72,6 +74,7 @@ export function SummaryPanel({
   onOpenPosition,
   onClosePosition,
   venueUnavailable = false,
+  connectionState = "connected",
 }: SummaryPanelProps) {
   const isEmpty = totalCount === 0;
 
@@ -80,6 +83,14 @@ export function SummaryPanel({
   const categoryPresentation = useMemo(() => {
     return buildCategoryPresentation(positions)
   }, [positions])
+
+  const liveDotColorClass =
+    connectionState === "connected"
+      ? "bg-pos"
+      : connectionState === "reconnecting"
+        ? "bg-warn"
+        : "bg-neg";
+  const showReconnectTooltip = connectionState !== "connected";
 
   return (
     <section className={clsx("rounded-r7 border border-line-c p-4 h-full flex flex-col", isEmpty ? "bg-bg-1/35" : "bg-bg-1")}>
@@ -90,11 +101,24 @@ export function SummaryPanel({
               <h2 className="">Open Positions </h2>
               <DotSeparator size={4} />
               <h2 className="">{totalCount}</h2>
-              <DotSeparator
-                size={8}
-                color={venueUnavailable ? "bg-neg" : "bg-pos"}
-                className={venueUnavailable ? undefined : "animate-pulse"}
-              />
+              <span className="relative mx-2 inline-flex items-center group">
+                <span
+                  className={clsx(
+                    "h-2 w-2 rounded-full",
+                    venueUnavailable ? "bg-neg" : liveDotColorClass
+                  )}
+                  aria-label={
+                    showReconnectTooltip
+                      ? "Live prices paused. Reconnecting..."
+                      : "Live prices connected"
+                  }
+                />
+                {showReconnectTooltip ? (
+                  <span className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-20 hidden w-max -translate-x-1/2 rounded-r3 border border-line-c bg-bg-2 px-2 py-1 text-support text-[11px] text-t-2 group-hover:block">
+                    Live prices paused. Reconnecting...
+                  </span>
+                ) : null}
+              </span>
               <InfoTooltip text="Total number of open positions in the portfolio" />
             </>
           )}

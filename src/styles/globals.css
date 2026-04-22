@@ -393,3 +393,17 @@ select {
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
+
+@keyframes live-value-flash {
+  0% {
+    background-color: color-mix(in srgb, var(--g3) 38%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.live-value-flash {
+  animation: live-value-flash 700ms ease-out;
+  border-radius: var(--radius-2);
+}

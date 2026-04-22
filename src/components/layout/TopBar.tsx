@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePortfolio } from "@/features/portfolio/components/hooks/usePortfolio";
 
 const fmtCurrency = (n: number) => `$${n.toLocaleString("en-US")}`;
@@ -18,6 +19,17 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
   const todayPnl = !loading ? kpis?.todayPnl : undefined;
   const openCount = !loading ? kpis?.openCount : undefined;
   const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
+  const [throttledPortfolioPct, setThrottledPortfolioPct] = useState<number | undefined>(portfolioPct);
+  const [portfolioTick, setPortfolioTick] = useState(0);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setThrottledPortfolioPct(portfolioPct);
+      setPortfolioTick(Date.now());
+    }, 1_000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [portfolioPct]);
 
   return (
     <header className="w-full shrink-0 border-b border-line-c bg-bg-0">
@@ -95,10 +107,11 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
           <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px]">
             <span className="text-label">Portfolio</span>
             <span
-              className={`text-secondary ${portfolioPct !== undefined && portfolioPct < 0 ? "text-neg" : "text-pos"
+              key={`portfolio-pill-${portfolioTick}`}
+              className={`text-secondary live-value-flash px-1 ${throttledPortfolioPct !== undefined && throttledPortfolioPct < 0 ? "text-neg" : "text-pos"
                 }`}
             >
-              {portfolioPct !== undefined ? fmtPct(portfolioPct) : "--"}
+              {throttledPortfolioPct !== undefined ? fmtPct(throttledPortfolioPct) : "--"}
             </span>
           </div>
 

@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import type { Position, UsePositionsParams, UsePositionsResult } from "../types";
+import type {
+  Position,
+  PositionsConnectionState,
+  UsePositionsParams,
+  UsePositionsResult,
+} from "../types";
 import {
   connectPositionsPriceSocket,
   parseSocketError,
@@ -145,6 +150,8 @@ const mockPositions: Position[] = [
   },
 ];
 const POSITION_STALE_MS = 6 * 60 * 1000;
+const LIVE_UPDATE_THROTTLE_MS = 500;
+const DISCONNECTED_DOT_DELAY_MS = 10_000;
 
 function applyPriceEvent(position: Position, event: PositionPriceEvent): Position {
   return {
@@ -180,6 +187,85 @@ function normalizePositionId(positionId: string): string {
   return positionId.trim();
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function asOptionalString(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value : null;
+}
+
+function asOptionalNumber(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function asOptionalBoolean(value: unknown): boolean | null {
+  return typeof value === "boolean" ? value : null;
+}
+
+function pickFirst<T>(
+  source: Record<string, unknown>,
+  keys: string[],
+  parser: (value: unknown) => T | null
+): T | null {
+  for (const key of keys) {
+    const parsed = parser(source[key]);
+    if (parsed !== null) {
+      return parsed;
+    }
+  }
+  return null;
+}
+
+function normalizeIncomingPriceEvent(payload: unknown): PositionPriceEvent | null {
+  if (!isRecord(payload)) {
+    return null;
+  }
+
+  const positionId = pickFirst(payload, ["position_id", "positionId", "id"], asOptionalString);
+  if (!positionId) {
+    return null;
+  }
+
+  return {
+    position_id: positionId,
+    outcome: pickFirst(payload, ["outcome", "side"], asOptionalString),
+    title: pickFirst(payload, ["title", "market", "market_title"], asOptionalString),
+    avg_price: pickFirst(payload, ["avg_price", "avgPrice", "entry_price", "entryPrice"], asOptionalNumber),
+    current_price: pickFirst(payload, ["current_price", "currentPrice", "mark_price", "markPrice"], asOptionalNumber),
+    position_value: pickFirst(payload, ["position_value", "positionValue", "size", "notional"], asOptionalNumber),
+    pnl_amount: pickFirst(payload, ["pnl_amount", "pnlAmount", "pnl"], asOptionalNumber),
+    pnl_percent: pickFirst(payload, ["pnl_percent", "pnlPercent", "pnl_pct", "pnlPct"], asOptionalNumber),
+    stale: pickFirst(payload, ["stale", "is_stale", "isStale"], asOptionalBoolean) ?? false,
+  };
+}
+
+function coercePriceEvents(payload: unknown): PositionPriceEvent[] {
+  if (Array.isArray(payload)) {
+    return payload
+      .map((entry) => normalizeIncomingPriceEvent(entry))
+      .filter((event): event is PositionPriceEvent => event !== null);
+  }
+
+  const normalizedEvent = normalizeIncomingPriceEvent(payload);
+  if (normalizedEvent) {
+    return [normalizedEvent];
+  }
+
+  if (isRecord(payload)) {
+    return coercePriceEvents(
+      payload.data ??
+        payload.position ??
+        payload.positions ??
+        payload.position_price ??
+        payload.position_prices ??
+        payload.snapshot
+    );
+  }
+
+  return [];
+}
+
 function asNumber(value: number | null, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
@@ -195,6 +281,9 @@ export function usePositions({
   const lastSeenByPositionIdRef = useRef<Record<string, number>>({});
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [connectionState, setConnectionState] = useState<PositionsConnectionState>(
+    isLiveSocketMode ? "reconnecting" : "connected"
+  );
   const [positionsState, setPositionsState] = useState<Position[]>(
     isLiveSocketMode ? [] : mockPositions
   )
@@ -204,6 +293,7 @@ export function usePositions({
     lastSeenByPositionIdRef.current = {};
     setError(null);
     setLoading(!isLiveSocketMode);
+    setConnectionState(isLiveSocketMode ? "reconnecting" : "connected");
 
     if (isLiveSocketMode) {
       if (realtimeOnly && !resolvedAddress) {
@@ -230,6 +320,71 @@ export function usePositions({
     }
 
     const socket = connectPositionsPriceSocket(resolvedAddress);
+    let didLogConnectError = false;
+    let pendingEvents: PositionPriceEvent[] = [];
+    let flushTimerId: number | null = null;
+    let disconnectedTimerId: number | null = null;
+
+    const flushBufferedEvents = () => {
+      flushTimerId = null;
+      const events = pendingEvents;
+      if (events.length === 0) {
+        return;
+      }
+
+      pendingEvents = [];
+      const tick = Date.now();
+      setPositionsState((previous) => {
+        let next = previous;
+        for (const event of events) {
+          const positionId = normalizePositionId(event.position_id);
+          if (!positionId) {
+            continue;
+          }
+
+          lastSeenByPositionIdRef.current[positionId] = tick;
+          const existingIndex = next.findIndex((position) => position.id === positionId);
+          if (existingIndex === -1) {
+            next = [...next, { ...buildPositionFromPriceEvent(event), id: positionId, liveTick: tick }];
+            continue;
+          }
+
+          next = next.map((position) =>
+            position.id === positionId ? { ...applyPriceEvent(position, event), liveTick: tick } : position
+          );
+        }
+
+        return next;
+      });
+      setLoading(false);
+      setError(null);
+    };
+
+    const scheduleFlush = () => {
+      if (flushTimerId !== null) {
+        return;
+      }
+      flushTimerId = window.setTimeout(flushBufferedEvents, LIVE_UPDATE_THROTTLE_MS);
+    };
+
+    const clearDisconnectedTimer = () => {
+      if (disconnectedTimerId !== null) {
+        window.clearTimeout(disconnectedTimerId);
+        disconnectedTimerId = null;
+      }
+    };
+
+    const markDisconnectedWithDelay = () => {
+      clearDisconnectedTimer();
+      disconnectedTimerId = window.setTimeout(() => {
+        setConnectionState("disconnected");
+      }, DISCONNECTED_DOT_DELAY_MS);
+    };
+
+    const emitSubscribe = () => {
+      socket.emit("subscribe_positions", { userAddress: resolvedAddress });
+      socket.emit("subscribe", { user: resolvedAddress });
+    };
 
     socket.on("connect", () => {
       // Clear stale rows from prior disconnected sessions before fresh snapshot events arrive.
@@ -237,6 +392,10 @@ export function usePositions({
       lastSeenByPositionIdRef.current = {};
       setError(null);
       setLoading(false);
+      setConnectionState("connected");
+      clearDisconnectedTimer();
+      didLogConnectError = false;
+      emitSubscribe();
       console.info("[positions-socket] connected", { socketId: socket.id, user: resolvedAddress });
     });
 
@@ -244,23 +403,26 @@ export function usePositions({
       console.info("[positions-socket] subscribed", payload);
     });
 
-    socket.on("position_price", (event: PositionPriceEvent) => {
-      console.info("[positions-socket] position_price", event);
-      const positionId = normalizePositionId(event.position_id);
-      lastSeenByPositionIdRef.current[positionId] = Date.now();
+    const handlePositionPayload = (payload: unknown) => {
+      const events = coercePriceEvents(payload);
+      if (events.length === 0) {
+        return;
+      }
 
-      setPositionsState((previous) => {
-        const existingIndex = previous.findIndex((position) => position.id === positionId);
-        if (existingIndex === -1) {
-          return [...previous, { ...buildPositionFromPriceEvent(event), id: positionId }];
-        }
+      console.info("[positions-socket] position-update", payload);
+      pendingEvents.push(...events);
+      scheduleFlush();
+    };
 
-        return previous.map((position) =>
-          position.id === positionId ? applyPriceEvent(position, event) : position
-        );
-      });
-      setLoading(false);
-    });
+    const liveEventNames = [
+      "position_price",
+      "position_prices",
+      "positionPrice",
+      "positions_snapshot",
+      "positions",
+      "snapshot",
+    ];
+    liveEventNames.forEach((eventName) => socket.on(eventName, handlePositionPayload));
 
     socket.on("error", (payload: unknown) => {
       console.error("[positions-socket] error-event", payload);
@@ -268,13 +430,37 @@ export function usePositions({
     });
 
     socket.on("connect_error", (errorPayload) => {
-      console.error("[positions-socket] connect_error", errorPayload);
+      if (!didLogConnectError) {
+        console.error("[positions-socket] connect_error", errorPayload);
+        didLogConnectError = true;
+      }
       setError(errorPayload.message || "Failed to connect to live positions socket");
+      setConnectionState("reconnecting");
+      markDisconnectedWithDelay();
     });
 
-    socket.connect();
+    socket.on("disconnect", () => {
+      setConnectionState("reconnecting");
+      markDisconnectedWithDelay();
+    });
+
+    socket.io.on("reconnect_attempt", () => {
+      setConnectionState("reconnecting");
+    });
+
+    socket.io.on("reconnect", () => {
+      setConnectionState("connected");
+      clearDisconnectedTimer();
+      emitSubscribe();
+    });
 
     return () => {
+      liveEventNames.forEach((eventName) => socket.off(eventName, handlePositionPayload));
+      flushBufferedEvents();
+      if (flushTimerId !== null) {
+        window.clearTimeout(flushTimerId);
+      }
+      clearDisconnectedTimer();
       socket.disconnect();
     };
   }, [resolvedAddress]);
@@ -317,5 +503,5 @@ export function usePositions({
     return data
   }, [limit, sortBy, positionsState])
 
-  return { positions, totalCount, loading, error }
+  return { positions, totalCount, loading, error, connectionState }
 }

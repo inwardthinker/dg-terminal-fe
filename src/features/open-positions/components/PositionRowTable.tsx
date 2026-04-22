@@ -88,8 +88,8 @@ export const PositionRowTable = React.memo(function PositionRowTable({
             }}
         >
             {/* Checkbox (Phase 0 hidden) */}
-            <td className="px-3 py-0 align-middle">
-                <div className="flex w-full min-w-0 items-center gap-3 text-secondary max-sm:max-w-[132px] max-sm:gap-1">
+            <td className="px-3 py-0 align-middle text-center">
+                <div className="flex w-full min-w-0 items-center justify-center gap-3 text-secondary max-sm:max-w-[132px] max-sm:gap-1">
                     <div className="inline-flex h-8 w-8 items-center justify-center">
                         <input
                             type="checkbox"
@@ -129,7 +129,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
 
                     <span
-                        className="block min-w-0 truncate max-sm:text-[13px]"
+                        className="block min-w-0 truncate text-center max-sm:text-[13px]"
                         title={position.market}
                     >
                         {position.market}
@@ -139,66 +139,66 @@ export const PositionRowTable = React.memo(function PositionRowTable({
 
             {/* Category */}
             <td className="px-3 py-0 align-middle max-sm:hidden">
-                <CategoryPill
-                    label={categoryStyle.label}
-                    colorClass={categoryStyle.colorClass}
-                />
+                <div className="flex justify-center">
+                    <CategoryPill
+                        label={categoryStyle.label}
+                        colorClass={categoryStyle.colorClass}
+                    />
+                </div>
             </td>
 
             {/* Side */}
             <td
-                className={`px-3 py-0 align-middle font-bold max-sm:text-[11px] ${sideTextClass(position.side)}`}
+                className={`px-3 py-0 align-middle text-center font-bold max-sm:text-[11px] ${sideTextClass(position.side)}`}
             >
                 {position.side}
             </td>
 
             {/* Entry */}
-            <td className="px-3 py-0 align-middle text-right text-secondary max-sm:hidden">
+            <td className="px-3 py-0 align-middle text-center text-secondary max-sm:hidden">
                 {currencyFormatter.format(position.entryPrice)}
             </td>
 
             {/* Current */}
-            <td className="px-3 py-0 align-middle text-right text-secondary max-sm:hidden">
-                {currencyFormatter.format(position.currentPrice)}
+            <td className="px-3 py-0 align-middle text-center text-secondary max-sm:hidden">
+                <span key={`current-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {currencyFormatter.format(position.currentPrice)}
+                </span>
             </td>
 
             {/* Size */}
-            <td className="px-3 py-0 align-middle text-right text-secondary max-sm:hidden">
+            <td className="px-3 py-0 align-middle text-center text-secondary max-sm:hidden">
                 {currencyFormatter.format(position.size)}
             </td>
 
             {/* P&L */}
             <td
-                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${
+                className={`px-3 py-0 align-middle text-center transition-colors duration-200 ${
                     showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnl)
                 }`}
                 aria-live="polite"
                 aria-atomic="true"
             >
-                {showStalePnl ? "?" : (
-                    <>
-                        {position.pnl >= 0 ? "+" : ""}
-                        {currencyFormatter.format(position.pnl)}
-                    </>
-                )}
+                <span key={`pnl-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {position.pnl >= 0 ? "+" : ""}
+                    {currencyFormatter.format(position.pnl)}
+                </span>
             </td>
 
             {/* P&L % */}
             <td
-                className={`px-3 py-0 align-middle text-right transition-colors duration-200 ${
+                className={`px-3 py-0 align-middle text-center transition-colors duration-200 ${
                     showStalePnl ? "text-support opacity-60" : pnlTextClass(position.pnlPct)
                 } max-sm:hidden`}
             >
-                {showStalePnl ? "Stale" : (
-                    <>
-                        {position.pnlPct >= 0 ? "+" : ""}
-                        {position.pnlPct.toFixed(2)}%
-                    </>
-                )}
+                <span key={`pnlpct-${position.liveTick ?? 0}`} className="inline-block live-value-flash px-1">
+                    {position.pnlPct >= 0 ? "+" : ""}
+                    {position.pnlPct.toFixed(2)}%
+                </span>
             </td>
 
             {/* Action */}
-            <td className="px-3 py-0 align-middle text-right">
+            <td className="px-3 py-0 align-middle text-center">
                 <Button
                     variant="destructive"
                     size="sm"

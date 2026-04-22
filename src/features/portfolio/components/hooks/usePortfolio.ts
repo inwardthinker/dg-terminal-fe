@@ -119,12 +119,20 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
 
   useEffect(() => {
     let isMounted = true;
+    const normalizedWalletAddress = walletAddress.trim();
 
     async function loadPortfolio() {
+      if (normalizedWalletAddress.length === 0) {
+        setPortfolio(MOCK_PORTFOLIO);
+        setError(null);
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
 
       try {
-        const data = await getPortfolio(walletAddress);
+        const data = await getPortfolio(normalizedWalletAddress);
         if (!isMounted) return;
         setPortfolio(data);
         setError(null);

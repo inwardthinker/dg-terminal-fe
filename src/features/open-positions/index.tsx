@@ -17,7 +17,7 @@ export function SummaryPanelContainer({
     forceEmptyState = false,
     venueUnavailableOverride = false,
 }: Props) {
-    const { positions, totalCount, loading, error } = usePositions(
+    const { positions, totalCount, loading, error, connectionState } = usePositions(
         forceEmptyState ? { limit: 0, userAddress: "" } : { limit }
     );
     const venueUnavailable = venueUnavailableOverride || Boolean(error);
@@ -40,6 +40,7 @@ export function SummaryPanelContainer({
             onOpenPosition={handleOpen}
             onClosePosition={handleClose}
             venueUnavailable={venueUnavailable}
+            connectionState={connectionState}
         />
     );
 }
