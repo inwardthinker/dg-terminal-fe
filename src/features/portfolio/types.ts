@@ -103,6 +103,7 @@ export type PortfolioData = {
 export type UsePortfolioResult = {
   portfolio: PortfolioData | null;
   loading: boolean;
+  kpiLoading: boolean;
   error: string | null;
 };
 

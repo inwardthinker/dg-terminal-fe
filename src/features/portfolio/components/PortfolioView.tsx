@@ -11,12 +11,14 @@ import { TradeHistorySection } from "./sections/TradeHistorySection";
 type PortfolioViewProps = {
     portfolio: PortfolioData | null;
     loading: boolean;
+    kpiLoading?: boolean;
     venueUnavailable?: boolean;
 };
 
 export function PortfolioView({
     portfolio,
     loading,
+    kpiLoading = false,
     venueUnavailable = false,
 }: PortfolioViewProps) {
     const isNewUserNoTrades =
@@ -35,7 +37,11 @@ export function PortfolioView({
             />
             <main className="flex min-w-0 max-w-full flex-col gap-sp4 overflow-x-hidden bg-bg-0 px-sp5 py-sp4 sm:px-sp7">
                 {venueUnavailable && <VenueUnavailableBanner />}
-                <KpiSection kpis={portfolio?.kpis} loading={loading} venueUnavailable={venueUnavailable} />
+                <KpiSection
+                    kpis={portfolio?.kpis}
+                    loading={loading || kpiLoading}
+                    venueUnavailable={venueUnavailable}
+                />
                 {isNewUserNoTrades ? (
                     <SummaryPanelContainer limit={3} forceEmptyState />
                 ) : (

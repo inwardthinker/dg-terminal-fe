@@ -130,6 +130,7 @@ const MOCK_PORTFOLIO: PortfolioData = {
 export function usePortfolio(walletAddress = ""): UsePortfolioResult {
   const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [kpiLoading, setKpiLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -139,6 +140,7 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
     async function loadPortfolio() {
       if (normalizedWalletAddress.length === 0) {
         setPortfolio(MOCK_PORTFOLIO);
+        setKpiLoading(false);
         setError(null);
         setLoading(false);
         return;
@@ -173,9 +175,11 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
     const resolvedWalletAddress =
       resolvePortfolioKpiSocketWalletAddress(walletAddress);
     if (!resolvedWalletAddress) {
+      setKpiLoading(false);
       return;
     }
 
+    setKpiLoading(true);
     const socket = connectPortfolioKpiSocket(resolvedWalletAddress);
 
     const handleKpiUpdate = ({ wallet, kpis }: PortfolioKpiUpdateEvent) => {
@@ -202,6 +206,7 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
           },
         };
       });
+      setKpiLoading(false);
     };
 
     socket.on("kpi_update", handleKpiUpdate);
@@ -215,5 +220,5 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
       socket.disconnect();
     };
   }, [walletAddress]);
-  return { portfolio, loading, error };
+  return { portfolio, loading, kpiLoading, error };
 }
