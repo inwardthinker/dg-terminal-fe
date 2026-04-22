@@ -1,8 +1,6 @@
 import { ApiKpis, KpiCardData } from "../types";
 
-export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
-    const unrealizedPrefix = kpis.unrealizedPnl > 0 ? "+" : "";
-
+export function mapKpisToCards(kpis: ApiKpis, venueUnavailable = false): KpiCardData[] {
     return [
         {
             id: "totalOpen",
@@ -19,9 +17,18 @@ export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
         {
             id: "unrealizedPnl",
             label: "Total Unrealized P&L",
-            value: `${unrealizedPrefix}$${kpis.unrealizedPnl.toLocaleString("en-US")}`,
-            valueVariant: kpis.unrealizedPnl > 0 ? "positive" : kpis.unrealizedPnl < 0 ? "negative" : "default",
-            tooltip: "Unrealized profit or loss",
+            value: venueUnavailable
+                ? "?"
+                : `${kpis.unrealizedPnl > 0 ? "+" : ""}$${kpis.unrealizedPnl.toLocaleString("en-US")}`,
+            valueVariant: venueUnavailable
+                ? "default"
+                : kpis.unrealizedPnl > 0
+                    ? "positive"
+                    : kpis.unrealizedPnl < 0
+                        ? "negative"
+                        : "default",
+            tooltip: venueUnavailable ? "Prices are stale while venue API is unavailable" : "Unrealized profit or loss",
+            dimmed: venueUnavailable,
         },
         {
             id: "largestPosition",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { TradeHistoryEntry, TradeHistoryPeriod } from "../types";
+import type { TradeHistoryEntry, TradeHistoryPeriod } from "@/features/portfolio/types";
+import { useModal } from "@/lib/modals/hooks/useModal";
 
 const PERIODS: TradeHistoryPeriod[] = ["7d", "30d", "90d", "All"];
 const PAGE_SIZE = 10;
@@ -25,8 +26,8 @@ const formatUsd = (n: number) =>
 
 function ResultBadge({ result }: { result: TradeHistoryEntry["result"] }) {
   const cls = {
-    WON:    "bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos",
-    LOST:   "bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg",
+    WON: "bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos",
+    LOST: "bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg",
     PUSHED: "bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3",
   }[result];
 
@@ -85,8 +86,10 @@ export function TradeHistoryPanel({
   loading,
 }: TradeHistoryPanelProps) {
   void total;
+  const isEmpty = trades.length === 0;
   const [period, setPeriod] = useState<TradeHistoryPeriod>("30d");
   const [page, setPage] = useState(1);
+  const { openModal } = useModal();
 
   // Filter by period
   const filtered = useMemo(() => {
@@ -108,6 +111,15 @@ export function TradeHistoryPanel({
 
   if (loading) return <Skeleton />;
 
+  if (isEmpty) {
+    return (
+      <div className="bg-bg-1/35 border border-line-c rounded-r7 p-sp5 flex flex-col gap-sp4">
+        <div className="text-primary-muted">Trade history</div>
+        <div className="h-[180px] grid place-items-center text-support">No trade history yet</div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-bg-1 border border-line-c rounded-r7 p-sp5">
       {/* Header */}
@@ -122,11 +134,10 @@ export function TradeHistoryPanel({
                 key={p}
                 onClick={() => handlePeriodChange(p)}
                 aria-pressed={period === p}
-                className={`px-sp3 py-sp2 rounded-r2 text-button cursor-pointer transition-colors ${
-                  period === p
-                    ? "bg-[rgba(205,189,112,0.12)] text-g-3"
-                    : "text-t-3 hover:text-t-2"
-                }`}
+                className={`px-sp3 py-sp2 rounded-r2 text-button cursor-pointer transition-colors ${period === p
+                  ? "bg-[rgba(205,189,112,0.12)] text-g-3"
+                  : "text-t-3 hover:text-t-2"
+                  }`}
               >
                 {p}
               </button>
@@ -143,68 +154,76 @@ export function TradeHistoryPanel({
       </div>
 
       <div className="overflow-x-auto -mx-sp5 px-sp5">
-      <div className="min-w-[720px]">
-      {/* Column headers */}
-      <div className={`${TRADE_HISTORY_GRID_CLASS} text-support pb-[5px] border-b border-line-c mb-[2px]`}>
-        <span>Date</span>
-        <span>Market</span>
-        <span>Side</span>
-        <span>Entry</span>
-        <span>Exit</span>
-        <span>Size</span>
-        <span>Result</span>
-        <span className="text-right">P&amp;L</span>
-      </div>
-
-      {/* Rows */}
-      {pageRows.length === 0 ? (
-        <div className="text-support py-sp7 text-center">No trades in this period.</div>
-      ) : (
-        pageRows.map((trade) => (
-          <div
-            key={trade.id}
-            className={`${TRADE_HISTORY_GRID_CLASS} items-center py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0 text-secondary cursor-pointer hover:bg-[rgba(255,255,255,0.025)] transition-colors`}
-          >
-            <span className="text-t-3">{trade.date}</span>
-
-            <span
-              className="overflow-hidden text-ellipsis whitespace-nowrap"
-              title={trade.market}
-            >
-              {trade.market}
-            </span>
-
-            <span
-              className={
-                trade.side === "YES"
-                  ? "text-pos font-bold"
-                  : "text-neg font-bold"
-              }
-            >
-              {trade.side}
-            </span>
-
-            <span>{trade.entry.toFixed(2)}</span>
-            <span>{trade.exit.toFixed(2)}</span>
-            <span>{formatUsd(trade.size)}</span>
-
-            <span>
-              <ResultBadge result={trade.result} />
-            </span>
-
-            <span
-              className={`text-right font-semibold ${
-                trade.pnl >= 0 ? "text-pos" : "text-neg"
-              }`}
-            >
-              {trade.pnl >= 0 ? "+" : ""}
-              {formatUsd(trade.pnl)}
-            </span>
+        <div className="min-w-[720px]">
+          {/* Column headers */}
+          <div className={`${TRADE_HISTORY_GRID_CLASS} text-support pb-[5px] border-b border-line-c mb-[2px]`}>
+            <span>Date</span>
+            <span>Market</span>
+            <span>Side</span>
+            <span>Entry</span>
+            <span>Exit</span>
+            <span>Size</span>
+            <span>Result</span>
+            <span className="text-right">P&amp;L</span>
           </div>
-        ))
-      )}
 
-      </div>
+          {/* Rows */}
+          {pageRows.length === 0 ? (
+            <div className="text-support py-sp7 text-center">No trades in this period.</div>
+          ) : (
+            pageRows.map((trade) => (
+              <div
+                key={trade.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => openModal("tradeDetail", { id: trade.id, trade })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    if (e.key === " ") e.preventDefault();
+                    openModal("tradeDetail", { id: trade.id, trade });
+                  }
+                }}
+                className={`${TRADE_HISTORY_GRID_CLASS} items-center py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0 text-secondary cursor-pointer hover:bg-[rgba(255,255,255,0.025)] transition-colors`}
+              >
+                <span className="text-t-3">{trade.date}</span>
+
+                <span
+                  className="overflow-hidden text-ellipsis whitespace-nowrap"
+                  title={trade.market}
+                >
+                  {trade.market}
+                </span>
+
+                <span
+                  className={
+                    trade.side === "YES"
+                      ? "text-pos font-bold"
+                      : "text-neg font-bold"
+                  }
+                >
+                  {trade.side}
+                </span>
+
+                <span>{trade.entry.toFixed(2)}</span>
+                <span>{trade.exit.toFixed(2)}</span>
+                <span>{formatUsd(trade.size)}</span>
+
+                <span>
+                  <ResultBadge result={trade.result} />
+                </span>
+
+                <span
+                  className={`text-right font-semibold ${trade.pnl >= 0 ? "text-pos" : "text-neg"
+                    }`}
+                >
+                  {trade.pnl >= 0 ? "+" : ""}
+                  {formatUsd(trade.pnl)}
+                </span>
+              </div>
+            ))
+          )}
+
+        </div>
       </div>
 
       {/* Pagination */}
@@ -218,22 +237,20 @@ export function TradeHistoryPanel({
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={safePage <= 1}
-            className={`cursor-pointer transition-colors ${
-              safePage <= 1
-                ? "text-t-3 opacity-40 cursor-default"
-                : "text-t-3 hover:text-t-2"
-            }`}
+            className={`cursor-pointer transition-colors ${safePage <= 1
+              ? "text-t-3 opacity-40 cursor-default"
+              : "text-t-3 hover:text-t-2"
+              }`}
           >
             ← Prev
           </button>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={safePage >= totalPages}
-            className={`font-semibold cursor-pointer transition-colors ${
-              safePage >= totalPages
-                ? "text-t-3 opacity-40 cursor-default"
-                : "text-g-3"
-            }`}
+            className={`font-semibold cursor-pointer transition-colors ${safePage >= totalPages
+              ? "text-t-3 opacity-40 cursor-default"
+              : "text-g-3"
+              }`}
           >
             Next →
           </button>

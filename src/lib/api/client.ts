@@ -20,18 +20,28 @@ export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {}
 ): Promise<T> {
-  if (!env.apiBaseUrl) {
+  const isAbsoluteUrl = /^https?:\/\//i.test(path);
+  if (!isAbsoluteUrl && !env.apiBaseUrl) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
   }
 
   const { body, headers, ...rest } = options;
-  const response = await fetch(`${env.apiBaseUrl}${path}`, {
+  const baseUrl = env.apiBaseUrl.replace(/\/+$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const requestUrl = isAbsoluteUrl ? path : `${baseUrl}${normalizedPath}`;
+  const requestHeaders: HeadersInit = body
+    ? {
+        "Content-Type": "application/json",
+        ...headers,
+      }
+    : {
+        ...headers,
+      };
+
+  const response = await fetch(requestUrl, {
     ...rest,
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
+    headers: requestHeaders,
     body: body ? JSON.stringify(body) : undefined,
   });
 

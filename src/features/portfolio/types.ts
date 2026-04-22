@@ -1,33 +1,33 @@
 // Portfolio feature types — all shapes designed to match future API contracts.
-// Data fetching is centralised in hooks.ts / service.ts; components stay pure.
+// Data fetching is centralized in hooks/usePortfolio.ts and api/getPortfolio.ts.
 
 export type PortfolioKpis = {
   /** Total account balance in USD */
   balance: number;
   /** 24-hour balance change in USD (signed) */
-  change24h: number;
+  change24h?: number;
   /** Total cost basis of open positions */
-  openExposure: number;
+  openExposure?: number;
   /** Percentage of balance currently deployed */
-  deployedPct: number;
+  deployedPct?: number;
   /** Unrealised P&L at current mid prices (signed) */
-  unrealizedPnl: number;
+  unrealizedPnl?: number;
   /** Unrealised P&L as a percentage of cost basis (signed) */
-  unrealizedPct: number;
+  unrealizedPct?: number;
   /** Settled P&L from trades closed in the last 30 days (signed) */
-  realized30d: number;
+  realized30d?: number;
   /** Number of trades closed in the last 30 days */
-  trades30d: number;
+  trades30d?: number;
   /** Maker rebates and referral bonuses earned in the last 30 days */
-  rewardsEarned: number;
+  rewardsEarned?: number;
   /** Rewards as a percentage of realised P&L */
-  rewardsPct: number;
+  rewardsPct?: number;
   /** Number of currently open positions */
-  openCount: number;
+  openCount?: number;
   /** Today's P&L in USD (signed) */
-  todayPnl: number;
+  todayPnl?: number;
   /** Portfolio return percentage (signed) */
-  portfolioPct: number;
+  portfolioPct?: number;
 };
 
 export type ExposureCategory = {
@@ -77,6 +77,18 @@ export type TradeHistoryEntry = {
   result: TradeResult;
   /** Realised P&L in USD (signed) */
   pnl: number;
+  /** Display date of settlement or manual exit, e.g. "Apr 8" */
+  settlementDate?: string;
+  /** Whether this was a market resolution or manual exit — controls price label */
+  closeType?: 'settlement' | 'manual';
+  /** Maker rebates / rewards earned on this trade (USD) */
+  rewardsEarned?: number;
+  /** True if the market is still open for trading */
+  isMarketLive?: boolean;
+  /** Trading venue, e.g. "Polymarket" */
+  venue?: string;
+  /** Fees paid on this trade (USD) */
+  feePaid?: number;
 };
 
 export type PortfolioData = {
