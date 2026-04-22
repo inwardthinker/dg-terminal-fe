@@ -10,16 +10,16 @@ export const formatSignedPercent = (value: number): string =>
 export const formatRewardsShare = (value: number): string => `${value}% of P&L`;
 
 export function formatKpiFallback<T>(
-  value: T | undefined,
+  value: T | null | undefined,
   formatter: (input: T) => string,
 ): string {
-  return value !== undefined ? formatter(value) : "--";
+  return value != null ? formatter(value) : "--";
 }
 
 export function getKpiVariant(
-  value?: number,
+  value?: number | null,
 ): "default" | "positive" | "negative" {
-  if (value === undefined) return "default";
+  if (value == null) return "default";
   if (value > 0) return "positive";
   if (value < 0) return "negative";
   return "default";

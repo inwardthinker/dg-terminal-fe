@@ -4,7 +4,7 @@ export type PortfolioPreviewState =
   | "hasHistoryNoOpenPositions"
   | "venueApiUnavailable";
 
-export const PORTFOLIO_PREVIEW_STATE: PortfolioPreviewState = "venueApiUnavailable";
+export const PORTFOLIO_PREVIEW_STATE: PortfolioPreviewState = "live";
 
 export const isVenueApiUnavailablePreview =
-  PORTFOLIO_PREVIEW_STATE === "venueApiUnavailable";
+  PORTFOLIO_PREVIEW_STATE === "live";
