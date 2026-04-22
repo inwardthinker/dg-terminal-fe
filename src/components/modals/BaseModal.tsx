@@ -1,15 +1,17 @@
-'use client'
+"use client"
 
-import { ReactNode, useEffect, useRef } from 'react'
-import { X } from 'lucide-react'
+import { ReactNode, useEffect, useRef } from "react"
+import { X } from "lucide-react"
 
 type BaseModalProps = {
     children: ReactNode
     onClose: () => void
     title?: string
     showClose?: boolean
+    className?: string
+    contentClassName?: string
 
-    variant?: 'drawer' | 'modal' // 👈 NEW
+    variant?: "drawer" | "modal" // 👈 NEW
 }
 
 export function BaseModal({
@@ -17,7 +19,9 @@ export function BaseModal({
     onClose,
     title,
     showClose = true,
-    variant = 'modal',
+    className,
+    contentClassName,
+    variant = "modal",
 }: BaseModalProps) {
     const sheetRef = useRef<HTMLDivElement>(null)
     const lastFocusedElementRef = useRef<HTMLElement | null>(null)
@@ -31,16 +35,16 @@ export function BaseModal({
         const scrollY = window.scrollY
         lastFocusedElementRef.current = document.activeElement as HTMLElement | null
 
-        document.documentElement.style.overflow = 'hidden'
-        document.body.style.position = 'fixed'
+        document.documentElement.style.overflow = "hidden"
+        document.body.style.position = "fixed"
         document.body.style.top = `-${scrollY}px`
-        document.body.style.width = '100%'
+        document.body.style.width = "100%"
 
         return () => {
-            document.documentElement.style.overflow = ''
-            document.body.style.position = ''
-            document.body.style.top = ''
-            document.body.style.width = ''
+            document.documentElement.style.overflow = ""
+            document.body.style.position = ""
+            document.body.style.top = ""
+            document.body.style.width = ""
             window.scrollTo(0, scrollY)
             lastFocusedElementRef.current?.focus()
         }
@@ -53,10 +57,10 @@ export function BaseModal({
         panel.focus()
 
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key !== 'Tab') return
+            if (event.key !== "Tab") return
 
             const focusableElements = panel.querySelectorAll<HTMLElement>(
-                'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
             )
 
             if (focusableElements.length === 0) {
@@ -78,17 +82,17 @@ export function BaseModal({
             }
         }
 
-        panel.addEventListener('keydown', handleKeyDown)
-        return () => panel.removeEventListener('keydown', handleKeyDown)
+        panel.addEventListener("keydown", handleKeyDown)
+        return () => panel.removeEventListener("keydown", handleKeyDown)
     }, [])
 
     // ESC close
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose()
+            if (e.key === "Escape") onClose()
         }
-        window.addEventListener('keydown', handler)
-        return () => window.removeEventListener('keydown', handler)
+        window.addEventListener("keydown", handler)
+        return () => window.removeEventListener("keydown", handler)
     }, [onClose])
 
     // ───── Swipe (mobile) ─────
@@ -114,16 +118,15 @@ export function BaseModal({
         const velocity = (diff / time) * 1000
         const height = sheetRef.current.offsetHeight
 
-        const shouldClose =
-            diff > height * 0.3 || velocity > 400
+        const shouldClose = diff > height * 0.3 || velocity > 400
 
         if (shouldClose) {
             sheetRef.current.style.transform = `translateY(100%)`
-            sheetRef.current.style.transition = 'transform 0.2s ease-out'
+            sheetRef.current.style.transition = "transform 0.2s ease-out"
             setTimeout(onClose, 200)
         } else {
             sheetRef.current.style.transform = `translateY(0)`
-            sheetRef.current.style.transition = 'transform 0.2s ease-out'
+            sheetRef.current.style.transition = "transform 0.2s ease-out"
         }
     }
 
@@ -132,15 +135,15 @@ export function BaseModal({
             onClick={onClose}
             onTouchMove={(e) => e.preventDefault()}
             className={`
-        fixed inset-0 z-50
-        bg-black/75
+        fixed inset-0 z-50 outline-none focus:outline-none
+        bg-black/40 backdrop-blur-sm
 
         /* Mobile */
         flex items-end
 
         /* Desktop */
         md:items-center
-        ${variant === 'drawer' ? 'md:justify-end' : 'md:justify-center'}
+        ${variant === "drawer" ? "md:justify-end" : "md:justify-center"}
       `}
         >
             {/* ───── Panel ───── */}
@@ -152,33 +155,34 @@ export function BaseModal({
                 tabIndex={-1}
                 className={`
           w-full bg-bg-0 shadow-xl border max-md:border-b-0 border-line-c
+          outline-none focus:outline-none focus-visible:outline-none
+          ring-0 focus:ring-0 focus-visible:ring-0
 
           /* Mobile: bottom sheet */
           rounded-t-2xl max-h-[85vh] overflow-y-auto
           animate-slide-up
 
           /* Desktop: DRAWER */
-          ${variant === 'drawer'
+          ${variant === "drawer"
                         ? `
                 md:h-full md:w-[420px]
                 md:rounded-none
-                md:animate-slide-in-right
               `
-                        : ''
+                        : ""
                     }
 
           /* Desktop: MODAL */
-          ${variant === 'modal'
+          ${variant === "modal"
                         ? `
                 md:max-w-lg md:w-full
                 md:rounded-xl
-                md:animate-fade-in
               `
-                        : ''
+                        : ""
                     }
 
           will-change-transform transform-gpu
           transition-transform duration-200 ease-out
+          ${className ?? ""}
         `}
             >
                 {/* Mobile handle */}
@@ -186,15 +190,15 @@ export function BaseModal({
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    className="flex justify-center py-3 md:hidden"
+                    className='flex justify-center py-3 md:hidden'
                 >
-                    <div className="h-1.5 w-12 bg-t-3/30 rounded-full" />
+                    <div className='h-1.5 w-12 bg-t-3/30 rounded-full' />
                 </div>
 
                 {/* Header */}
                 {(title || showClose) && (
-                    <div className="flex items-center justify-between p-4 border-b">
-                        {title && <h2 className="text-lg font-medium">{title}</h2>}
+                    <div className='flex items-center justify-between p-4 border-b'>
+                        {title && <h2 className='text-lg font-medium'>{title}</h2>}
                         {showClose && (
                             <button
                                 type='button'
@@ -208,7 +212,7 @@ export function BaseModal({
                     </div>
                 )}
 
-                <div className="p-4">{children}</div>
+                <div className={contentClassName ?? "p-4"}>{children}</div>
             </div>
         </div>
     )

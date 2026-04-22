@@ -1,6 +1,8 @@
 "use client";
 
 import { usePortfolio } from "@/features/portfolio/components/hooks/usePortfolio";
+import { AuthButton } from "@/components/auth/AuthButton";
+import Image from "next/image";
 
 const fmtCurrency = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmtSigned = (n: number) =>
@@ -26,8 +28,7 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
         <div className="flex items-center gap-sp5 md:gap-sp7 shrink-0">
           {/* Brand */}
           <div className="flex items-center leading-none text-[17px] font-extrabold tracking-[0.04em]" role="img" aria-label="DG Predict logo">
-            <span className=" text-t-1 ">DG</span>
-            <span className="text-g-3">PREDICT</span>
+            <Image src="/images/logo.webp" alt="DG Predict logo" width={100} height={100} />
           </div>
 
           {/* Quick stats */}
@@ -107,6 +108,8 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             {userInitials}
           </div>
         </div>
+
+        <AuthButton />
       </div>
     </header>
   );

@@ -19,6 +19,8 @@ export function useModal() {
     const searchParams = useSearchParams()
     const setTransientParams = useModalStore((s) => s.setTransientParams)
     const clearTransientParams = useModalStore((s) => s.clearTransientParams)
+    const isModalType = (value: string | null): value is ModalType =>
+        value === 'close' || value === 'login' || value === 'identity'
 
     // ── Open a modal ────────────────────────────────────────────────────────────
     const openModal = useCallback(
@@ -64,13 +66,13 @@ export function useModal() {
         if (next.has('over')) {
             // Pop the stacked modal, keep the base
             const overType = next.get('over')
-            if (overType === 'close') clearTransientParams(overType)
+            if (isModalType(overType)) clearTransientParams(overType)
             next.delete('over')
             router.replace(`${pathname}?${next.toString()}`)
         } else {
             // No stack — close everything, go back to base path
             const modalType = next.get('modal')
-            if (modalType === 'close') clearTransientParams(modalType)
+            if (isModalType(modalType)) clearTransientParams(modalType)
             router.replace(pathname)
         }
     }, [router, pathname, searchParams, clearTransientParams])
@@ -79,8 +81,8 @@ export function useModal() {
     const closeAll = useCallback(() => {
         const modalType = searchParams.get('modal')
         const overType = searchParams.get('over')
-        if (modalType === 'close') clearTransientParams(modalType)
-        if (overType === 'close') clearTransientParams(overType)
+        if (isModalType(modalType)) clearTransientParams(modalType)
+        if (isModalType(overType)) clearTransientParams(overType)
         router.replace(pathname)
     }, [router, pathname, searchParams, clearTransientParams])
 
