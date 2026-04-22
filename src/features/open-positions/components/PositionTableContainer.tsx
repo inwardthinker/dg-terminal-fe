@@ -4,7 +4,6 @@
 
 import { PositionsTableSkeleton } from "./PositionsTableSkeleton";
 import { SummaryError } from "./SummaryError";
-import { usePositions } from "../hooks/usePositions";
 import type { Position } from "../types";
 import { PositionsTable } from "./PositionsTable";
 import { useMemo, useState } from "react";
@@ -17,9 +16,14 @@ import { VenueUnavailableBanner } from "@/components/ui/VenueUnavailableBanner";
 
 type Category = Position["category"] | "All"
 
-export function PositionsTableContainer() {
+type PositionsTableContainerProps = {
+    positions: Position[];
+    loading: boolean;
+    error: string | null;
+}
+
+export function PositionsTableContainer({ positions, loading, error }: PositionsTableContainerProps) {
     const { openModal } = useModal();
-    const { positions, loading, error } = usePositions({ realtimeOnly: true });
     const venueUnavailable = Boolean(error);
 
     const [selectedCategory, setSelectedCategory] = useState<Category>("All")

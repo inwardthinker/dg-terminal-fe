@@ -8,7 +8,6 @@ import type { ModalParams } from "@/lib/modals/types"
 import type { Position } from "@/features/open-positions/types"
 import { DotSeparator } from "../ui/DotSeparator"
 import { useToast } from "@/hooks/useToast"
-import { X } from "lucide-react"
 
 type Props = ModalParams & {
     onClose?: () => void
@@ -17,9 +16,15 @@ type Props = ModalParams & {
     onConfirmClose?: (closedPositions: Position[]) => void
 }
 
-const TOTAL_SHARES = 8620
 const PRICE = 0.64
 const AVG = 0.58
+
+function formatShares(value: number): string {
+    return new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 4,
+    }).format(value)
+}
 
 export function ClosePositionModal({ onClose, position, selectedPositions, onConfirmClose }: Props) {
     const { closeModal } = useModal()
@@ -66,8 +71,9 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
         }, 1200)
     }
 
-    const effectivePercent = mode === "full" ? 100 : percent
-    const shares = Math.round((effectivePercent / 100) * TOTAL_SHARES)
+    // const effectivePercent = mode === "full" ? 100 : percent
+    const shares = Number.isFinite(position?.no_of_shares) ? position!.no_of_shares : 0
+    const sizeToCloseShares = `${formatShares(shares)} shares`
 
     const currentPrice = position?.currentPrice ?? PRICE
     const displaySide = position?.side ?? "YES"
@@ -92,7 +98,7 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
     )
     const currentTabIndex = mode === "full" ? 0 : 1
     const partialPercentLabel = `${percent}%`
-    const partialSharesLabel = `${shares.toLocaleString()} shares`
+    const partialSharesLabel = sizeToCloseShares
 
     const handleModeTabsKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return
@@ -215,14 +221,6 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                     >
                         {displaySide}
                     </span>
-                    <button
-                        type='button'
-                        onClick={handleClose}
-                        aria-label='Close modal'
-                        className='inline-flex h-11 w-11 items-center justify-center rounded-full'
-                    >
-                        <X size={9} aria-hidden='true' />
-                    </button>
                 </div>
             </div>
 
@@ -375,7 +373,7 @@ export function ClosePositionModal({ onClose, position, selectedPositions, onCon
                         />
                         <InfoRow
                             label='Size to close'
-                            value={`${shares.toLocaleString()} shares`}
+                            value={sizeToCloseShares}
                         />
                         <InfoRow
                             label='You will receive'
