@@ -11,7 +11,11 @@ import { DotSeparator } from "@/components/ui/DotSeparator";
 
 const periods = ["7d", "30d", "90d", "All"] as const;
 
-export function EquityCurvePanel() {
+type EquityCurvePanelProps = {
+    venueUnavailable?: boolean;
+};
+
+export function EquityCurvePanel({ venueUnavailable = false }: EquityCurvePanelProps) {
     const [period, setPeriod] = useState<Period>("30d");
     const { data, summaryByPeriod, loading } = useEquityCurve();
     const currentData = data[period] || [];
@@ -59,12 +63,16 @@ export function EquityCurvePanel() {
                 <div className="flex items-center gap-1">
                     <span className="text-primary leading-none">Equity curve</span>
                     <DotSeparator size={4} />
-                    <span className={`leading-none text-secondary ${changeClassName}`}>
-                        {sign}
-                        {change.toFixed(1)}%
-                    </span>
+                    {venueUnavailable ? (
+                        <span className="leading-none text-support">Unavailable</span>
+                    ) : (
+                        <span className={`leading-none text-secondary ${changeClassName}`}>
+                            {sign}
+                            {change.toFixed(1)}%
+                        </span>
+                    )}
 
-                    <InfoTooltip text="Your total portfolio balance over time, including unrealized positions valued at current price." />
+                    <InfoTooltip text="Your total balance over time, using daily closing snapshots. Reflects deposits, withdrawals, and settled P&L." />
                 </div>
 
 
@@ -75,6 +83,7 @@ export function EquityCurvePanel() {
                             key={p}
                             onClick={() => setPeriod(p)}
                             aria-pressed={period === p}
+                            disabled={venueUnavailable}
                             className={`px-sp3 py-sp2 rounded-r2 text-button ${period === p
                                 ? "bg-line-g text-g3"
                                 : "text-t-2"
@@ -89,12 +98,23 @@ export function EquityCurvePanel() {
 
             {/* Chart */}
             <div>
-
                 <div ref={ref} className="h-[180px]">
-                    {loading && (
+                    {venueUnavailable && (
+                        <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-r4 text-center">
+                            <p className="text-support">Unavailable - retry to reload</p>
+                            <button
+                                type="button"
+                                className="rounded-r3 border border-line-c px-3 py-1 text-action transition-colors hover:bg-bg-2"
+                                onClick={() => window.location.reload()}
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    )}
+                    {!venueUnavailable && loading && (
                         <div className="w-full h-full bg-bg-2 rounded-r4 animate-pulse" />
                     )}
-                    {!loading && width > 0 && (
+                    {!venueUnavailable && !loading && width > 0 && (
                         <EquityCurveChart
                             data={currentData}
                             width={width}
@@ -102,7 +122,7 @@ export function EquityCurvePanel() {
                             color={isPositive ? "pos" : "neg"}
                         />
                     )}
-                    {!loading && width === 0 && (
+                    {!venueUnavailable && !loading && width === 0 && (
                         <div className="w-full h-full bg-bg-2 rounded-r4 animate-pulse" />
                     )}
                 </div>

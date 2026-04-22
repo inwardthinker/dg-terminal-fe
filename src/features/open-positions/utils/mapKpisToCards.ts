@@ -1,10 +1,9 @@
 import { ApiKpis, KpiCardData } from "../types";
 
-export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
+export function mapKpisToCards(kpis: ApiKpis, venueUnavailable = false): KpiCardData[] {
     const fmtCurrency = (value: number) => `$${value.toLocaleString("en-US")}`;
     const fmtSignedCurrency = (value: number) =>
         `${value >= 0 ? "+" : ""}$${Math.abs(value).toLocaleString("en-US")}`;
-
     return [
         {
             id: "totalOpen",
@@ -24,6 +23,7 @@ export function mapKpisToCards(kpis: ApiKpis): KpiCardData[] {
             value: fmtSignedCurrency(kpis.unrealizedPnl),
             valueVariant: kpis.unrealizedPnl >= 0 ? "positive" : "negative",
             tooltip: "Unrealized profit or loss",
+            dimmed: venueUnavailable,
         },
         {
             id: "largestPosition",

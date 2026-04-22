@@ -19,8 +19,8 @@ export function Breadcrumb({
     className,
 }: BreadcrumbProps) {
     return (
-        <div className="bg-bg-0 border-y border-line-c w-screen relative left-1/2 -ml-[50vw]">
-          <div className="mx-auto w-full max-w-[1400px] flex justify-between px-sp5 sm:px-sp7 py-[5px] items-center">
+        <div className="relative left-1/2 -ml-[50vw] w-screen max-w-[100vw] overflow-x-hidden border-y border-line-c bg-bg-0">
+          <div className="mx-auto flex w-full max-w-[1400px] min-w-0 items-center justify-between px-sp5 py-[5px] sm:px-sp7">
             <nav aria-label="Breadcrumb" className={className}>
                 <ol className="flex items-center gap-1 text-secondary text-t-3!">
                     {items.map((item, index) => {

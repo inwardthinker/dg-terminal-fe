@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "./animations.css";
+@import 'tailwindcss';
+@import './animations.css';
 
 /* =========================
 ROOT DESIGN TOKENS
@@ -95,12 +95,12 @@ ROOT DESIGN TOKENS
   --type-label-color: var(--t3);
 
   /* 4. Primary data — heading-level values */
-  --type-primary-size: 22px;
+  --type-primary-size: 18px;
   --type-primary-weight: 700;
   --type-primary-color: var(--t1);
 
   /* 5. Secondary data — sub-headings */
-  --type-secondary-size: 13px;
+  --type-secondary-size: 14px;
   --type-secondary-weight: 600;
   --type-secondary-color: var(--t1);
 
@@ -248,6 +248,14 @@ a {
   text-decoration: none;
 }
 
+button,
+input[type='checkbox'],
+input[type='radio'],
+select {
+  min-width: 16px;
+  min-height: 16px;
+}
+
 /* =========================
    TYPOGRAPHY UTILITIES
 ========================= */
@@ -276,6 +284,12 @@ a {
   font-size: var(--type-primary-size);
   font-weight: var(--type-primary-weight);
   color: var(--type-primary-color);
+}
+
+.text-primary-muted {
+  font-size: var(--type-primary-size);
+  font-weight: var(--type-primary-weight);
+  color: var(--type-support-color);
 }
 
 .text-secondary {
@@ -325,4 +339,71 @@ a {
 .text-button {
   font-size: var(--type-button-size);
   font-weight: var(--type-button-weight);
+}
+
+.close-position-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 32px;
+}
+
+.close-position-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--g3) 0%,
+    var(--g3) var(--slider-progress, 50%),
+    rgba(255, 255, 255, 0.22) var(--slider-progress, 50%),
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.close-position-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--g3) 0%,
+    var(--g3) var(--slider-progress, 50%),
+    rgba(255, 255, 255, 0.22) var(--slider-progress, 50%),
+    rgba(255, 255, 255, 0.22) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.close-position-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--g3);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+  margin-top: -4px;
+}
+
+.close-position-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--g3);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes live-value-flash {
+  0% {
+    background-color: color-mix(in srgb, var(--g3) 38%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.live-value-flash {
+  animation: live-value-flash 700ms ease-out;
+  border-radius: var(--radius-2);
 }

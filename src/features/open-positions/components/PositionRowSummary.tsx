@@ -6,6 +6,7 @@ import { CategoryPill } from "./CategoryPill";
 import type { Position } from "../types";
 import { Button } from "@/components/ui/Button";
 import type { CategoryPresentation } from "../utils/categoryExposure";
+import { useModal } from "@/lib/modals/hooks/useModal";
 import {
   SUMMARY_GRID_COLUMNS,
   SUMMARY_GRID_COLUMNS_MOBILE,
@@ -37,32 +38,47 @@ function sideTextClass(side: string) {
 function stopAndClose(
   event: MouseEvent<HTMLButtonElement>,
   position: Position,
-  onClose: (position: Position) => void,
+  openModal: ReturnType<typeof useModal>["openModal"],
 ) {
   event.stopPropagation();
-  onClose(position);
+  openModal("close", {
+    id: position.id,
+    position,
+  });
 }
 
 export const PositionRowSummary = React.memo(function PositionRowSummary({
   position,
   categoryPresentation,
   onOpen,
-  onClose,
 }: PositionRowSummaryProps) {
+  const { openModal } = useModal();
   const categoryStyle = categoryPresentation?.[position.category] ?? {
     label: position.category,
     colorClass: "bg-t-3",
   };
 
   const handleOpen = () => onOpen(position)
+  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      handleOpen()
+    }
+  }
 
   const gridClass =
     `grid ${SUMMARY_GRID_COLUMNS} items-center gap-4 border-b border-line-c text-right text-secondary transition-colors ${SUMMARY_GRID_COLUMNS_MOBILE} max-sm:gap-2 max-sm:text-[11px]`;
 
   return (
-    <div className={gridClass}>
-      <div className="contents cursor-pointer" onClick={handleOpen}>
-        <div className="truncate py-2 text-left max-sm:text-[10px] text-white" title={position.market}>
+    <div
+      className={gridClass}
+      onClick={handleOpen}
+      onKeyDown={handleRowKeyDown}
+      role="button"
+      tabIndex={0}
+    >
+      <div className="contents cursor-pointer">
+        <div className="truncate py-2 text-left max-sm:text-[11px] text-white" title={position.market}>
           {position.market}
         </div>
         <div className="flex justify-start py-2 max-sm:hidden">
@@ -71,26 +87,33 @@ export const PositionRowSummary = React.memo(function PositionRowSummary({
             colorClass={categoryStyle.colorClass}
           />
         </div>
-        <span className={`font-bold text-left ${sideTextClass(position.side)}`}>
+        <span className={`font-bold text-left max-sm:text-[11px]! ${sideTextClass(position.side)}`}>
           {position.side}
         </span>
         <span className="py-2 text-right max-sm:hidden">
           {currencyFormatter.format(position.size)}
         </span>
         <span
-          className={`inline-flex flex-col items-end leading-tight transition-colors duration-200 py-2 ${pnlTextClass(position.pnl)}`}
+          className={`inline-flex flex-col items-end leading-tight max-sm:leading-[1.15] transition-colors duration-200 py-2 max-sm:text-[11px] ${pnlTextClass(position.pnl)}`}
+          aria-live="polite"
+          aria-atomic="true"
         >
-          <span className="whitespace-nowrap">{position.pnl >= 0 ? "+" : ""}{currencyFormatter.format(position.pnl)}</span>
-          <span className="text-[0.82em] max-sm:text-[0.78em]">
-            {position.pnlPct >= 0 ? "+" : ""}
-            {position.pnlPct.toFixed(1)}%
-          </span>
+          <>
+            <span key={`pnl-${position.liveTick ?? 0}`} className="whitespace-nowrap live-value-flash px-1">
+              {position.pnl >= 0 ? "+" : ""}
+              {currencyFormatter.format(position.pnl)}
+            </span>
+            <span key={`pnlpct-${position.liveTick ?? 0}`} className="text-[0.82em] max-sm:text-[10px] live-value-flash px-1">
+              {position.pnlPct >= 0 ? "+" : ""}
+              {position.pnlPct.toFixed(1)}%
+            </span>
+          </>
         </span>
       </div>
       <Button
         variant="destructive"
         size="sm"
-        onClick={(event) => stopAndClose(event, position, onClose)}
+        onClick={(event) => stopAndClose(event, position, openModal)}
       >
         Close
       </Button>

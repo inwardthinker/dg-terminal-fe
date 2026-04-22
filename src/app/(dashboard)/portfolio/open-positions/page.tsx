@@ -2,21 +2,34 @@
 
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PositionsTableContainer } from '@/features/open-positions/components/PositionTableContainer'
-import { useOpenPositionsSummary } from '@/features/open-positions/hooks/useOpenPositionsSummary'
 import { mapKpisToCards } from '@/features/open-positions/utils/mapKpisToCards'
-import { KpiCard } from '@/features/portfolio/components/KpiCard'
-import React from 'react'
+import { KpiCard } from '@/features/portfolio/components/cards/KpiCard'
+import { usePositions } from '@/features/open-positions/hooks/usePositions'
+import React, { Suspense, useMemo } from 'react'
 
-const OpenPositionsPage = () => {
-    const { kpis, loading, error, walletAddress } = useOpenPositionsSummary();
-    const cards = kpis ? mapKpisToCards(kpis) : []
-    const loadingCards = [
-        { id: "totalOpen", label: "Total Open" },
-        { id: "totalExposure", label: "Total Exposure" },
-        { id: "unrealizedPnl", label: "Total Unrealized P&L" },
-        { id: "largestPosition", label: "Largest Position" },
-    ];
+const Page = () => {
+    const { positions, loading, error } = usePositions({ realtimeOnly: true })
+    const venueUnavailable = Boolean(error)
+    const kpis = useMemo(() => {
+        const totalOpen = positions.length
+        const totalExposure = positions.reduce((sum, position) => sum + position.size, 0)
+        const unrealizedPnl = positions.reduce((sum, position) => sum + position.pnl, 0)
+        const largestPositionValue = positions.reduce(
+            (max, position) => Math.max(max, position.size),
+            0
+        )
+        const largestPositionPct = totalExposure > 0 ? (largestPositionValue / totalExposure) * 100 : 0
 
+        return {
+            totalOpen,
+            totalExposure,
+            unrealizedPnl,
+            largestPositionValue,
+            largestPositionPct,
+        }
+    }, [positions])
+
+    const cards = mapKpisToCards(kpis, venueUnavailable)
 
     return (
         <div className="w-full space-y-4">
@@ -30,32 +43,21 @@ const OpenPositionsPage = () => {
 
             <div className="w-full px-sp5 sm:px-sp7 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {loading && loadingCards.map(({ id, label }) => (
-                        <KpiCard key={id} label={label} value="--" />
-                    ))}
-                    {!loading && cards.map(({ id, ...rest }) => (
-                      <KpiCard key={id} {...rest} />
-                    ))}
-                    {!loading && !cards.length && loadingCards.map(({ id, label }) => (
-                      <KpiCard key={id} label={label} value="--" />
+                    {cards.map(({ id, ...rest }) => (
+                        <KpiCard key={`${id}-${positions[0]?.liveTick ?? 0}`} {...rest} />
                     ))}
 
                 </div>
-                {!loading && (
-                  <p className={`text-support ${error ? "text-neg" : "text-t-3"}`}>
-                    {error
-                      ? error
-                      : walletAddress
-                        ? cards.length
-                          ? "Live data from open-positions summary endpoint"
-                          : "No open positions summary available for this wallet"
-                        : "Set wallet env var to load open positions summary"}
-                  </p>
-                )}
-                <PositionsTableContainer />
+                <Suspense fallback={null}>
+                    <PositionsTableContainer
+                        positions={positions}
+                        loading={loading}
+                        error={error}
+                    />
+                </Suspense>
             </div>
         </div>
     )
 }
 
-export default OpenPositionsPage
+export default Page

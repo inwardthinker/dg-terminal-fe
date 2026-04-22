@@ -219,6 +219,5 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
       socket.disconnect();
     };
   }, [walletAddress]);
-
   return { portfolio, loading, error };
 }

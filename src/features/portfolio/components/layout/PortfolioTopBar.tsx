@@ -1,7 +1,7 @@
-import type { PortfolioKpis } from "../types";
+import type { PortfolioKpis } from "../../types";
 
 type PortfolioTopBarProps = {
-  kpis: PortfolioKpis | undefined;
+  kpis?: PortfolioKpis;
   loading?: boolean;
   userInitials?: string;
 };
@@ -20,14 +20,17 @@ export function PortfolioTopBar({
   loading,
   userInitials = "DC",
 }: PortfolioTopBarProps) {
-  const ready = !loading && kpis != null;
+  const balance = !loading ? kpis?.balance : undefined;
+  const todayPnl = !loading ? kpis?.todayPnl : undefined;
+  const openCount = !loading ? kpis?.openCount : undefined;
+  const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
 
   return (
     <header className="bg-bg-1 border-b border-line-c h-12 flex items-center px-sp7 flex-shrink-0">
       {/* ── Left: brand + quick stats ── */}
       <div className="flex items-center gap-sp7 flex-shrink-0">
         {/* Brand */}
-        <div className="flex items-center leading-none">
+        <div className="flex items-center leading-none" role="img" aria-label="DG Predict logo">
           <span className="text-[15px] font-[800] text-t-1 tracking-[0.04em]">DG</span>
           <span className="text-[15px] font-[800] text-g-3 tracking-[0.04em]">PREDICT</span>
         </div>
@@ -37,25 +40,24 @@ export function PortfolioTopBar({
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Balance</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {ready ? fmtCurrency(kpis.balance) : "--"}
+              {balance !== undefined ? fmtCurrency(balance) : "--"}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Today P&amp;L</span>
             <span
-              className={`text-[11.5px] font-[600] leading-[1.2] ${
-                ready && kpis.unrealized_pnl < 0 ? "text-neg" : "text-pos"
-              }`}
+              className={`text-[11.5px] font-[600] leading-[1.2] ${todayPnl !== undefined && todayPnl < 0 ? "text-neg" : "text-pos"
+                }`}
             >
-              {ready ? fmtSigned(kpis.unrealized_pnl) : "--"}
+              {todayPnl !== undefined ? fmtSigned(todayPnl) : "--"}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Open</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {ready ? kpis.num_trades : "--"}
+              {openCount !== undefined ? openCount : "--"}
             </span>
           </div>
         </div>
@@ -71,6 +73,7 @@ export function PortfolioTopBar({
             viewBox="0 0 12 12"
             fill="none"
             className="flex-shrink-0"
+            aria-hidden="true"
           >
             <circle cx="4.8" cy="4.8" r="3.3" stroke="#555" strokeWidth="1.4" />
             <line
@@ -90,19 +93,18 @@ export function PortfolioTopBar({
       {/* ── Right: actions ── */}
       <div className="flex items-center gap-sp4 flex-shrink-0">
         {/* Deposit */}
-        <button className="px-[11px] py-[5px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-[9.5px] font-[700] text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
+        <button className="min-h-8 px-[11px] py-[5px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-[9.5px] font-[700] text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
           + Deposit
         </button>
 
         {/* Portfolio pill */}
-        <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px] cursor-pointer">
+        <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px]">
           <span className="text-[9px] text-t-3">Portfolio</span>
           <span
-            className={`font-[700] text-[11px] ${
-              ready && kpis.un_pnl_pc < 0 ? "text-neg" : "text-pos"
-            }`}
+            className={`font-[700] text-[11px] ${portfolioPct !== undefined && portfolioPct < 0 ? "text-neg" : "text-pos"
+              }`}
           >
-            {ready ? fmtPct(kpis.un_pnl_pc) : "--"}
+            {portfolioPct !== undefined ? fmtPct(portfolioPct) : "--"}
           </span>
         </div>
 

@@ -1,5 +1,6 @@
 export type Position = {
   id: string;
+  no_of_shares: number;
   market: string;
   category: "Sports" | "Politics" | "Crypto" | "Macro" | "Other";
   side: string;
@@ -9,7 +10,10 @@ export type Position = {
   pnl: number;
   pnlPct: number;
   priceStale?: boolean;
+  liveTick?: number;
 };
+
+export type PositionsConnectionState = "connected" | "reconnecting" | "disconnected";
 
 export type UsePositionsParams = {
   limit?: number
@@ -23,6 +27,7 @@ export type UsePositionsResult = {
   totalCount: number
   loading: boolean
   error: string | null
+  connectionState: PositionsConnectionState
 }
 
 export interface ApiKpis {
@@ -42,4 +47,5 @@ export type KpiCardData = {
   tooltip?: string
   valueVariant?: Variant
   meta?: string
+  dimmed?: boolean
 }
