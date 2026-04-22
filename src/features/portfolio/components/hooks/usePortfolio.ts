@@ -11,6 +11,8 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!walletAddress) return;
+
     let isMounted = true;
 
     async function loadPortfolio() {

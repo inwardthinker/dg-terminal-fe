@@ -21,10 +21,6 @@ type ApiPortfolioResponse = {
   summary: ApiPortfolioSummary;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
 /** Fetch the portfolio summary for a wallet address directly from the backend. */
 export async function getPortfolio(walletAddress: string): Promise<PortfolioData> {
   const params = new URLSearchParams({ walletAddress });
@@ -33,31 +29,22 @@ export async function getPortfolio(walletAddress: string): Promise<PortfolioData
     headers["Authorization"] = `Bearer ${env.apiToken}`;
   }
 
-  const [summaryResult] = await Promise.allSettled([
-    apiFetch<ApiPortfolioResponse>(
-      `${API_ENDPOINTS.portfolio.summary}?${params.toString()}`,
-      { headers }
-    ),
-  ]);
+  const response = await apiFetch<ApiPortfolioResponse>(
+    `${API_ENDPOINTS.portfolio.summary}?${params.toString()}`,
+    { headers }
+  );
 
-  const summaryData =
-    summaryResult.status === "fulfilled" && isRecord(summaryResult.value)
-      ? (summaryResult.value as ApiPortfolioResponse).summary
-      : null;
-
-  if (!summaryData) {
-    throw new Error("Portfolio summary unavailable.");
-  }
+  const s = response.summary;
 
   return {
     kpis: {
-      balance:        summaryData.balance,
-      openExposure:   summaryData.open_exposure,
-      deployedPct:    summaryData.deployment_rate_pct,
-      unrealizedPnl:  summaryData.unrealized_pnl,
-      realized30d:    summaryData.realized_30d,
-      rewardsEarned:  summaryData.rewards_earned,
-      rewardsPct:     summaryData.rewards_pct_of_pnl,
+      balance:       s.balance,
+      openExposure:  s.open_exposure,
+      deployedPct:   s.deployment_rate_pct,
+      unrealizedPnl: s.unrealized_pnl,
+      realized30d:   s.realized_30d,
+      rewardsEarned: s.rewards_earned,
+      rewardsPct:    s.rewards_pct_of_pnl,
     },
     // Exposure, risk metrics, and trade history come from dedicated
     // endpoints that will be wired separately — fall back to mock until then.
