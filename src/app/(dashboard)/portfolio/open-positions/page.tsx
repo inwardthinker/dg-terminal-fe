@@ -9,7 +9,8 @@ import { usePositions } from '@/features/open-positions/hooks/usePositions'
 import React, { Suspense, useMemo } from 'react'
 
 const Page = () => {
-    const { positions, error } = usePositions({ realtimeOnly: true })
+    const { positions, loading, error } = usePositions({ realtimeOnly: true })
+    console.log("🚀 ~ positions:", positions);
     const venueUnavailable = isVenueApiUnavailablePreview || Boolean(error)
     const kpis = useMemo(() => {
         const totalOpen = positions.length
@@ -50,7 +51,11 @@ const Page = () => {
 
                 </div>
                 <Suspense fallback={null}>
-                    <PositionsTableContainer />
+                    <PositionsTableContainer
+                        positions={positions}
+                        loading={loading}
+                        error={error}
+                    />
                 </Suspense>
             </div>
         </div>

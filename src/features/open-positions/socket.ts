@@ -8,6 +8,7 @@ export type PositionPriceEvent = {
   position_id: string;
   outcome: string | null;
   title: string | null;
+  no_of_shares: number | null;
   avg_price: number | null;
   current_price: number | null;
   position_value: number | null;
