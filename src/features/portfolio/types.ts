@@ -85,6 +85,10 @@ export type TradeHistoryEntry = {
   rewardsEarned?: number;
   /** True if the market is still open for trading */
   isMarketLive?: boolean;
+  /** Trading venue, e.g. "Polymarket" */
+  venue?: string;
+  /** Fees paid on this trade (USD) */
+  feePaid?: number;
 };
 
 export type PortfolioData = {
