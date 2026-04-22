@@ -2,6 +2,8 @@ import { env } from "@/lib/constants/env";
 
 type ApiFetchOptions = Omit<RequestInit, "body"> & {
   body?: unknown;
+  /** Override the base URL. Pass "" to use a relative path (e.g. Next.js proxy routes). */
+  baseUrl?: string;
 };
 
 export class ApiError extends Error {
@@ -20,25 +22,19 @@ export async function apiFetch<T>(
   path: string,
   options: ApiFetchOptions = {}
 ): Promise<T> {
-  const isAbsoluteUrl = /^https?:\/\//i.test(path);
-  if (!isAbsoluteUrl && !env.apiBaseUrl) {
+  const { body, headers, baseUrl, ...rest } = options;
+  const resolvedBaseUrl = baseUrl === "" ? "" : (baseUrl ?? env.apiBaseUrl);
+
+  if (!resolvedBaseUrl) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
   }
 
-  const { body, headers, ...rest } = options;
-  const baseUrl = env.apiBaseUrl.replace(/\/+$/, "");
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const requestUrl = isAbsoluteUrl ? path : `${baseUrl}${normalizedPath}`;
-  const requestHeaders: HeadersInit = body
-    ? {
-        "Content-Type": "application/json",
-        ...headers,
-      }
-    : {
-        ...headers,
-      };
+  const requestHeaders = new Headers(headers);
+  if (body && !requestHeaders.has("Content-Type")) {
+    requestHeaders.set("Content-Type", "application/json");
+  }
 
-  const response = await fetch(requestUrl, {
+  const response = await fetch(`${resolvedBaseUrl}${path}`, {
     ...rest,
     credentials: "include",
     headers: requestHeaders,

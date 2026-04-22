@@ -1,6 +1,6 @@
 import PortfolioContainer from "@/features/portfolio/components/containers/PortfolioContainer";
 
-const MOCK_WALLET_ADDRESS = "0x7fC25f4f0f01f3B3f3D184E96dD4907Bc4F3A7d1";
+const MOCK_WALLET_ADDRESS = "0x798a7921f5b2c684ecbaa7a6ae216a819fa6cc72";
 
 export default function PortfolioPage() {
   return (
