@@ -1,8 +1,11 @@
 import PortfolioContainer from "@/features/portfolio/components/containers/PortfolioContainer";
-const MOCK_WALLET_ADDRESS = "0x7fC25f4f0f01f3B3f3D184E96dD4907Bc4F3A7d1";
+const DEFAULT_WALLET_ADDRESS =
+  process.env.NEXT_PUBLIC_PORTFOLIO_KPIS_SOCKET_WALLET_ADDRESS ??
+  process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ??
+  "";
 
 export default function PortfolioPage() {
   return (
-    <PortfolioContainer userWalletAddress={MOCK_WALLET_ADDRESS} />
+    <PortfolioContainer userWalletAddress={DEFAULT_WALLET_ADDRESS} />
   );
 }

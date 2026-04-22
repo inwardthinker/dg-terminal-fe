@@ -46,7 +46,7 @@ export function connectPortfolioKpiSocket(walletAddress: string): Socket {
 
   return io(`${apiBaseUrl}/portfolio-kpis`, {
     transports: ["websocket"],
-    auth: { walletAddress },
+    auth: { walletAddress, userAddress: walletAddress },
     autoConnect: false,
   });
 }

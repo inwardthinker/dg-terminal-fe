@@ -178,37 +178,33 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
 
     const socket = connectPortfolioKpiSocket(resolvedWalletAddress);
 
-    const handleKpiUpdate = ({ kpis }: PortfolioKpiUpdateEvent) => {
+    const handleKpiUpdate = ({ wallet, kpis }: PortfolioKpiUpdateEvent) => {
+      if (wallet.trim().toLowerCase() !== resolvedWalletAddress) {
+        return;
+      }
+
       setPortfolio((current) => {
-        if (!current) {
-          return current;
-        }
+        const base = current ?? MOCK_PORTFOLIO;
 
         return {
-          ...current,
+          ...base,
           kpis: {
-            ...current.kpis,
-            balance: pickNumber(kpis.balance, current.kpis.balance) ?? 0,
-            openExposure: pickNumber(kpis.open_exposure, current.kpis.openExposure),
-            deployedPct: pickNumber(kpis.pc_exposure, current.kpis.deployedPct),
-            unrealizedPnl: pickNumber(kpis.unrealized_pnl, current.kpis.unrealizedPnl),
-            unrealizedPct: pickNumber(kpis.un_pnl_pc, current.kpis.unrealizedPct),
-            realized30d: pickNumber(kpis.realized_30d, current.kpis.realized30d),
-            trades30d: pickNumber(kpis.num_trades, current.kpis.trades30d),
-            rewardsEarned: pickNumber(kpis.rewards_earned, current.kpis.rewardsEarned),
-            rewardsPct: pickNumber(kpis.reward_pc, current.kpis.rewardsPct),
+            ...base.kpis,
+            balance: pickNumber(kpis.balance, base.kpis.balance) ?? 0,
+            openExposure: pickNumber(kpis.open_exposure, base.kpis.openExposure),
+            deployedPct: pickNumber(kpis.pc_exposure, base.kpis.deployedPct),
+            unrealizedPnl: pickNumber(kpis.unrealized_pnl, base.kpis.unrealizedPnl),
+            unrealizedPct: pickNumber(kpis.un_pnl_pc, base.kpis.unrealizedPct),
+            realized30d: pickNumber(kpis.realized_30d, base.kpis.realized30d),
+            trades30d: pickNumber(kpis.num_trades, base.kpis.trades30d),
+            rewardsEarned: pickNumber(kpis.rewards_earned, base.kpis.rewardsEarned),
+            rewardsPct: pickNumber(kpis.reward_pc, base.kpis.rewardsPct),
           },
         };
       });
     };
 
     socket.on("kpi_update", handleKpiUpdate);
-    socket.on("connect", () => {
-      socket.emit("subscribe", {
-        stream: "portfolio_kpis",
-        wallet: resolvedWalletAddress,
-      });
-    });
     socket.on("connect_error", () => {
       // Keep REST-loaded values when live KPI stream is unavailable.
     });
