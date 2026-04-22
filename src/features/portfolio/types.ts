@@ -93,3 +93,41 @@ export type UsePortfolioResult = {
   loading: boolean;
   error: string | null;
 };
+
+export type OpenPositionsSummaryResponse = {
+  open_positions: number;
+  total_exposure: number;
+  largest_position: number;
+  unrealized_pnl: number;
+};
+
+export type OpenPositionsSummary = {
+  openPositions: number;
+  totalExposure: number;
+  largestPosition: number;
+  unrealizedPnl: number;
+};
+
+export type PortfolioKpiSubscribedEvent = {
+  stream: "portfolio_kpis";
+  wallet: string;
+  interval_ms: number;
+};
+
+export type PortfolioKpiUpdate = {
+  balance: number;
+  open_exposure: number;
+  pc_exposure: number;
+  unrealized_pnl: number;
+  un_pnl_pc: number;
+  realized_30d: number;
+  num_trades: number;
+  rewards_earned: number;
+  reward_pc: number;
+};
+
+export type PortfolioKpiUpdateEvent = {
+  wallet: string;
+  ts: string;
+  kpis: PortfolioKpiUpdate;
+};

@@ -4,7 +4,21 @@
 // from service.ts, and update the PortfolioData shape to match the API response.
 
 import { useEffect, useState } from "react";
-import type { PortfolioData, UsePortfolioResult } from "./types";
+import { fetchOpenPositionsSummary } from "./service";
+import {
+  connectPortfolioKpiSocket,
+  normalizeWalletAddress,
+  resolvePortfolioKpiSocketWalletAddress,
+} from "./socket";
+import type {
+  PortfolioData,
+  PortfolioKpiUpdateEvent,
+  UsePortfolioResult,
+} from "./types";
+
+// Keep last known snapshot across hook remounts so KPI cards don't flash placeholders
+// between websocket events or brief route transitions.
+let lastPortfolioSnapshot: PortfolioData | null = null;
 
 const MOCK_PORTFOLIO: PortfolioData = {
   kpis: {
@@ -113,20 +127,121 @@ const MOCK_PORTFOLIO: PortfolioData = {
   tradeHistoryTotal: 30,
 };
 
-export function usePortfolio(): UsePortfolioResult {
-  const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
-  const [loading, setLoading] = useState(true);
+function applyKpiUpdate(previous: PortfolioData | null, event: PortfolioKpiUpdateEvent): PortfolioData {
+  const base = previous ?? lastPortfolioSnapshot ?? MOCK_PORTFOLIO;
+
+  return {
+    ...base,
+    kpis: {
+      ...base.kpis,
+      balance: event.kpis.balance,
+      openExposure: event.kpis.open_exposure,
+      deployedPct: event.kpis.pc_exposure,
+      unrealizedPnl: event.kpis.unrealized_pnl,
+      unrealizedPct: event.kpis.un_pnl_pc,
+      realized30d: event.kpis.realized_30d,
+      trades30d: event.kpis.num_trades,
+      rewardsEarned: event.kpis.rewards_earned,
+      rewardsPct: event.kpis.reward_pc,
+    },
+  };
+}
+
+function applyOpenPositionsSummary(
+  previous: PortfolioData | null,
+  openPositionsSummary: {
+    openPositions: number;
+    totalExposure: number;
+    unrealizedPnl: number;
+  }
+): PortfolioData {
+  const base = previous ?? lastPortfolioSnapshot ?? MOCK_PORTFOLIO;
+
+  return {
+    ...base,
+    kpis: {
+      ...base.kpis,
+      openCount: openPositionsSummary.openPositions,
+      openExposure: openPositionsSummary.totalExposure,
+      unrealizedPnl: openPositionsSummary.unrealizedPnl,
+    },
+  };
+}
+
+export function usePortfolio(walletAddress?: string): UsePortfolioResult {
+  const resolvedWalletAddress = resolvePortfolioKpiSocketWalletAddress(walletAddress);
+  const shouldWaitForFirstKpi = !lastPortfolioSnapshot && Boolean(resolvedWalletAddress);
+  const [portfolio, setPortfolio] = useState<PortfolioData | null>(
+    lastPortfolioSnapshot ?? (shouldWaitForFirstKpi ? null : MOCK_PORTFOLIO)
+  );
+  const [loading, setLoading] = useState(shouldWaitForFirstKpi);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = window.setTimeout(() => {
-      setPortfolio(MOCK_PORTFOLIO);
+    if (lastPortfolioSnapshot) {
+      setPortfolio(lastPortfolioSnapshot);
       setLoading(false);
-      setError(null);
-    }, 500);
+    } else if (!resolvedWalletAddress) {
+      lastPortfolioSnapshot = MOCK_PORTFOLIO;
+      setPortfolio(lastPortfolioSnapshot);
+      setLoading(false);
+    }
+    setError(null);
+  }, [resolvedWalletAddress]);
 
-    return () => window.clearTimeout(id);
-  }, []);
+  useEffect(() => {
+    if (!resolvedWalletAddress) {
+      return;
+    }
+
+    fetchOpenPositionsSummary(resolvedWalletAddress)
+      .then((summary) => {
+        setPortfolio((previous) => {
+          const next = applyOpenPositionsSummary(previous, summary);
+          lastPortfolioSnapshot = next;
+          return next;
+        });
+      })
+      .catch((requestError) => {
+        const message =
+          requestError instanceof Error
+            ? requestError.message
+            : "Failed to load open positions summary";
+        setError(message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    const socket = connectPortfolioKpiSocket(resolvedWalletAddress);
+
+    socket.on("subscribed", (payload) => {
+      console.info("[portfolio-kpis-socket] subscribed", payload);
+    });
+
+    socket.on("kpi_update", (event) => {
+      if (normalizeWalletAddress(event.wallet) !== resolvedWalletAddress) {
+        return;
+      }
+      setPortfolio((previous) => {
+        const next = applyKpiUpdate(previous, event);
+        lastPortfolioSnapshot = next;
+        return next;
+      });
+      setLoading(false);
+    });
+
+    socket.on("connect_error", (errorPayload) => {
+      setError(errorPayload.message || "Failed to connect to portfolio KPI socket");
+      setLoading(false);
+    });
+
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [resolvedWalletAddress]);
 
   return { portfolio, loading, error };
 }

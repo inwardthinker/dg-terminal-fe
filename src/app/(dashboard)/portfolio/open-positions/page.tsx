@@ -2,22 +2,12 @@
 
 import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { PositionsTableContainer } from '@/features/open-positions/components/PositionTableContainer'
-import { mapKpisToCards } from '@/features/open-positions/utils/mapKpisToCards'
-import { KpiCard } from '@/features/portfolio/components/KpiCard'
+import { OpenPositionsSummaryKpis } from '@/features/open-positions/components/OpenPositionsSummaryKpis'
+import { useOpenPositionsSummary } from '@/features/open-positions/hooks/useOpenPositionsSummary'
 import React from 'react'
 
-
-const kpis = {
-    totalOpen: 12,
-    totalExposure: 31640,
-    unrealizedPnl: 1872,
-    largestPositionValue: 5000,
-    largestPositionPct: 8.4,
-}
-
-const page = () => {
-
-    const cards = kpis ? mapKpisToCards(kpis) : []
+const OpenPositionsPage = () => {
+    const { summary, loading, error } = useOpenPositionsSummary()
 
     return (
         <div className="w-full space-y-4">
@@ -30,16 +20,15 @@ const page = () => {
             />
 
             <div className="w-full px-sp5 sm:px-sp7 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {cards.map(({ id, ...rest }) => (
-                        <KpiCard key={id} {...rest} />
-                    ))}
-
-                </div>
+                <OpenPositionsSummaryKpis
+                    summary={summary}
+                    loading={loading}
+                    error={error}
+                />
                 <PositionsTableContainer />
             </div>
         </div>
     )
 }
 
-export default page
+export default OpenPositionsPage

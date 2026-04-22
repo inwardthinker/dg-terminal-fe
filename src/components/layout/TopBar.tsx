@@ -4,7 +4,7 @@ import { usePortfolio } from "@/features/portfolio/hooks";
 
 const fmtCurrency = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmtSigned = (n: number) =>
-  `${n >= 0 ? "+" : ""}$${Math.abs(n).toLocaleString("en-US")}`;
+  `${n >= 0 ? "+" : "-"}$${Math.abs(n).toLocaleString("en-US")}`;
 const fmtPct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
 
 type TopBarProps = {

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/Button";
 // Formatting helpers — pure functions, never depend on component state
 const fmtBalance = (n: number) => `$${n.toLocaleString("en-US")}`;
 const fmtSigned = (n: number) =>
-  `${n >= 0 ? "+" : ""}$${Math.abs(n).toLocaleString("en-US")}`;
+  `${n >= 0 ? "+" : "-"}$${Math.abs(n).toLocaleString("en-US")}`;
 const fmtPct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
 
 function safeValue<T>(value: T | undefined, formatter: (v: T) => string) {
