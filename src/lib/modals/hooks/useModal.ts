@@ -1,9 +1,16 @@
 'use client'
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 import type { ModalType, ModalParams } from '@/lib/modals/types'
 import { useModalStore } from '@/lib/modals/store'
+
+function getCurrentSearchParams(): URLSearchParams {
+  if (typeof window === 'undefined') {
+    return new URLSearchParams()
+  }
+  return new URLSearchParams(window.location.search)
+}
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 // Use this hook anywhere you need to open or close a modal.
@@ -16,13 +23,13 @@ import { useModalStore } from '@/lib/modals/store'
 export function useModal() {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const setTransientParams = useModalStore((s) => s.setTransientParams)
   const clearTransientParams = useModalStore((s) => s.clearTransientParams)
 
   // ── Open a modal ────────────────────────────────────────────────────────────
   const openModal = useCallback(
     (type: ModalType, params: ModalParams = {}, options: { stack?: boolean } = {}) => {
+      const searchParams = getCurrentSearchParams()
       const next = new URLSearchParams(searchParams.toString())
       setTransientParams(type, params)
 
@@ -48,11 +55,12 @@ export function useModal() {
       // push → adds a history entry (back button works)
       router.push(`${pathname}?${next.toString()}`)
     },
-    [router, pathname, searchParams, setTransientParams],
+    [router, pathname, setTransientParams],
   )
 
   // ── Close top modal only (pop stack) ────────────────────────────────────────
   const closeModal = useCallback(() => {
+    const searchParams = getCurrentSearchParams()
     const next = new URLSearchParams(searchParams.toString())
 
     if (next.has('over')) {
@@ -67,16 +75,17 @@ export function useModal() {
       if (modalType === 'close') clearTransientParams(modalType)
       router.replace(pathname)
     }
-  }, [router, pathname, searchParams, clearTransientParams])
+  }, [router, pathname, clearTransientParams])
 
   // ── Close all modals ────────────────────────────────────────────────────────
   const closeAll = useCallback(() => {
+    const searchParams = getCurrentSearchParams()
     const modalType = searchParams.get('modal')
     const overType = searchParams.get('over')
     if (modalType === 'close') clearTransientParams(modalType)
     if (overType === 'close') clearTransientParams(overType)
     router.replace(pathname)
-  }, [router, pathname, searchParams, clearTransientParams])
+  }, [router, pathname, clearTransientParams])
 
   // ── Prefetch a modal (call on hover for instant open) ───────────────────────
   const prefetchModal = useCallback(
