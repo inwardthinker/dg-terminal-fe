@@ -1,11 +1,11 @@
 export const API_ENDPOINTS = {
   auth: {
-    login: "/auth/login",
+    login: '/auth/login',
   },
   portfolio: {
-    summary: "/api/portfolio/summary",
-    trades: "/api/portfolio/trades",
+    summary: '/api/portfolio/summary',
+    trades: '/api/portfolio/trades',
   },
   users: {},
   payments: {},
-} as const;
+} as const

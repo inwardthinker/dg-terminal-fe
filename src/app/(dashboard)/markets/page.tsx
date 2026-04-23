@@ -4,5 +4,5 @@ export default function MarketsPage() {
       <h1 className="text-title mb-sp4">Markets</h1>
       <p className="text-support">Browse markets and events (coming soon).</p>
     </main>
-  );
+  )
 }

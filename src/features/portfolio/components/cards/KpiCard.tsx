@@ -1,9 +1,9 @@
-import { InfoTooltip } from "@/components/ui/InfoTooltip"
-import type { ReactNode } from "react"
-import clsx from "clsx"
-import { DotSeparator } from "@/components/ui/DotSeparator"
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
+import type { ReactNode } from 'react'
+import clsx from 'clsx'
+import { DotSeparator } from '@/components/ui/DotSeparator'
 
-type Variant = "default" | "positive" | "negative" | "accent"
+type Variant = 'default' | 'positive' | 'negative' | 'accent'
 
 export type KpiCardProps = {
   label: string
@@ -22,26 +22,26 @@ export type KpiCardProps = {
 }
 
 const valueClassMap = {
-  default: "text-t-1",
-  positive: "text-pos",
-  negative: "text-neg",
-  accent: "text-g-3",
+  default: 'text-t-1',
+  positive: 'text-pos',
+  negative: 'text-neg',
+  accent: 'text-g-3',
 }
 
 const subClassMap = {
-  default: "text-t-3",
-  positive: "text-pos",
-  negative: "text-neg",
-  accent: "text-g-3",
+  default: 'text-t-3',
+  positive: 'text-pos',
+  negative: 'text-neg',
+  accent: 'text-g-3',
 }
 
 export function KpiCard({
   label,
   value,
   meta,
-  valueVariant = "default",
+  valueVariant = 'default',
   sub,
-  subVariant = "default",
+  subVariant = 'default',
   tooltip,
   dimmed,
   footer,
@@ -49,10 +49,10 @@ export function KpiCard({
   return (
     <div
       className={clsx(
-        "relative h-full rounded-r6 px-sp5 py-sp4 flex flex-col justify-between",
-        "bg-linear-to-b transition-transform from-[#1a1914] to-[#14130f]",
-        "border border-[rgba(255,255,255,0.04)]",
-        dimmed && "opacity-[0.35]"
+        'relative h-full rounded-r6 px-sp5 py-sp4 flex flex-col justify-between',
+        'bg-linear-to-b transition-transform from-[#1a1914] to-[#14130f]',
+        'border border-[rgba(255,255,255,0.04)]',
+        dimmed && 'opacity-[0.35]',
       )}
     >
       {/* Top: label + value + sub */}
@@ -64,7 +64,7 @@ export function KpiCard({
 
         <div className="flex items-center gap-1">
           <span
-            className={clsx("text-primary font-bold", valueClassMap[valueVariant])}
+            className={clsx('text-primary font-bold', valueClassMap[valueVariant])}
             aria-live="polite"
             aria-atomic="true"
           >
@@ -74,18 +74,12 @@ export function KpiCard({
           {meta && (
             <div className="flex items-center gap-1">
               <DotSeparator size={4} />
-              <span className="text-primary">
-                {meta}
-              </span>
+              <span className="text-primary">{meta}</span>
             </div>
           )}
         </div>
 
-        {sub && (
-          <div className={clsx("text-support", subClassMap[subVariant])}>
-            {sub}
-          </div>
-        )}
+        {sub && <div className={clsx('text-support', subClassMap[subVariant])}>{sub}</div>}
       </div>
 
       {/* Footer — pinned to bottom */}

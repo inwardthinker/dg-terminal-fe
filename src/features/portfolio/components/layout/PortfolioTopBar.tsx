@@ -1,29 +1,22 @@
-import type { PortfolioKpis } from "../../types";
+import type { PortfolioKpis } from '../../types'
 
 type PortfolioTopBarProps = {
-  kpis?: PortfolioKpis;
-  loading?: boolean;
-  userInitials?: string;
-};
+  kpis?: PortfolioKpis
+  loading?: boolean
+  userInitials?: string
+}
 
-const fmtCurrency = (n: number) =>
-  `$${n.toLocaleString("en-US")}`;
+const fmtCurrency = (n: number) => `$${n.toLocaleString('en-US')}`
 
-const fmtSigned = (n: number) =>
-  `${n >= 0 ? "+" : ""}$${Math.abs(n).toLocaleString("en-US")}`;
+const fmtSigned = (n: number) => `${n >= 0 ? '+' : ''}$${Math.abs(n).toLocaleString('en-US')}`
 
-const fmtPct = (n: number) =>
-  `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
+const fmtPct = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`
 
-export function PortfolioTopBar({
-  kpis,
-  loading,
-  userInitials = "DC",
-}: PortfolioTopBarProps) {
-  const balance = !loading ? kpis?.balance : undefined;
-  const todayPnl = !loading ? kpis?.todayPnl : undefined;
-  const openCount = !loading ? kpis?.openCount : undefined;
-  const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
+export function PortfolioTopBar({ kpis, loading, userInitials = 'DC' }: PortfolioTopBarProps) {
+  const balance = !loading ? kpis?.balance : undefined
+  const todayPnl = !loading ? kpis?.todayPnl : undefined
+  const openCount = !loading ? kpis?.openCount : undefined
+  const portfolioPct = !loading ? kpis?.portfolioPct : undefined
 
   return (
     <header className="bg-bg-1 border-b border-line-c h-12 flex items-center px-sp7 flex-shrink-0">
@@ -40,24 +33,25 @@ export function PortfolioTopBar({
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Balance</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {balance !== undefined ? fmtCurrency(balance) : "--"}
+              {balance !== undefined ? fmtCurrency(balance) : '--'}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Today P&amp;L</span>
             <span
-              className={`text-[11.5px] font-[600] leading-[1.2] ${todayPnl !== undefined && todayPnl < 0 ? "text-neg" : "text-pos"
-                }`}
+              className={`text-[11.5px] font-[600] leading-[1.2] ${
+                todayPnl !== undefined && todayPnl < 0 ? 'text-neg' : 'text-pos'
+              }`}
             >
-              {todayPnl !== undefined ? fmtSigned(todayPnl) : "--"}
+              {todayPnl !== undefined ? fmtSigned(todayPnl) : '--'}
             </span>
           </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] text-t-3 tracking-[0.08em] uppercase">Open</span>
             <span className="text-[11.5px] font-[600] text-t-1 leading-[1.2]">
-              {openCount !== undefined ? openCount : "--"}
+              {openCount !== undefined ? openCount : '--'}
             </span>
           </div>
         </div>
@@ -77,8 +71,13 @@ export function PortfolioTopBar({
           >
             <circle cx="4.8" cy="4.8" r="3.3" stroke="#555" strokeWidth="1.4" />
             <line
-              x1="7.4" y1="7.4" x2="10.5" y2="10.5"
-              stroke="#555" strokeWidth="1.5" strokeLinecap="round"
+              x1="7.4"
+              y1="7.4"
+              x2="10.5"
+              y2="10.5"
+              stroke="#555"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             />
           </svg>
           <span className="text-[10.5px] text-[#555] flex-1 select-none">
@@ -101,10 +100,11 @@ export function PortfolioTopBar({
         <div className="px-[11px] py-[4px] border border-line-g rounded-r9 text-[10.5px] flex items-center gap-[6px]">
           <span className="text-[9px] text-t-3">Portfolio</span>
           <span
-            className={`font-[700] text-[11px] ${portfolioPct !== undefined && portfolioPct < 0 ? "text-neg" : "text-pos"
-              }`}
+            className={`font-[700] text-[11px] ${
+              portfolioPct !== undefined && portfolioPct < 0 ? 'text-neg' : 'text-pos'
+            }`}
           >
-            {portfolioPct !== undefined ? fmtPct(portfolioPct) : "--"}
+            {portfolioPct !== undefined ? fmtPct(portfolioPct) : '--'}
           </span>
         </div>
 
@@ -114,5 +114,5 @@ export function PortfolioTopBar({
         </div>
       </div>
     </header>
-  );
+  )
 }

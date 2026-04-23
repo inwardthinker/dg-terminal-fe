@@ -1,96 +1,88 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { getPortfolio } from "@/features/portfolio/components/api/getPortfolio";
-import { MOCK_PORTFOLIO } from "@/features/portfolio/constants/mockPortfolio";
+import { useEffect, useState } from 'react'
+import { getPortfolio } from '@/features/portfolio/components/api/getPortfolio'
+import { MOCK_PORTFOLIO } from '@/features/portfolio/constants/mockPortfolio'
 import {
   connectPortfolioKpiSocket,
   resolvePortfolioKpiSocketWalletAddress,
-} from "@/features/portfolio/socket";
-import { ApiError } from "@/lib/api/client";
-import type {
-  PortfolioData,
-  PortfolioKpiUpdateEvent,
-  UsePortfolioResult,
-} from "../../types";
+} from '@/features/portfolio/socket'
+import { ApiError } from '@/lib/api/client'
+import type { PortfolioData, PortfolioKpiUpdateEvent, UsePortfolioResult } from '../../types'
 
-function pickNumber(
-  value: number | undefined,
-  fallback: number | undefined
-): number | undefined {
-  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+function pickNumber(value: number | undefined, fallback: number | undefined): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback
 }
 
-export function usePortfolio(walletAddress = ""): UsePortfolioResult {
-  const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [kpiLoading, setKpiLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function usePortfolio(walletAddress = ''): UsePortfolioResult {
+  const [portfolio, setPortfolio] = useState<PortfolioData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [kpiLoading, setKpiLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let isMounted = true;
-    const normalizedWalletAddress = walletAddress.trim();
+    let isMounted = true
+    const normalizedWalletAddress = walletAddress.trim()
 
     async function loadPortfolio() {
       if (normalizedWalletAddress.length === 0) {
-        setPortfolio(MOCK_PORTFOLIO);
-        setKpiLoading(false);
-        setError(null);
-        setLoading(false);
-        return;
+        setPortfolio(MOCK_PORTFOLIO)
+        setKpiLoading(false)
+        setError(null)
+        setLoading(false)
+        return
       }
 
-      setLoading(true);
+      setLoading(true)
 
       try {
-        const data = await getPortfolio(normalizedWalletAddress);
-        if (!isMounted) return;
-        setPortfolio(data);
-        setError(null);
+        const data = await getPortfolio(normalizedWalletAddress)
+        if (!isMounted) return
+        setPortfolio(data)
+        setError(null)
       } catch (err) {
-        if (!isMounted) return;
+        if (!isMounted) return
         if (err instanceof ApiError) {
           // The server responded with an error (4xx / 5xx) — surface it so the
           // user knows something is wrong rather than silently showing stale data.
-          setError(`${err.status}: ${err.message}`);
-          setPortfolio(null);
+          setError(`${err.status}: ${err.message}`)
+          setPortfolio(null)
         } else {
           // Network / CORS error — backend likely not running locally.
           // Fall back to mock so the UI stays usable during development.
-          setPortfolio(MOCK_PORTFOLIO);
-          setError(null);
+          setPortfolio(MOCK_PORTFOLIO)
+          setError(null)
         }
       } finally {
-        if (!isMounted) return;
-        setLoading(false);
+        if (!isMounted) return
+        setLoading(false)
       }
     }
 
-    void loadPortfolio();
+    void loadPortfolio()
 
     return () => {
-      isMounted = false;
-    };
-  }, [walletAddress]);
+      isMounted = false
+    }
+  }, [walletAddress])
 
   useEffect(() => {
-    const resolvedWalletAddress =
-      resolvePortfolioKpiSocketWalletAddress(walletAddress);
+    const resolvedWalletAddress = resolvePortfolioKpiSocketWalletAddress(walletAddress)
     if (!resolvedWalletAddress) {
-      setKpiLoading(false);
-      return;
+      setKpiLoading(false)
+      return
     }
 
-    setKpiLoading(true);
-    const socket = connectPortfolioKpiSocket(resolvedWalletAddress);
+    setKpiLoading(true)
+    const socket = connectPortfolioKpiSocket(resolvedWalletAddress)
 
     const handleKpiUpdate = ({ wallet, kpis }: PortfolioKpiUpdateEvent) => {
       if (wallet.trim().toLowerCase() !== resolvedWalletAddress) {
-        return;
+        return
       }
 
       setPortfolio((current) => {
-        const base = current ?? MOCK_PORTFOLIO;
+        const base = current ?? MOCK_PORTFOLIO
 
         return {
           ...base,
@@ -106,21 +98,21 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
             rewardsEarned: pickNumber(kpis.rewards_earned, base.kpis.rewardsEarned),
             rewardsPct: pickNumber(kpis.reward_pc, base.kpis.rewardsPct),
           },
-        };
-      });
-      setKpiLoading(false);
-    };
+        }
+      })
+      setKpiLoading(false)
+    }
 
-    socket.on("kpi_update", handleKpiUpdate);
-    socket.on("connect_error", () => {
+    socket.on('kpi_update', handleKpiUpdate)
+    socket.on('connect_error', () => {
       // Keep REST-loaded values when live KPI stream is unavailable.
-    });
-    socket.connect();
+    })
+    socket.connect()
 
     return () => {
-      socket.off("kpi_update", handleKpiUpdate);
-      socket.disconnect();
-    };
-  }, [walletAddress]);
-  return { portfolio, loading, kpiLoading, error };
+      socket.off('kpi_update', handleKpiUpdate)
+      socket.disconnect()
+    }
+  }, [walletAddress])
+  return { portfolio, loading, kpiLoading, error }
 }

@@ -1,9 +1,9 @@
 type FormErrorProps = {
-  message: string | null;
-};
+  message: string | null
+}
 
 export function FormError({ message }: FormErrorProps) {
-  if (!message) return null;
+  if (!message) return null
 
   return (
     <p
@@ -11,10 +11,10 @@ export function FormError({ message }: FormErrorProps) {
       style={{
         margin: 0,
         fontSize: 14,
-        color: "#b91c1c",
+        color: '#b91c1c',
       }}
     >
       {message}
     </p>
-  );
+  )
 }

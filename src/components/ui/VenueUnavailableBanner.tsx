@@ -1,12 +1,12 @@
-import { RotateCw, TriangleAlert } from "lucide-react";
+import { RotateCw, TriangleAlert } from 'lucide-react'
 
 type VenueUnavailableBannerProps = {
-  message?: string;
-  onRetry?: () => void;
-};
+  message?: string
+  onRetry?: () => void
+}
 
 export function VenueUnavailableBanner({
-  message = "Live pricing is temporarily unavailable. Last-known values are shown where possible.",
+  message = 'Live pricing is temporarily unavailable. Last-known values are shown where possible.',
   onRetry,
 }: VenueUnavailableBannerProps) {
   return (
@@ -28,5 +28,5 @@ export function VenueUnavailableBanner({
         </button>
       </div>
     </div>
-  );
+  )
 }

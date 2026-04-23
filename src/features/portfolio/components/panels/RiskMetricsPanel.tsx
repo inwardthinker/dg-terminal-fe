@@ -1,20 +1,24 @@
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import type { RiskMetric, RiskMetricValueType } from "@/features/portfolio/types";
-import clsx from "clsx";
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
+import type { RiskMetric, RiskMetricValueType } from '@/features/portfolio/types'
+import clsx from 'clsx'
 
 function valueColorClass(type: RiskMetricValueType): string {
   switch (type) {
-    case "positive": return "text-pos";
-    case "negative": return "text-neg";
-    case "gold": return "text-g-3 cursor-pointer";
-    default: return "text-t-1";
+    case 'positive':
+      return 'text-pos'
+    case 'negative':
+      return 'text-neg'
+    case 'gold':
+      return 'text-g-3 cursor-pointer'
+    default:
+      return 'text-t-1'
   }
 }
 
 type RiskMetricsPanelProps = {
-  metrics: RiskMetric[];
-  loading?: boolean;
-};
+  metrics: RiskMetric[]
+  loading?: boolean
+}
 
 function Skeleton() {
   return (
@@ -30,23 +34,23 @@ function Skeleton() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 export function RiskMetricsPanel({ metrics, loading }: RiskMetricsPanelProps) {
-  const isEmpty = metrics.length === 0;
-  if (loading) return <Skeleton />;
+  const isEmpty = metrics.length === 0
+  if (loading) return <Skeleton />
 
   return (
     <div
       className={clsx(
-        "border border-line-c rounded-r7 p-sp5 flex flex-col h-full",
-        isEmpty ? "bg-bg-1/35" : "bg-bg-1"
+        'border border-line-c rounded-r7 p-sp5 flex flex-col h-full',
+        isEmpty ? 'bg-bg-1/35' : 'bg-bg-1',
       )}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-sp4">
-        <span className={clsx(isEmpty ? "text-t-3" : "text-primary")}>Risk metrics</span>
+        <span className={clsx(isEmpty ? 'text-t-3' : 'text-primary')}>Risk metrics</span>
       </div>
 
       {/* Metric rows — flex-1 so they fill remaining height evenly */}
@@ -71,5 +75,5 @@ export function RiskMetricsPanel({ metrics, loading }: RiskMetricsPanelProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

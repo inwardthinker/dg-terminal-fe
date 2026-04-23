@@ -1,32 +1,32 @@
-import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import "@/styles/globals.css";
-import { ModalRenderer } from "@/components/modals/ModalRenderer";
-import { Toaster } from "@/components/ui/Toaster";
-import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { MobileSearchFab } from "@/components/layout/MobileSearchFab";
-import { TopBar } from "@/components/layout/TopBar";
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import '@/styles/globals.css'
+import { ModalRenderer } from '@/components/modals/ModalRenderer'
+import { Toaster } from '@/components/ui/Toaster'
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
+import { MobileSearchFab } from '@/components/layout/MobileSearchFab'
+import { TopBar } from '@/components/layout/TopBar'
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
-  title: "DG Terminal",
-  description: "Production-ready Next.js frontend scaffold",
-};
+  title: 'DG Terminal',
+  description: 'Production-ready Next.js frontend scaffold',
+}
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  viewportFit: "cover",
-};
+  viewportFit: 'cover',
+}
 
 type RootLayoutProps = Readonly<{
-  children: React.ReactNode;
-}>;
+  children: React.ReactNode
+}>
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
@@ -42,5 +42,5 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Toaster />
       </body>
     </html>
-  );
+  )
 }

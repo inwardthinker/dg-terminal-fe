@@ -1,23 +1,23 @@
 export type Position = {
-  id: string;
-  no_of_shares: number;
-  market: string;
-  category: "Sports" | "Politics" | "Crypto" | "Macro" | "Other";
-  side: string;
-  entryPrice: number;
-  currentPrice: number;
-  size: number;
-  pnl: number;
-  pnlPct: number;
-  priceStale?: boolean;
-  liveTick?: number;
-};
+  id: string
+  no_of_shares: number
+  market: string
+  category: 'Sports' | 'Politics' | 'Crypto' | 'Macro' | 'Other'
+  side: string
+  entryPrice: number
+  currentPrice: number
+  size: number
+  pnl: number
+  pnlPct: number
+  priceStale?: boolean
+  liveTick?: number
+}
 
-export type PositionsConnectionState = "connected" | "reconnecting" | "disconnected";
+export type PositionsConnectionState = 'connected' | 'reconnecting' | 'disconnected'
 
 export type UsePositionsParams = {
   limit?: number
-  sortBy?: "pnl" | "recent"
+  sortBy?: 'pnl' | 'recent'
   userAddress?: string
   realtimeOnly?: boolean
 }
@@ -38,7 +38,7 @@ export interface ApiKpis {
   largestPositionPct: number
 }
 
-export type Variant = "default" | "positive" | "negative" | "accent"
+export type Variant = 'default' | 'positive' | 'negative' | 'accent'
 
 export type KpiCardData = {
   id: string
