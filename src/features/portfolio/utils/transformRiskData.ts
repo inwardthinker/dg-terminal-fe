@@ -15,6 +15,33 @@ function formatDollar(value?: number) {
   return `$${Math.round(value).toLocaleString()}`
 }
 
+function sharpeValueType(value?: number): RiskMetric['valueType'] {
+  if (value === null || value === undefined) return 'negative'
+  if (value > 1.5) return 'positive'
+  if (value >= 0.5) return 'warning'
+  return 'negative'
+}
+
+function sortinoValueType(value?: number): RiskMetric['valueType'] {
+  if (value === null || value === undefined) return 'negative'
+  if (value > 2) return 'positive'
+  if (value >= 1) return 'warning'
+  return 'negative'
+}
+
+function largestPositionValueType(value?: number | null): RiskMetric['valueType'] {
+  if (value === null || value === undefined) return 'muted'
+  if (value < 10) return 'positive'
+  if (value <= 15) return 'warning'
+  return 'negative'
+}
+
+function correlationClusterValueType(value?: number | null): RiskMetric['valueType'] {
+  if (value === null || value === undefined || value === 0) return 'muted'
+  if (value <= 3) return 'warning'
+  return 'negative'
+}
+
 export function transformRiskData(apiData: ApiRiskResponse): RiskMetric[] {
   if (!apiData) return []
 
@@ -23,14 +50,14 @@ export function transformRiskData(apiData: ApiRiskResponse): RiskMetric[] {
       key: 'sharpe',
       label: 'Sharpe (90d)',
       value: formatNumber(apiData.sharpe90d),
-      valueType: (apiData.sharpe90d ?? 0) > 1 ? 'positive' : 'negative',
+      valueType: sharpeValueType(apiData.sharpe90d),
       tooltip: 'Mean daily return divided by standard deviation, annualized.',
     },
     {
       key: 'sortino',
       label: 'Sortino',
       value: formatNumber(apiData.sortino90d),
-      valueType: (apiData.sortino90d ?? 0) > 1 ? 'positive' : 'negative',
+      valueType: sortinoValueType(apiData.sortino90d),
       tooltip: 'Like Sharpe, but only penalizes downside volatility.',
     },
     {
@@ -51,15 +78,17 @@ export function transformRiskData(apiData: ApiRiskResponse): RiskMetric[] {
       key: 'largestPosition',
       label: 'Largest position',
       value: formatPercent(apiData.largestPositionPct ?? undefined),
-      valueType: 'neutral',
+      valueType: largestPositionValueType(apiData.largestPositionPct),
       tooltip: 'Biggest open bet as % of total balance.',
     },
     {
       key: 'correlationCluster',
       label: 'Correlation cluster',
       value:
-        apiData.correlationClusterCount != null ? `${apiData.correlationClusterCount} watch` : '--',
-      valueType: 'gold',
+        apiData.correlationClusterCount === null || apiData.correlationClusterCount === undefined
+          ? '--'
+          : `${apiData.correlationClusterCount} watch`,
+      valueType: correlationClusterValueType(apiData.correlationClusterCount),
       tooltip: 'Positions sharing same theme/event.',
     },
   ]

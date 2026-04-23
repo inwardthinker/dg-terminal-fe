@@ -41,7 +41,7 @@ export type ExposureCategory = {
   color: string
 }
 
-export type RiskMetricValueType = 'positive' | 'negative' | 'neutral' | 'gold'
+export type RiskMetricValueType = 'positive' | 'warning' | 'negative' | 'neutral' | 'muted'
 
 export type RiskMetric = {
   /** Unique identifier for this metric */

@@ -3,6 +3,10 @@ import { useRiskMetrics } from '../hooks/useRiskMetrics'
 import { valueColorClass } from '@/features/portfolio/utils/valueColorClass'
 
 export function RiskMetricsPanel() {
+  // TODO(dg-risk): Temporary separate fetch.
+  // Acceptance requires risk metrics to recompute from portfolio/positions refresh events
+  // with no standalone /api/risk call. After positions-risk integration lands, remove
+  // useRiskMetrics and pass computed riskMetrics from usePortfolio -> RiskSection.
   const { data, isLoading } = useRiskMetrics(1878) // TODO: replace with actual user id
 
   if (isLoading) return <RiskMetricsPanelSkeleton />

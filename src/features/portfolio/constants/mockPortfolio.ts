@@ -67,7 +67,7 @@ export const MOCK_PORTFOLIO: PortfolioData = {
       key: 'correlationCluster',
       label: 'Correlation cluster',
       value: '3 watch',
-      valueType: 'gold',
+      valueType: 'neutral',
       tooltip:
         'Open positions that share the same underlying event or theme, increasing concentrated exposure.',
     },
