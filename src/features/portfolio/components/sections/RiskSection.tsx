@@ -9,12 +9,11 @@ type RiskSectionProps = {
 }
 
 export function RiskSection({ portfolio, loading, venueUnavailable = false }: RiskSectionProps) {
-  const riskMetrics = portfolio?.riskMetrics ?? []
   const hasNoOpenPositions = !loading && portfolio?.kpis.openCount === 0
 
   return (
     <div className="grid min-w-0 gap-sp4 lg:grid-cols-[1fr_1.85fr]">
-      <RiskMetricsPanel metrics={riskMetrics} loading={loading} />
+      <RiskMetricsPanel />
       <SummaryPanelContainer
         limit={3}
         forceEmptyState={hasNoOpenPositions}
