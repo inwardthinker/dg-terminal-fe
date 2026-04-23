@@ -21,7 +21,11 @@ type ApiPortfolioResponse = {
   summary: ApiPortfolioSummary;
 };
 
-/** Fetch the portfolio summary for a wallet address directly from the backend. */
+/**
+ * Fetch the portfolio summary.
+ * Trade history is NOT fetched here — TradeHistoryPanel manages its own
+ * server-driven pagination.
+ */
 export async function getPortfolio(walletAddress: string): Promise<PortfolioData> {
   const params = new URLSearchParams({ walletAddress });
   const headers: Record<string, string> = {};
@@ -29,12 +33,12 @@ export async function getPortfolio(walletAddress: string): Promise<PortfolioData
     headers["Authorization"] = `Bearer ${env.apiToken}`;
   }
 
-  const response = await apiFetch<ApiPortfolioResponse>(
+  const summary = await apiFetch<ApiPortfolioResponse>(
     `${API_ENDPOINTS.portfolio.summary}?${params.toString()}`,
     { headers }
   );
 
-  const s = response.summary;
+  const s = summary.summary;
 
   return {
     kpis: {
@@ -46,11 +50,11 @@ export async function getPortfolio(walletAddress: string): Promise<PortfolioData
       rewardsEarned: s.rewards_earned,
       rewardsPct:    s.rewards_pct_of_pnl,
     },
-    // Exposure, risk metrics, and trade history come from dedicated
-    // endpoints that will be wired separately — fall back to mock until then.
-    exposure:          MOCK_PORTFOLIO.exposure,
-    riskMetrics:       MOCK_PORTFOLIO.riskMetrics,
-    tradeHistory:      MOCK_PORTFOLIO.tradeHistory,
-    tradeHistoryTotal: MOCK_PORTFOLIO.tradeHistoryTotal,
+    // Exposure and risk metrics still use mock — dedicated endpoints not yet available.
+    exposure:   MOCK_PORTFOLIO.exposure,
+    riskMetrics: MOCK_PORTFOLIO.riskMetrics,
+    // TradeHistoryPanel fetches its own data and manages its own empty state.
+    tradeHistory:      [],
+    tradeHistoryTotal: 1, // non-zero so PortfolioView always renders the full layout
   };
 }

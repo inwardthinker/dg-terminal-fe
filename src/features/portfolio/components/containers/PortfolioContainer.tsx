@@ -17,6 +17,7 @@ export default function PortfolioContainer({
         <PortfolioView
             portfolio={portfolio}
             loading={loading}
+            walletAddress={userWalletAddress}
             venueUnavailable={venueUnavailable}
         />
     );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getPortfolio } from "@/features/portfolio/components/api/getPortfolio";
 import { MOCK_PORTFOLIO } from "@/features/portfolio/constants/mockPortfolio";
+import { ApiError } from "@/lib/api/client";
 import type { PortfolioData, UsePortfolioResult } from "../../types";
 
 export function usePortfolio(walletAddress = ""): UsePortfolioResult {
@@ -23,11 +24,19 @@ export function usePortfolio(walletAddress = ""): UsePortfolioResult {
         if (!isMounted) return;
         setPortfolio(data);
         setError(null);
-      } catch {
+      } catch (err) {
         if (!isMounted) return;
-        // Backend unreachable in dev — use mock so the UI stays deterministic.
-        setPortfolio(MOCK_PORTFOLIO);
-        setError(null);
+        if (err instanceof ApiError) {
+          // The server responded with an error (4xx / 5xx) — surface it so the
+          // user knows something is wrong rather than silently showing stale data.
+          setError(`${err.status}: ${err.message}`);
+          setPortfolio(null);
+        } else {
+          // Network / CORS error — backend likely not running locally.
+          // Fall back to mock so the UI stays usable during development.
+          setPortfolio(MOCK_PORTFOLIO);
+          setError(null);
+        }
       } finally {
         if (!isMounted) return;
         setLoading(false);
