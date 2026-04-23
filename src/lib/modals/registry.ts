@@ -10,12 +10,11 @@ import { TradeDetailModal } from '@/components/modals/TradeDetailModal'
 // TypeScript enforces that every ModalType key has a matching component.
 // Adding a new modal type without registering it here is a compile error.
 export const MODAL_REGISTRY: Record<ModalType, ComponentType<ModalParams>> = {
-
-    close: ClosePositionModal,
-    tradeDetail: TradeDetailModal,
+  close: ClosePositionModal,
+  tradeDetail: TradeDetailModal,
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 export function getModalComponent(type: ModalType): ComponentType<ModalParams> {
-    return MODAL_REGISTRY[type]
+  return MODAL_REGISTRY[type]
 }

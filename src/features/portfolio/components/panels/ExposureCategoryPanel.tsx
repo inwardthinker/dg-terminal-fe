@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { useEffect, useRef, useState } from "react";
-import type { ExposureCategory } from "@/features/portfolio/types";
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import clsx from "clsx";
+import { useEffect, useRef, useState } from 'react'
+import type { ExposureCategory } from '@/features/portfolio/types'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
+import clsx from 'clsx'
 
 type ExposureCategoryPanelProps = {
-  exposure: ExposureCategory[];
-  loading?: boolean;
-  className?: string;
-};
+  exposure: ExposureCategory[]
+  loading?: boolean
+  className?: string
+}
 
 const formatAmount = (n: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
     maximumFractionDigits: 0,
-  }).format(n);
+  }).format(n)
 
 function Skeleton() {
   return (
@@ -31,7 +31,7 @@ function Skeleton() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 export function ExposureCategoryPanel({
@@ -39,34 +39,36 @@ export function ExposureCategoryPanel({
   loading,
   className,
 }: ExposureCategoryPanelProps) {
-  const isEmpty = exposure.length === 0;
-  const listRef = useRef<HTMLDivElement>(null);
-  const [isScrollable, setIsScrollable] = useState(false);
+  const isEmpty = exposure.length === 0
+  const listRef = useRef<HTMLDivElement>(null)
+  const [isScrollable, setIsScrollable] = useState(false)
 
   useEffect(() => {
-    const el = listRef.current;
-    if (!el) return;
-    const check = () => setIsScrollable(el.scrollHeight > el.clientHeight);
-    check();
-    const ro = new ResizeObserver(check);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [exposure]);
+    const el = listRef.current
+    if (!el) return
+    const check = () => setIsScrollable(el.scrollHeight > el.clientHeight)
+    check()
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [exposure])
 
-  if (loading) return <Skeleton />;
+  if (loading) return <Skeleton />
 
   return (
     <div
       className={clsx(
-        "border border-line-c rounded-r7 p-sp5 flex flex-col h-full",
-        isEmpty ? "bg-bg-1/35" : "bg-bg-1",
-        className
+        'border border-line-c rounded-r7 p-sp5 flex flex-col h-full',
+        isEmpty ? 'bg-bg-1/35' : 'bg-bg-1',
+        className,
       )}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-sp4">
         <div className="flex items-center gap-sp2">
-          <span className={clsx(isEmpty ? "text-primary-muted" : "text-primary")}>Exposure by category</span>
+          <span className={clsx(isEmpty ? 'text-primary-muted' : 'text-primary')}>
+            Exposure by category
+          </span>
           <InfoTooltip text="How your open capital is split across market categories. Based on cost basis of open positions only." />
         </div>
       </div>
@@ -111,5 +113,5 @@ export function ExposureCategoryPanel({
         </div>
       )}
     </div>
-  );
+  )
 }

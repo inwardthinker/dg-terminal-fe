@@ -1,35 +1,36 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { usePortfolio } from "@/features/portfolio/components/hooks/usePortfolio";
+import { useEffect, useState } from 'react'
+import { usePortfolio } from '@/features/portfolio/components/hooks/usePortfolio'
 
-const fmtCurrency = (n: number) => `$${n.toLocaleString("en-US")}`;
-const fmtSigned = (n: number) =>
-  `${n >= 0 ? "+" : "-"}$${Math.abs(n).toLocaleString("en-US")}`;
-const fmtPct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
+const fmtCurrency = (n: number) => `$${n.toLocaleString('en-US')}`
+const fmtSigned = (n: number) => `${n >= 0 ? '+' : '-'}$${Math.abs(n).toLocaleString('en-US')}`
+const fmtPct = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`
 
 type TopBarProps = {
-  userInitials?: string;
-};
+  userInitials?: string
+}
 
-export function TopBar({ userInitials = "DC" }: TopBarProps) {
-  const { portfolio, loading } = usePortfolio();
-  const kpis = portfolio?.kpis;
-  const balance = !loading ? kpis?.balance : undefined;
-  const todayPnl = !loading ? kpis?.todayPnl : undefined;
-  const openCount = !loading ? kpis?.openCount : undefined;
-  const portfolioPct = !loading ? kpis?.portfolioPct : undefined;
-  const [throttledPortfolioPct, setThrottledPortfolioPct] = useState<number | undefined>(portfolioPct);
-  const [portfolioTick, setPortfolioTick] = useState(0);
+export function TopBar({ userInitials = 'DC' }: TopBarProps) {
+  const { portfolio, loading } = usePortfolio()
+  const kpis = portfolio?.kpis
+  const balance = !loading ? kpis?.balance : undefined
+  const todayPnl = !loading ? kpis?.todayPnl : undefined
+  const openCount = !loading ? kpis?.openCount : undefined
+  const portfolioPct = !loading ? kpis?.portfolioPct : undefined
+  const [throttledPortfolioPct, setThrottledPortfolioPct] = useState<number | undefined>(
+    portfolioPct,
+  )
+  const [portfolioTick, setPortfolioTick] = useState(0)
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      setThrottledPortfolioPct(portfolioPct);
-      setPortfolioTick(Date.now());
-    }, 1_000);
+      setThrottledPortfolioPct(portfolioPct)
+      setPortfolioTick(Date.now())
+    }, 1_000)
 
-    return () => window.clearTimeout(timeoutId);
-  }, [portfolioPct]);
+    return () => window.clearTimeout(timeoutId)
+  }, [portfolioPct])
 
   return (
     <header className="w-full shrink-0 border-b border-line-c bg-bg-0">
@@ -37,7 +38,11 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
         {/* ── Left: brand + quick stats ── */}
         <div className="flex items-center gap-sp5 md:gap-sp7 shrink-0">
           {/* Brand */}
-          <div className="flex items-center leading-none text-[17px] font-extrabold tracking-[0.04em]" role="img" aria-label="DG Predict logo">
+          <div
+            className="flex items-center leading-none text-[17px] font-extrabold tracking-[0.04em]"
+            role="img"
+            aria-label="DG Predict logo"
+          >
             <span className=" text-t-1 ">DG</span>
             <span className="text-g-3">PREDICT</span>
           </div>
@@ -47,24 +52,25 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             <div className="flex flex-col">
               <span className="text-label">Balance</span>
               <span className="text-secondary leading-[1.2]">
-                {balance !== undefined ? fmtCurrency(balance) : "--"}
+                {balance !== undefined ? fmtCurrency(balance) : '--'}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-label">Today P&amp;L</span>
               <span
-                className={`text-secondary leading-[1.2] ${todayPnl !== undefined && todayPnl < 0 ? "text-neg" : "text-pos"
-                  }`}
+                className={`text-secondary leading-[1.2] ${
+                  todayPnl !== undefined && todayPnl < 0 ? 'text-neg' : 'text-pos'
+                }`}
               >
-                {todayPnl !== undefined ? fmtSigned(todayPnl) : "--"}
+                {todayPnl !== undefined ? fmtSigned(todayPnl) : '--'}
               </span>
             </div>
 
             <div className="flex flex-col">
               <span className="text-label">Open</span>
               <span className="text-secondary leading-[1.2]">
-                {openCount !== undefined ? openCount : "--"}
+                {openCount !== undefined ? openCount : '--'}
               </span>
             </div>
           </div>
@@ -83,8 +89,13 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             >
               <circle cx="4.8" cy="4.8" r="3.3" stroke="#555" strokeWidth="1.4" />
               <line
-                x1="7.4" y1="7.4" x2="10.5" y2="10.5"
-                stroke="#555" strokeWidth="1.5" strokeLinecap="round"
+                x1="7.4"
+                y1="7.4"
+                x2="10.5"
+                y2="10.5"
+                stroke="#555"
+                strokeWidth="1.5"
+                strokeLinecap="round"
               />
             </svg>
             <span className="text-support text-[#555] flex-1 select-none">
@@ -108,10 +119,13 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
             <span className="text-label">Portfolio</span>
             <span
               key={`portfolio-pill-${portfolioTick}`}
-              className={`text-secondary live-value-flash px-1 ${throttledPortfolioPct !== undefined && throttledPortfolioPct < 0 ? "text-neg" : "text-pos"
-                }`}
+              className={`text-secondary live-value-flash px-1 ${
+                throttledPortfolioPct !== undefined && throttledPortfolioPct < 0
+                  ? 'text-neg'
+                  : 'text-pos'
+              }`}
             >
-              {throttledPortfolioPct !== undefined ? fmtPct(throttledPortfolioPct) : "--"}
+              {throttledPortfolioPct !== undefined ? fmtPct(throttledPortfolioPct) : '--'}
             </span>
           </div>
 
@@ -122,5 +136,5 @@ export function TopBar({ userInitials = "DC" }: TopBarProps) {
         </div>
       </div>
     </header>
-  );
+  )
 }

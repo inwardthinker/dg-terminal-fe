@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
 import {
   POSITION_TABLE_GRID_COLUMNS,
   POSITION_TABLE_GRID_COLUMNS_MOBILE,
   POSITION_TABLE_ROW_HEIGHT_PX,
-} from "../constants/layout";
+} from '../constants/layout'
 
 const SKELETON_ROW_KEYS = [
-  "sk-a",
-  "sk-b",
-  "sk-c",
-  "sk-d",
-  "sk-e",
-  "sk-f",
-  "sk-g",
-  "sk-h",
-  "sk-i",
-  "sk-j",
-] as const;
+  'sk-a',
+  'sk-b',
+  'sk-c',
+  'sk-d',
+  'sk-e',
+  'sk-f',
+  'sk-g',
+  'sk-h',
+  'sk-i',
+  'sk-j',
+] as const
 
 function FilterBarSkeleton() {
   return (
@@ -40,7 +40,7 @@ function FilterBarSkeleton() {
         <div className="h-8 w-29 shrink-0 animate-pulse rounded border border-line-c bg-bg-2" />
       </div>
     </div>
-  );
+  )
 }
 
 function TableSkeleton() {
@@ -169,7 +169,7 @@ function TableSkeleton() {
         <div className="h-4 w-32 animate-pulse rounded bg-bg-2/70" />
       </div>
     </div>
-  );
+  )
 }
 
 export function PositionsTableSkeleton() {
@@ -178,5 +178,5 @@ export function PositionsTableSkeleton() {
       <FilterBarSkeleton />
       <TableSkeleton />
     </div>
-  );
+  )
 }

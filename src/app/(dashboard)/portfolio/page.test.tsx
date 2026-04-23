@@ -1,50 +1,49 @@
-import { render, screen } from "@testing-library/react";
-import { createElement } from "react";
-import type { ReactNode } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react'
+import { createElement } from 'react'
+import type { ReactNode } from 'react'
+import { describe, expect, it, vi } from 'vitest'
 
 const { usePortfolioMock } = vi.hoisted(() => ({
   usePortfolioMock: vi.fn(),
-}));
+}))
 
-vi.mock("@/features/portfolio/hooks", () => ({
+vi.mock('@/features/portfolio/hooks', () => ({
   usePortfolio: usePortfolioMock,
-}));
+}))
 
-vi.mock("@/features/equity-curve/components/EquityCurvePanel", () => ({
-  EquityCurvePanel: () => createElement("div", null, "equity-panel"),
-}));
+vi.mock('@/features/equity-curve/components/EquityCurvePanel', () => ({
+  EquityCurvePanel: () => createElement('div', null, 'equity-panel'),
+}))
 
-vi.mock("@/features/open-positions", () => ({
-  SummaryPanelContainer: () => createElement("div", null, "summary-panel"),
-}));
+vi.mock('@/features/open-positions', () => ({
+  SummaryPanelContainer: () => createElement('div', null, 'summary-panel'),
+}))
 
-vi.mock("@/features/portfolio/components/ExposureCategoryPanel", () => ({
-  ExposureCategoryPanel: () => createElement("div", null, "exposure-panel"),
-}));
+vi.mock('@/features/portfolio/components/ExposureCategoryPanel', () => ({
+  ExposureCategoryPanel: () => createElement('div', null, 'exposure-panel'),
+}))
 
-vi.mock("@/features/portfolio/components/RiskMetricsPanel", () => ({
-  RiskMetricsPanel: () => createElement("div", null, "risk-panel"),
-}));
+vi.mock('@/features/portfolio/components/RiskMetricsPanel', () => ({
+  RiskMetricsPanel: () => createElement('div', null, 'risk-panel'),
+}))
 
-vi.mock("@/features/portfolio/components/TradeHistoryPanel", () => ({
-  TradeHistoryPanel: () => createElement("div", null, "history-panel"),
-}));
+vi.mock('@/features/portfolio/components/TradeHistoryPanel', () => ({
+  TradeHistoryPanel: () => createElement('div', null, 'history-panel'),
+}))
 
-vi.mock("@/components/ui/Breadcrumb", () => ({
-  Breadcrumb: () => createElement("div", null, "breadcrumb"),
-}));
+vi.mock('@/components/ui/Breadcrumb', () => ({
+  Breadcrumb: () => createElement('div', null, 'breadcrumb'),
+}))
 
-vi.mock("@/components/ui/Button", () => ({
-  Button: ({ children }: { children: ReactNode }) => (
-    createElement("button", { type: "button" }, children)
-  ),
-}));
+vi.mock('@/components/ui/Button', () => ({
+  Button: ({ children }: { children: ReactNode }) =>
+    createElement('button', { type: 'button' }, children),
+}))
 
-import PortfolioPage from "./page";
+import PortfolioPage from './page'
 
-describe("PortfolioPage KPI summary", () => {
-  it("renders portfolio KPI values", () => {
+describe('PortfolioPage KPI summary', () => {
+  it('renders portfolio KPI values', () => {
     usePortfolioMock.mockReturnValue({
       portfolio: {
         kpis: {
@@ -66,29 +65,29 @@ describe("PortfolioPage KPI summary", () => {
       },
       loading: false,
       error: null,
-    });
+    })
 
-    render(createElement(PortfolioPage));
+    render(createElement(PortfolioPage))
 
-    expect(screen.getByText("Open Exposure")).toBeInTheDocument();
-    expect(screen.getByText("$3,000")).toBeInTheDocument();
-    expect(screen.getByText("+25.0%")).toBeInTheDocument();
-    expect(screen.getByText("Unrealized P&L")).toBeInTheDocument();
-    expect(screen.getByText("+$200")).toBeInTheDocument();
-    expect(screen.getByText("Realized 30D")).toBeInTheDocument();
-    expect(screen.getByText("10 trades")).toBeInTheDocument();
-  });
+    expect(screen.getByText('Open Exposure')).toBeInTheDocument()
+    expect(screen.getByText('$3,000')).toBeInTheDocument()
+    expect(screen.getByText('+25.0%')).toBeInTheDocument()
+    expect(screen.getByText('Unrealized P&L')).toBeInTheDocument()
+    expect(screen.getByText('+$200')).toBeInTheDocument()
+    expect(screen.getByText('Realized 30D')).toBeInTheDocument()
+    expect(screen.getByText('10 trades')).toBeInTheDocument()
+  })
 
-  it("renders placeholder values while loading", () => {
+  it('renders placeholder values while loading', () => {
     usePortfolioMock.mockReturnValue({
       portfolio: null,
       loading: true,
       error: null,
-    });
+    })
 
-    render(createElement(PortfolioPage));
+    render(createElement(PortfolioPage))
 
-    expect(screen.getByText("Balance")).toBeInTheDocument();
-    expect(screen.getAllByText("--").length).toBeGreaterThan(0);
-  });
-});
+    expect(screen.getByText('Balance')).toBeInTheDocument()
+    expect(screen.getAllByText('--').length).toBeGreaterThan(0)
+  })
+})

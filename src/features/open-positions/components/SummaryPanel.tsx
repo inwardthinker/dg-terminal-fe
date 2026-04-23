@@ -1,70 +1,66 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
-import { PositionRowSummary } from "./PositionRowSummary";
-import type { Position } from "../types";
-import { ArrowLink } from "@/components/ui/ArrowLink";
-import Link from "next/link";
-import { DotSeparator } from "@/components/ui/DotSeparator";
-import { buildCategoryPresentation } from "../utils/categoryExposure";
-import {
-  SUMMARY_GRID_COLUMNS,
-  SUMMARY_GRID_COLUMNS_MOBILE,
-} from "../constants/layout";
-import { InfoTooltip } from "@/components/ui/InfoTooltip";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import clsx from "clsx";
-import type { PositionsConnectionState } from "../types";
+import { useMemo } from 'react'
+import { PositionRowSummary } from './PositionRowSummary'
+import type { Position } from '../types'
+import { ArrowLink } from '@/components/ui/ArrowLink'
+import Link from 'next/link'
+import { DotSeparator } from '@/components/ui/DotSeparator'
+import { buildCategoryPresentation } from '../utils/categoryExposure'
+import { SUMMARY_GRID_COLUMNS, SUMMARY_GRID_COLUMNS_MOBILE } from '../constants/layout'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
+import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
+import clsx from 'clsx'
+import type { PositionsConnectionState } from '../types'
 
 type SummaryPanelProps = {
-  positions: Position[];
-  totalCount: number;
-  onOpenPosition: (position: Position) => void;
-  onClosePosition: (position: Position) => void;
-  venueUnavailable?: boolean;
-  connectionState?: PositionsConnectionState;
-};
+  positions: Position[]
+  totalCount: number
+  onOpenPosition: (position: Position) => void
+  onClosePosition: (position: Position) => void
+  venueUnavailable?: boolean
+  connectionState?: PositionsConnectionState
+}
 
-const OPEN_POSITIONS_URL = "/portfolio/open-positions";
+const OPEN_POSITIONS_URL = '/portfolio/open-positions'
 
 const SUMMARY_COLUMNS = [
   {
-    key: "market",
-    label: "Market",
-    tooltip: "The event or outcome you have a position on.",
-    align: "left",
+    key: 'market',
+    label: 'Market',
+    tooltip: 'The event or outcome you have a position on.',
+    align: 'left',
   },
   {
-    key: "category",
-    label: "Cat.",
-    tooltip: "The topic area this market belongs to.",
-    align: "left",
+    key: 'category',
+    label: 'Cat.',
+    tooltip: 'The topic area this market belongs to.',
+    align: 'left',
     hideOnMobile: true,
   },
   {
-    key: "side",
-    label: "Side",
-    tooltip:
-      "Whether you bet YES (outcome happens) or NO (outcome does not happen).",
-    align: "left",
+    key: 'side',
+    label: 'Side',
+    tooltip: 'Whether you bet YES (outcome happens) or NO (outcome does not happen).',
+    align: 'left',
   },
   {
-    key: "size",
-    label: "Size",
-    tooltip: "Total amount paid to open this position (cost basis).",
-    align: "right",
+    key: 'size',
+    label: 'Size',
+    tooltip: 'Total amount paid to open this position (cost basis).',
+    align: 'right',
     hideOnMobile: true,
   },
   {
-    key: "pnl",
-    label: "P&L",
-    tooltip: "Unrealized gain or loss in dollars at current price.",
-    align: "right",
+    key: 'pnl',
+    label: 'P&L',
+    tooltip: 'Unrealized gain or loss in dollars at current price.',
+    align: 'right',
   },
   {
-    key: "action",
-    label: "Action",
-    align: "right",
+    key: 'action',
+    label: 'Action',
+    align: 'right',
   },
 ]
 
@@ -74,9 +70,9 @@ export function SummaryPanel({
   onOpenPosition,
   onClosePosition,
   venueUnavailable = false,
-  connectionState = "connected",
+  connectionState = 'connected',
 }: SummaryPanelProps) {
-  const isEmpty = totalCount === 0;
+  const isEmpty = totalCount === 0
 
   const remaining = Math.max(totalCount - positions.length, 0)
 
@@ -85,17 +81,22 @@ export function SummaryPanel({
   }, [positions])
 
   const liveDotColorClass =
-    connectionState === "connected"
-      ? "bg-pos"
-      : connectionState === "reconnecting"
-        ? "bg-warn"
-        : "bg-neg";
-  const showReconnectTooltip = connectionState !== "connected";
+    connectionState === 'connected'
+      ? 'bg-pos'
+      : connectionState === 'reconnecting'
+        ? 'bg-warn'
+        : 'bg-neg'
+  const showReconnectTooltip = connectionState !== 'connected'
 
   return (
-    <section className={clsx("rounded-r7 border border-line-c p-4 h-full flex flex-col", isEmpty ? "bg-bg-1/35" : "bg-bg-1")}>
+    <section
+      className={clsx(
+        'rounded-r7 border border-line-c p-4 h-full flex flex-col',
+        isEmpty ? 'bg-bg-1/35' : 'bg-bg-1',
+      )}
+    >
       <div className="mb-3 flex items-center justify-between">
-        <div className={`flex items-center ${isEmpty ? "text-primary-muted" : "text-primary"}`}>
+        <div className={`flex items-center ${isEmpty ? 'text-primary-muted' : 'text-primary'}`}>
           {!isEmpty && (
             <>
               <h2 className="">Open Positions </h2>
@@ -104,13 +105,13 @@ export function SummaryPanel({
               <span className="relative mx-2 inline-flex items-center group">
                 <span
                   className={clsx(
-                    "h-2 w-2 rounded-full",
-                    venueUnavailable ? "bg-neg" : liveDotColorClass
+                    'h-2 w-2 rounded-full',
+                    venueUnavailable ? 'bg-neg' : liveDotColorClass,
                   )}
                   aria-label={
                     showReconnectTooltip
-                      ? "Live prices paused. Reconnecting..."
-                      : "Live prices connected"
+                      ? 'Live prices paused. Reconnecting...'
+                      : 'Live prices connected'
                   }
                 />
                 {showReconnectTooltip ? (
@@ -123,20 +124,24 @@ export function SummaryPanel({
             </>
           )}
         </div>
-        {!isEmpty && remaining > 0 &&
+        {!isEmpty && remaining > 0 && (
           <div className="text-secondary">
             <ArrowLink href={OPEN_POSITIONS_URL} label="View all" direction="down" />
           </div>
-        }
+        )}
       </div>
 
       {isEmpty ? (
         <div className="flex-1 grid place-items-center text-center">
           <div className="max-w-[320px] space-y-2 px-2">
-            <div className="text-[22px]" aria-hidden="true">📥</div>
+            <div className="text-[22px]" aria-hidden="true">
+              📥
+            </div>
             <p className="text-secondary font-semibold">No open positions yet</p>
 
-            <p className="hidden sm:block text-support">Search a market in the terminal to place your first trade</p>
+            <p className="hidden sm:block text-support">
+              Search a market in the terminal to place your first trade
+            </p>
             <div className="hidden sm:block pt-1">
               <Link
                 href="/"
@@ -146,7 +151,9 @@ export function SummaryPanel({
               </Link>
             </div>
 
-            <p className="sm:hidden text-support">Deposit funds and search a market in the terminal to place your first trade</p>
+            <p className="sm:hidden text-support">
+              Deposit funds and search a market in the terminal to place your first trade
+            </p>
             <div className="pt-2 flex flex-col items-center gap-2 sm:hidden">
               <Link
                 href="/"
@@ -154,7 +161,10 @@ export function SummaryPanel({
               >
                 + Deposit funds
               </Link>
-              <Link href="/" className="text-support underline-offset-2 hover:text-t-2 transition-colors underline!">
+              <Link
+                href="/"
+                className="text-support underline-offset-2 hover:text-t-2 transition-colors underline!"
+              >
                 Find a market instead <ArrowRightIcon className="h-2.5 w-2.5 inline-block" />
               </Link>
             </div>
@@ -170,15 +180,14 @@ export function SummaryPanel({
                 key={col.key}
                 className={`
         py-2 flex items-center gap-1
-        ${col.align === "right" ? "justify-end text-right" : "text-left"}
-        ${col.hideOnMobile ? "max-sm:hidden" : ""}
+        ${col.align === 'right' ? 'justify-end text-right' : 'text-left'}
+        ${col.hideOnMobile ? 'max-sm:hidden' : ''}
       `}
               >
                 <span>{col.label}</span>
                 {col.tooltip && <InfoTooltip text={col.tooltip} />}
               </div>
             ))}
-
           </div>
           {positions.map((position) => (
             <PositionRowSummary
@@ -199,5 +208,5 @@ export function SummaryPanel({
         </div>
       )}
     </section>
-  );
+  )
 }

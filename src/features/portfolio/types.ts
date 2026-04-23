@@ -3,130 +3,130 @@
 
 export type PortfolioKpis = {
   /** Total account balance in USD */
-  balance: number;
+  balance: number
   /** 24-hour balance change in USD (signed) */
-  change24h?: number;
+  change24h?: number
   /** Total cost basis of open positions */
-  openExposure?: number;
+  openExposure?: number
   /** Percentage of balance currently deployed */
-  deployedPct?: number;
+  deployedPct?: number
   /** Unrealised P&L at current mid prices (signed) */
-  unrealizedPnl?: number;
+  unrealizedPnl?: number
   /** Unrealised P&L as a percentage of cost basis (signed) */
-  unrealizedPct?: number;
+  unrealizedPct?: number
   /** Settled P&L from trades closed in the last 30 days (signed) */
-  realized30d?: number;
+  realized30d?: number
   /** Number of trades closed in the last 30 days */
-  trades30d?: number;
+  trades30d?: number
   /** Maker rebates and referral bonuses earned in the last 30 days */
-  rewardsEarned?: number;
+  rewardsEarned?: number
   /** Rewards as a percentage of realised P&L */
-  rewardsPct?: number;
+  rewardsPct?: number
   /** Number of currently open positions */
-  openCount?: number;
+  openCount?: number
   /** Today's P&L in USD (signed) */
-  todayPnl?: number;
+  todayPnl?: number
   /** Portfolio return percentage (signed) */
-  portfolioPct?: number;
-};
+  portfolioPct?: number
+}
 
 export type ExposureCategory = {
   /** Category display name */
-  name: string;
+  name: string
   /** Total absolute size of positions in this category (USD) */
-  amount: number;
+  amount: number
   /** Percentage of total open exposure */
-  pct: number;
+  pct: number
   /** Hex colour assigned to this category */
-  color: string;
-};
+  color: string
+}
 
-export type RiskMetricValueType = "positive" | "negative" | "neutral" | "gold";
+export type RiskMetricValueType = 'positive' | 'negative' | 'neutral' | 'gold'
 
 export type RiskMetric = {
   /** Unique identifier for this metric */
-  key: string;
+  key: string
   /** Display label */
-  label: string;
+  label: string
   /** Formatted display value */
-  value: string;
+  value: string
   /** Controls the colour of the displayed value */
-  valueType: RiskMetricValueType;
+  valueType: RiskMetricValueType
   /** Tooltip explanation text */
-  tooltip: string;
-};
+  tooltip: string
+}
 
-export type TradeResult = "WON" | "LOST" | "PUSHED";
-export type TradeSide = "YES" | "NO";
-export type TradeHistoryPeriod = "7d" | "30d" | "90d" | "All";
+export type TradeResult = 'WON' | 'LOST' | 'PUSHED'
+export type TradeSide = 'YES' | 'NO'
+export type TradeHistoryPeriod = '7d' | '30d' | '90d' | 'All'
 
 export type TradeHistoryEntry = {
-  id: string;
+  id: string
   /** Display date string, e.g. "Apr 7" */
-  date: string;
+  date: string
   /** ISO 8601 date string for filtering, e.g. "2026-04-07" */
-  isoDate: string;
-  market: string;
-  side: TradeSide;
+  isoDate: string
+  market: string
+  side: TradeSide
   /** Entry price (0–1 probability) */
-  entry: number;
+  entry: number
   /** Exit price (0–1 probability, 0 if lost, 1 if won outright) */
-  exit: number;
+  exit: number
   /** Position size in USD */
-  size: number;
-  result: TradeResult;
+  size: number
+  result: TradeResult
   /** Realised P&L in USD (signed) */
-  pnl: number;
+  pnl: number
   /** Display date of settlement or manual exit, e.g. "Apr 8" */
-  settlementDate?: string;
+  settlementDate?: string
   /** Whether this was a market resolution or manual exit — controls price label */
-  closeType?: 'settlement' | 'manual';
+  closeType?: 'settlement' | 'manual'
   /** Maker rebates / rewards earned on this trade (USD) */
-  rewardsEarned?: number;
+  rewardsEarned?: number
   /** True if the market is still open for trading */
-  isMarketLive?: boolean;
+  isMarketLive?: boolean
   /** Trading venue, e.g. "Polymarket" */
-  venue?: string;
+  venue?: string
   /** Fees paid on this trade (USD) */
-  feePaid?: number;
-};
+  feePaid?: number
+}
 
 export type PortfolioData = {
-  kpis: PortfolioKpis;
-  exposure: ExposureCategory[];
-  riskMetrics: RiskMetric[];
-  tradeHistory: TradeHistoryEntry[];
+  kpis: PortfolioKpis
+  exposure: ExposureCategory[]
+  riskMetrics: RiskMetric[]
+  tradeHistory: TradeHistoryEntry[]
   /** Total trades available across all pages */
-  tradeHistoryTotal: number;
-};
+  tradeHistoryTotal: number
+}
 
 export type UsePortfolioResult = {
-  portfolio: PortfolioData | null;
-  loading: boolean;
-  kpiLoading: boolean;
-  error: string | null;
-};
+  portfolio: PortfolioData | null
+  loading: boolean
+  kpiLoading: boolean
+  error: string | null
+}
 
 export type PortfolioKpiSubscribedEvent = {
-  stream: "portfolio_kpis";
-  wallet: string;
-  interval_ms: number;
-};
+  stream: 'portfolio_kpis'
+  wallet: string
+  interval_ms: number
+}
 
 export type PortfolioKpiUpdate = {
-  balance: number;
-  open_exposure: number;
-  pc_exposure: number;
-  unrealized_pnl: number;
-  un_pnl_pc: number;
-  realized_30d: number;
-  num_trades: number;
-  rewards_earned: number;
-  reward_pc: number;
-};
+  balance: number
+  open_exposure: number
+  pc_exposure: number
+  unrealized_pnl: number
+  un_pnl_pc: number
+  realized_30d: number
+  num_trades: number
+  rewards_earned: number
+  reward_pc: number
+}
 
 export type PortfolioKpiUpdateEvent = {
-  wallet: string;
-  ts: string;
-  kpis: PortfolioKpiUpdate;
-};
+  wallet: string
+  ts: string
+  kpis: PortfolioKpiUpdate
+}

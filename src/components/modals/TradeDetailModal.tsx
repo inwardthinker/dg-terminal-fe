@@ -1,33 +1,33 @@
-"use client"
+'use client'
 
-import { BaseModal } from "@/components/modals/BaseModal"
-import { useModal } from "@/lib/modals/hooks/useModal"
-import type { ModalParams } from "@/lib/modals/types"
-import type { TradeHistoryEntry } from "@/features/portfolio/types"
-import { ExternalLink } from "lucide-react"
+import { BaseModal } from '@/components/modals/BaseModal'
+import { useModal } from '@/lib/modals/hooks/useModal'
+import type { ModalParams } from '@/lib/modals/types'
+import type { TradeHistoryEntry } from '@/features/portfolio/types'
+import { ExternalLink } from 'lucide-react'
 
 type Props = ModalParams & {
   trade?: TradeHistoryEntry
 }
 
 // Outcome badge classes — spec values
-const BADGE: Record<TradeHistoryEntry["result"], string> = {
-  WON:    "bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]  text-pos",
-  LOST:   "bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]   text-neg",
-  PUSHED: "bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)] text-t-3",
+const BADGE: Record<TradeHistoryEntry['result'], string> = {
+  WON: 'bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]  text-pos',
+  LOST: 'bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]   text-neg',
+  PUSHED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)] text-t-3',
 }
 
 // P&L hero text colour
-const PNL_COLOR: Record<TradeHistoryEntry["result"], string> = {
-  WON:    "text-pos",
-  LOST:   "text-neg",
-  PUSHED: "text-t-2",
+const PNL_COLOR: Record<TradeHistoryEntry['result'], string> = {
+  WON: 'text-pos',
+  LOST: 'text-neg',
+  PUSHED: 'text-t-2',
 }
 
 const fmtUsd = (n: number, decimals = 0) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   }).format(Math.abs(n))
@@ -37,9 +37,9 @@ export function TradeDetailModal({ trade }: Props) {
 
   if (!trade) return null
 
-  const isManual = trade.closeType === "manual"
-  const closeVerb = isManual ? "Exited" : "Settled"
-  const venue = trade.venue 
+  const isManual = trade.closeType === 'manual'
+  const closeVerb = isManual ? 'Exited' : 'Settled'
+  const venue = trade.venue
   const feePaid = trade.feePaid ?? 0
   const rewardsEarned = trade.rewardsEarned ?? 0
 
@@ -49,17 +49,16 @@ export function TradeDetailModal({ trade }: Props) {
   const subtitle = `${closeVerb} ${displayDate}, ${year} · ${venue}`
 
   // P&L hero
-  const pnlSign = trade.pnl > 0 ? "+" : trade.pnl < 0 ? "−" : ""
+  const pnlSign = trade.pnl > 0 ? '+' : trade.pnl < 0 ? '−' : ''
   const pnlColor = PNL_COLOR[trade.result]
   const returnPct = trade.size > 0 ? (trade.pnl / trade.size) * 100 : 0
-  const returnSign = returnPct > 0 ? "+" : returnPct < 0 ? "−" : ""
+  const returnSign = returnPct > 0 ? '+' : returnPct < 0 ? '−' : ''
 
   // Exit price label: "Exit price" per spec
-  const exitPriceLabel = isManual ? "Exit price" : "Exit price"
+  const exitPriceLabel = isManual ? 'Exit price' : 'Exit price'
 
   return (
     <BaseModal variant="modal" onClose={closeModal} showClose={false}>
-
       {/* ── Header ── */}
       <div className="flex items-start justify-between gap-3 mb-[14px]">
         <div className="min-w-0">
@@ -90,17 +89,19 @@ export function TradeDetailModal({ trade }: Props) {
           Realized P&amp;L
         </div>
         <div className={`text-[28px] font-[800] leading-none tracking-[-0.5px] ${pnlColor}`}>
-          {pnlSign}{fmtUsd(trade.pnl)}
+          {pnlSign}
+          {fmtUsd(trade.pnl)}
         </div>
         <div className={`text-[10px] mt-[2px] ${pnlColor}`}>
-          {returnSign}{Math.abs(returnPct).toFixed(1)}% return
+          {returnSign}
+          {Math.abs(returnPct).toFixed(1)}% return
         </div>
       </div>
 
       {/* ── Data rows ── */}
       <div>
         <DataRow label="Side">
-          <span className={`font-bold ${trade.side === "YES" ? "text-pos" : "text-neg"}`}>
+          <span className={`font-bold ${trade.side === 'YES' ? 'text-pos' : 'text-neg'}`}>
             {trade.side}
           </span>
         </DataRow>
@@ -120,8 +121,8 @@ export function TradeDetailModal({ trade }: Props) {
           <span>{fmtUsd(feePaid, 2)}</span>
         </DataRow>
         <DataRow label="Rewards earned" last>
-          <span className={`font-semibold ${rewardsEarned > 0 ? "text-g-3" : "text-t-1"}`}>
-            {rewardsEarned > 0 ? fmtUsd(rewardsEarned, 2) : "$0"}
+          <span className={`font-semibold ${rewardsEarned > 0 ? 'text-g-3' : 'text-t-1'}`}>
+            {rewardsEarned > 0 ? fmtUsd(rewardsEarned, 2) : '$0'}
           </span>
         </DataRow>
       </div>
@@ -145,7 +146,6 @@ export function TradeDetailModal({ trade }: Props) {
       >
         Close
       </button>
-
     </BaseModal>
   )
 }
@@ -162,7 +162,7 @@ function DataRow({
   return (
     <div
       className={`flex items-center justify-between text-[11.5px] py-[6px] ${
-        last ? "" : "border-b border-[rgba(255,255,255,0.06)]"
+        last ? '' : 'border-b border-[rgba(255,255,255,0.06)]'
       }`}
     >
       <span className="text-t-3">{label}</span>

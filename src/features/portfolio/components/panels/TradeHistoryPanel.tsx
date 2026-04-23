@@ -1,43 +1,41 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import type { TradeHistoryEntry, TradeHistoryPeriod } from "@/features/portfolio/types";
-import { useModal } from "@/lib/modals/hooks/useModal";
-import { getTrades } from "@/features/portfolio/components/api/getTrades";
+import { useEffect, useState } from 'react'
+import type { TradeHistoryEntry, TradeHistoryPeriod } from '@/features/portfolio/types'
+import { useModal } from '@/lib/modals/hooks/useModal'
+import { getTrades } from '@/features/portfolio/components/api/getTrades'
 
-const PERIODS: TradeHistoryPeriod[] = ["7d", "30d", "90d", "All"];
-const PER_PAGE = 10;
+const PERIODS: TradeHistoryPeriod[] = ['7d', '30d', '90d', 'All']
+const PER_PAGE = 10
 
 const TRADE_HISTORY_GRID_TEMPLATE =
-  "grid-cols-[minmax(64px,0.9fr)_minmax(220px,2.5fr)_minmax(48px,0.7fr)_minmax(64px,0.9fr)_minmax(56px,0.8fr)_minmax(72px,0.9fr)_minmax(90px,1.1fr)_minmax(76px,1fr)]";
-const TRADE_HISTORY_GRID_CLASS = `grid ${TRADE_HISTORY_GRID_TEMPLATE} gap-sp2`;
+  'grid-cols-[minmax(64px,0.9fr)_minmax(220px,2.5fr)_minmax(48px,0.7fr)_minmax(64px,0.9fr)_minmax(56px,0.8fr)_minmax(72px,0.9fr)_minmax(90px,1.1fr)_minmax(76px,1fr)]'
+const TRADE_HISTORY_GRID_CLASS = `grid ${TRADE_HISTORY_GRID_TEMPLATE} gap-sp2`
 
 type TradeHistoryPanelProps = {
-  walletAddress: string;
+  walletAddress: string
   /** If true the panel renders its empty/loading skeleton without fetching. */
-  loading?: boolean;
-};
+  loading?: boolean
+}
 
 const formatUsd = (n: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(Math.abs(n));
+  }).format(Math.abs(n))
 
-function ResultBadge({ result }: { result: TradeHistoryEntry["result"] }) {
+function ResultBadge({ result }: { result: TradeHistoryEntry['result'] }) {
   const cls = {
-    WON:    "bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos",
-    LOST:   "bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg",
-    PUSHED: "bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3",
-  }[result];
+    WON: 'bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos',
+    LOST: 'bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg',
+    PUSHED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3',
+  }[result]
 
   return (
-    <span className={`inline-block rounded-r3 px-[9px] py-[3px] text-button ${cls}`}>
-      {result}
-    </span>
-  );
+    <span className={`inline-block rounded-r3 px-[9px] py-[3px] text-button ${cls}`}>{result}</span>
+  )
 }
 
 /** Full-panel skeleton — shown only on the very first load. */
@@ -49,7 +47,7 @@ function Skeleton() {
         <div key={i} className="h-[28px] bg-bg-2 rounded-r2 animate-pulse" />
       ))}
     </div>
-  );
+  )
 }
 
 /**
@@ -61,19 +59,16 @@ function RowsSkeleton() {
   return (
     <div className="flex flex-col">
       {Array.from({ length: PER_PAGE }).map((_, i) => (
-        <div
-          key={i}
-          className="py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0"
-        >
+        <div key={i} className="py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0">
           <div className="h-[26px] bg-bg-2 rounded-r2 animate-pulse" />
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 function exportCsv(trades: TradeHistoryEntry[]) {
-  const headers = ["Date", "Market", "Side", "Entry", "Exit", "Size (USD)", "Result", "P&L (USD)"];
+  const headers = ['Date', 'Market', 'Side', 'Entry', 'Exit', 'Size (USD)', 'Result', 'P&L (USD)']
   const rows = trades.map((t) => [
     t.date,
     `"${t.market.replace(/"/g, '""')}"`,
@@ -83,37 +78,40 @@ function exportCsv(trades: TradeHistoryEntry[]) {
     t.size,
     t.result,
     t.pnl,
-  ]);
-  const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "trade-history.csv";
-  a.click();
-  URL.revokeObjectURL(url);
+  ])
+  const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'trade-history.csv'
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
-export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: TradeHistoryPanelProps) {
-  const [period, setPeriod] = useState<TradeHistoryPeriod>("30d");
-  const [page, setPage] = useState(1);
+export function TradeHistoryPanel({
+  walletAddress,
+  loading: parentLoading,
+}: TradeHistoryPanelProps) {
+  const [period, setPeriod] = useState<TradeHistoryPeriod>('30d')
+  const [page, setPage] = useState(1)
 
-  const [trades, setTrades] = useState<TradeHistoryEntry[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [fetching, setFetching] = useState(false);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [trades, setTrades] = useState<TradeHistoryEntry[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [fetching, setFetching] = useState(false)
+  const [fetchError, setFetchError] = useState<string | null>(null)
 
-  const { openModal } = useModal();
+  const { openModal } = useModal()
 
   useEffect(() => {
-    if (!walletAddress) return;
+    if (!walletAddress) return
 
-    let cancelled = false;
+    let cancelled = false
 
     async function load() {
-      setFetching(true);
-      setFetchError(null);
+      setFetching(true)
+      setFetchError(null)
       try {
         // All periods (including "All" → period=all) use the same server-side
         // pagination: one request per page, trust total_count / total_pages.
@@ -122,30 +120,32 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
           period,
           page,
           perPage: PER_PAGE,
-        });
-        if (cancelled) return;
-        setTrades(result.trades);
-        setTotalCount(result.totalCount);
-        setTotalPages(result.totalPages);
+        })
+        if (cancelled) return
+        setTrades(result.trades)
+        setTotalCount(result.totalCount)
+        setTotalPages(result.totalPages)
       } catch {
-        if (cancelled) return;
-        setFetchError("Failed to load trade history.");
+        if (cancelled) return
+        setFetchError('Failed to load trade history.')
       } finally {
-        if (!cancelled) setFetching(false);
+        if (!cancelled) setFetching(false)
       }
     }
 
-    void load();
-    return () => { cancelled = true; };
-  }, [walletAddress, period, page]);
+    void load()
+    return () => {
+      cancelled = true
+    }
+  }, [walletAddress, period, page])
 
   function handlePeriodChange(p: TradeHistoryPeriod) {
-    setPeriod(p);
-    setPage(1); // reset to page 1 on filter change
+    setPeriod(p)
+    setPage(1) // reset to page 1 on filter change
   }
 
   // Full skeleton only on the very first load (parent hasn't resolved yet).
-  if (parentLoading) return <Skeleton />;
+  if (parentLoading) return <Skeleton />
 
   // Empty / error states (only when we're not mid-fetch to avoid flicker).
   if (!fetching && fetchError) {
@@ -154,7 +154,7 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
         <div className="text-primary-muted">Trade history</div>
         <div className="h-[180px] grid place-items-center text-neg">{fetchError}</div>
       </div>
-    );
+    )
   }
 
   if (!fetching && totalCount === 0 && page === 1) {
@@ -162,14 +162,14 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
       <div className="bg-bg-1/35 border border-line-c rounded-r7 p-sp5 flex flex-col gap-sp4">
         <div className="text-primary-muted">Trade history</div>
         <div className="h-[180px] grid place-items-center text-support">
-          {period === "All" ? "No trade history yet" : `No trades in the last ${period}`}
+          {period === 'All' ? 'No trade history yet' : `No trades in the last ${period}`}
         </div>
       </div>
-    );
+    )
   }
 
   // Start index of the current page (0-indexed, for the footer label).
-  const start = (page - 1) * PER_PAGE;
+  const start = (page - 1) * PER_PAGE
 
   return (
     <div className="bg-bg-1 border border-line-c rounded-r7 p-sp5">
@@ -186,9 +186,7 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
                 onClick={() => handlePeriodChange(p)}
                 aria-pressed={period === p}
                 className={`px-sp3 py-sp2 rounded-r2 text-button cursor-pointer transition-colors ${
-                  period === p
-                    ? "bg-[rgba(205,189,112,0.12)] text-g-3"
-                    : "text-t-3 hover:text-t-2"
+                  period === p ? 'bg-[rgba(205,189,112,0.12)] text-g-3' : 'text-t-3 hover:text-t-2'
                 }`}
               >
                 {p}
@@ -196,7 +194,11 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
             ))}
           </div>
 
-          <button className="text-action" onClick={() => exportCsv(trades)} title="Exports current page only">
+          <button
+            className="text-action"
+            onClick={() => exportCsv(trades)}
+            title="Exports current page only"
+          >
             Export page ↓
           </button>
         </div>
@@ -232,11 +234,11 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
                 key={`${trade.id}_${trade.isoDate}_${idx}`}
                 role="button"
                 tabIndex={0}
-                onClick={() => openModal("tradeDetail", { id: trade.id, trade })}
+                onClick={() => openModal('tradeDetail', { id: trade.id, trade })}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    if (e.key === " ") e.preventDefault();
-                    openModal("tradeDetail", { id: trade.id, trade });
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === ' ') e.preventDefault()
+                    openModal('tradeDetail', { id: trade.id, trade })
                   }
                 }}
                 className={`${TRADE_HISTORY_GRID_CLASS} items-center py-[5px] border-b border-[rgba(255,255,255,0.05)] last:border-0 text-secondary cursor-pointer hover:bg-[rgba(255,255,255,0.025)] transition-colors`}
@@ -251,9 +253,7 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
                 </span>
 
                 <span
-                  className={
-                    trade.side === "YES" ? "text-pos font-bold" : "text-neg font-bold"
-                  }
+                  className={trade.side === 'YES' ? 'text-pos font-bold' : 'text-neg font-bold'}
                 >
                   {trade.side}
                 </span>
@@ -267,11 +267,9 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
                 </span>
 
                 <span
-                  className={`text-right font-semibold ${
-                    trade.pnl >= 0 ? "text-pos" : "text-neg"
-                  }`}
+                  className={`text-right font-semibold ${trade.pnl >= 0 ? 'text-pos' : 'text-neg'}`}
                 >
-                  {trade.pnl >= 0 ? "+" : ""}
+                  {trade.pnl >= 0 ? '+' : ''}
                   {formatUsd(trade.pnl)}
                 </span>
               </div>
@@ -284,8 +282,7 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
       {totalCount > 0 && (
         <div className="pt-[7px] border-t border-[rgba(255,255,255,0.05)] text-support mt-[3px] flex items-center justify-between gap-sp3">
           <span>
-            Showing {start + 1}–{Math.min(start + PER_PAGE, totalCount)} of{" "}
-            {totalCount} trades
+            Showing {start + 1}–{Math.min(start + PER_PAGE, totalCount)} of {totalCount} trades
           </span>
 
           {totalPages > 1 && (
@@ -312,5 +309,5 @@ export function TradeHistoryPanel({ walletAddress, loading: parentLoading }: Tra
         </div>
       )}
     </div>
-  );
+  )
 }
