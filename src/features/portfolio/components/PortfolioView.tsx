@@ -11,6 +11,7 @@ import { TradeHistorySection } from "./sections/TradeHistorySection";
 type PortfolioViewProps = {
     portfolio: PortfolioData | null;
     loading: boolean;
+    kpiLoading?: boolean;
     walletAddress: string;
     venueUnavailable?: boolean;
 };
@@ -18,6 +19,7 @@ type PortfolioViewProps = {
 export function PortfolioView({
     portfolio,
     loading,
+    kpiLoading = false,
     walletAddress,
     venueUnavailable = false,
 }: PortfolioViewProps) {
@@ -37,7 +39,11 @@ export function PortfolioView({
             />
             <main className="flex min-w-0 max-w-full flex-col gap-sp4 overflow-x-hidden bg-bg-0 px-sp5 py-sp4 sm:px-sp7">
                 {venueUnavailable && <VenueUnavailableBanner />}
-                <KpiSection kpis={portfolio?.kpis} loading={loading} venueUnavailable={venueUnavailable} />
+                <KpiSection
+                    kpis={portfolio?.kpis}
+                    loading={loading || kpiLoading}
+                    venueUnavailable={venueUnavailable}
+                />
                 {isNewUserNoTrades ? (
                     <SummaryPanelContainer limit={3} forceEmptyState />
                 ) : (

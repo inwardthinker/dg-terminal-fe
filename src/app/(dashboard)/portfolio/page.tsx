@@ -1,9 +1,15 @@
+import { Suspense } from "react";
 import PortfolioContainer from "@/features/portfolio/components/containers/PortfolioContainer";
 
-const MOCK_WALLET_ADDRESS = "0xF17d0707cAaF62f925D113B0053960994B2C40BC";
+const DEFAULT_WALLET_ADDRESS =
+  process.env.NEXT_PUBLIC_PORTFOLIO_KPIS_SOCKET_WALLET_ADDRESS ??
+  process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ??
+  "";
 
 export default function PortfolioPage() {
   return (
-    <PortfolioContainer userWalletAddress={MOCK_WALLET_ADDRESS} />
+    <Suspense fallback={null}>
+      <PortfolioContainer userWalletAddress={DEFAULT_WALLET_ADDRESS} />
+    </Suspense>
   );
 }
