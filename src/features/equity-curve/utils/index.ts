@@ -1,5 +1,7 @@
 // src/features/equity-curve/utils.ts
 
+import { HistoryPoint, Range } from '@/features/equity-curve/types'
+
 export type Point = {
   date: string
   value: number
@@ -55,4 +57,36 @@ export function getXAxisLabels(period: Period) {
 
 export function getLength(period: Period) {
   return LENGTH_BY_PERIOD[period]
+}
+
+export function getDateLabels(data: { date: string }[], period: Period): [string, string, string] {
+  const fallback = getXAxisLabels(period)
+
+  if (data.length === 0) return fallback
+
+  const mid = Math.floor((data.length - 1) / 2)
+
+  return [
+    data[0]?.date ?? fallback[0],
+    data[mid]?.date ?? fallback[1],
+    data[data.length - 1]?.date ?? fallback[2],
+  ]
+}
+
+export function getCurrentData(points: HistoryPoint[], range: Range): Point[] {
+  return points
+    .slice(range.startIndex, range.endIndex + 1)
+    .map((p) => ({ date: p.date, value: p.balanceValue }))
+}
+
+export function calculateChange(data: Point[], changePct?: number) {
+  if (changePct != null) return changePct
+  if (data.length < 2) return 0
+
+  const first = data[0].value
+  const last = data[data.length - 1].value
+
+  if (first === 0) return 0
+
+  return ((last - first) / first) * 100
 }
