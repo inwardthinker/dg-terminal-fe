@@ -24,7 +24,7 @@ const PNL_COLOR: Record<TradeHistoryEntry['result'], string> = {
   PUSHED: 'text-t-2',
 }
 
-const fmtUsd = (n: number, decimals = 0) =>
+const fmtUsd = (n: number, decimals = 2) =>
   new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -39,7 +39,7 @@ export function TradeDetailModal({ trade }: Props) {
 
   const isManual = trade.closeType === 'manual'
   const closeVerb = isManual ? 'Exited' : 'Settled'
-  const venue = trade.venue
+  const venue = trade.venue ?? 'Polymarket'
   const feePaid = trade.feePaid ?? 0
   const rewardsEarned = trade.rewardsEarned ?? 0
 
