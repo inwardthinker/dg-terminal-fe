@@ -130,3 +130,12 @@ export type PortfolioKpiUpdateEvent = {
   ts: string
   kpis: PortfolioKpiUpdate
 }
+
+export type ApiRiskResponse = {
+  sharpe90d?: number
+  sortino90d?: number
+  maxDrawdown90dPct?: number
+  var95Dollar?: number
+  largestPositionPct?: number | null
+  correlationClusterCount?: number | null
+}

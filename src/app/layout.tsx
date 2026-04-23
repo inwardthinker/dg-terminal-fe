@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/Toaster'
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav'
 import { MobileSearchFab } from '@/components/layout/MobileSearchFab'
 import { TopBar } from '@/components/layout/TopBar'
+import { RootProviders } from '@/components/providers/AppProviders'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,14 +33,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={inter.variable}>
       <body className="flex min-h-screen min-w-0 flex-col overflow-x-hidden bg-bg-0 pl-[env(safe-area-inset-left,0px)] pr-[env(safe-area-inset-right,0px)] pt-[env(safe-area-inset-top,0px)]">
-        <TopBar />
-        <div className="mx-auto w-full min-w-0 max-w-[1400px] flex-1 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] md:pb-0">
-          {children}
-        </div>
-        <MobileSearchFab />
-        <MobileBottomNav />
-        <ModalRenderer />
-        <Toaster />
+        <RootProviders>
+          <TopBar />
+          <div className="mx-auto w-full min-w-0 max-w-[1400px] flex-1 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+            {children}
+          </div>
+          <MobileSearchFab />
+          <MobileBottomNav />
+          <ModalRenderer />
+          <Toaster />
+        </RootProviders>
       </body>
     </html>
   )

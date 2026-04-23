@@ -1,79 +1,65 @@
 import { InfoTooltip } from '@/components/ui/InfoTooltip'
-import type { RiskMetric, RiskMetricValueType } from '@/features/portfolio/types'
-import clsx from 'clsx'
+import { useRiskMetrics } from '../hooks/useRiskMetrics'
+import { valueColorClass } from '@/features/portfolio/utils/valueColorClass'
 
-function valueColorClass(type: RiskMetricValueType): string {
-  switch (type) {
-    case 'positive':
-      return 'text-pos'
-    case 'negative':
-      return 'text-neg'
-    case 'gold':
-      return 'text-g-3 cursor-pointer'
-    default:
-      return 'text-t-1'
-  }
-}
+export function RiskMetricsPanel() {
+  const { data, isLoading } = useRiskMetrics(1878) // TODO: replace with actual user id
 
-type RiskMetricsPanelProps = {
-  metrics: RiskMetric[]
-  loading?: boolean
-}
+  if (isLoading) return <RiskMetricsPanelSkeleton />
+  const isEmpty = data?.length === 0
 
-function Skeleton() {
+  if (isEmpty) return <RiskMetricsEmptyState />
+
   return (
-    <div className="bg-bg-1 border border-line-c rounded-r7 p-sp5 flex flex-col">
-      <div className="h-[14px] w-2/5 bg-bg-2 rounded-r2 animate-pulse mb-sp4" />
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="flex justify-between items-center py-[5px] border-b border-[rgba(255,255,255,0.06)] last:border-0"
-        >
-          <div className="h-[11px] w-1/2 bg-bg-2 rounded-r1 animate-pulse" />
-          <div className="h-[11px] w-[40px] bg-bg-2 rounded-r1 animate-pulse" />
-        </div>
-      ))}
+    <div className="border border-line-c rounded-r7 p-sp5 flex flex-col h-full bg-bg-1">
+      <div className="flex items-center justify-between mb-sp4">
+        <span className="text-primary">Risk metrics</span>
+      </div>
+
+      <div className="flex flex-col flex-1 divide-y divide-line-c">
+        {data?.map((metric) => (
+          <div
+            key={metric.key}
+            className="flex flex-1 justify-between items-center py-sp2 text-secondary"
+          >
+            <div className="text-t-3 flex items-center gap-sp2">
+              <span>{metric.label}</span>
+              <InfoTooltip text={metric.tooltip} />
+            </div>
+            <span className={`font-semibold ${valueColorClass(metric.valueType)}`}>
+              {metric.value}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
-export function RiskMetricsPanel({ metrics, loading }: RiskMetricsPanelProps) {
-  const isEmpty = metrics.length === 0
-  if (loading) return <Skeleton />
+function RiskMetricsEmptyState() {
+  return <div className="flex-1 grid place-items-center text-support">No risk metrics yet</div>
+}
+function RiskMetricsPanelSkeleton() {
+  const labelWidths = ['w-[96px]', 'w-[58px]', 'w-[104px]', 'w-[72px]', 'w-[110px]', 'w-[118px]']
+  const valueWidths = ['w-[34px]', 'w-[50px]', 'w-[38px]', 'w-[42px]', 'w-[18px]', 'w-[14px]']
 
   return (
-    <div
-      className={clsx(
-        'border border-line-c rounded-r7 p-sp5 flex flex-col h-full',
-        isEmpty ? 'bg-bg-1/35' : 'bg-bg-1',
-      )}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-sp4">
-        <span className={clsx(isEmpty ? 'text-t-3' : 'text-primary')}>Risk metrics</span>
+    <div className="bg-bg-1 border border-line-c rounded-r7 p-sp5 flex flex-col h-full">
+      <div className="h-[28px] flex items-center mb-sp2">
+        <div className="h-[14px] w-[92px] bg-bg-2 rounded-r2 animate-pulse" />
       </div>
-
-      {/* Metric rows — flex-1 so they fill remaining height evenly */}
-      {isEmpty ? (
-        <div className="flex-1 grid place-items-center text-support">No history yet</div>
-      ) : (
-        <div className="flex flex-col flex-1 divide-y divide-[rgba(255,255,255,0.06)]">
-          {metrics.map((metric) => (
-            <div
-              key={metric.key}
-              className="flex flex-1 justify-between items-center py-sp2 text-secondary"
-            >
-              <div className="text-t-3 flex items-center gap-sp2">
-                <span>{metric.label}</span>
-                <InfoTooltip text={metric.tooltip} />
-              </div>
-              <span className={`font-semibold ${valueColorClass(metric.valueType)}`}>
-                {metric.value}
-              </span>
-            </div>
-          ))}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="flex flex-1 justify-between items-center py-sp2 border-b border-line-c last:border-0"
+        >
+          <div className="flex items-center gap-sp2">
+            <div className={`h-[11px] ${labelWidths[i]} bg-bg-2 rounded-r1 animate-pulse`} />
+            <div className="h-[14px] w-[14px] rounded-full border border-line-c/50 bg-bg-0/40 animate-pulse" />
+          </div>
+          <div className={`h-[11px] ${valueWidths[i]} bg-bg-2 rounded-r1 animate-pulse`} />
         </div>
-      )}
+      ))}
     </div>
   )
 }
