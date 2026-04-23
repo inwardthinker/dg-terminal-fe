@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   },
   portfolio: {
     summary: "/api/portfolio/summary",
+    trades: "/api/portfolio/trades",
   },
   users: {},
   payments: {},
