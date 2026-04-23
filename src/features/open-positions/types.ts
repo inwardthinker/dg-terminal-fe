@@ -7,6 +7,8 @@ export type Position = {
   entryPrice: number
   currentPrice: number
   size: number
+  deployedValue?: number
+  positionValue?: number
   pnl: number
   pnlPct: number
   priceStale?: boolean
