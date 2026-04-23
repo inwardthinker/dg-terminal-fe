@@ -1,42 +1,60 @@
-// Portfolio service — all API calls live here, never inside components.
-// Swap endpoint details when the backend contract is finalized.
+// Portfolio service — calls the backend directly via apiFetch.
+// No Next.js proxy route; NEXT_PUBLIC_API_BASE_URL is the backend origin.
 
 import { apiFetch } from "@/lib/api/client";
+import { API_ENDPOINTS } from "@/lib/api/endpoints";
+import { env } from "@/lib/constants/env";
+import { MOCK_PORTFOLIO } from "@/features/portfolio/constants/mockPortfolio";
 import type { PortfolioData } from "../../types";
 
-const PORTFOLIO_ENDPOINTS = {
-  positions: "/api/portfolio/positions",
-  closedPositions: "/api/portfolio/closed-positions",
-} as const;
+type ApiPortfolioSummary = {
+  balance: number;
+  open_exposure: number;
+  unrealized_pnl: number;
+  realized_30d: number;
+  rewards_earned: number;
+  rewards_pct_of_pnl: number;
+  deployment_rate_pct: number;
+};
 
-/** Fetch the full portfolio snapshot for a wallet address. */
+type ApiPortfolioResponse = {
+  summary: ApiPortfolioSummary;
+};
+
+/**
+ * Fetch the portfolio summary.
+ * Trade history is NOT fetched here — TradeHistoryPanel manages its own
+ * server-driven pagination.
+ */
 export async function getPortfolio(walletAddress: string): Promise<PortfolioData> {
-  const params = new URLSearchParams({ wallet: walletAddress });
-  const authHeaders = { Authorization: "Bearer dev" };
-
-  const [openPositions, closedPositions] = await Promise.all([
-    apiFetch<unknown>(`${PORTFOLIO_ENDPOINTS.positions}?${params.toString()}`, {
-      headers: authHeaders,
-    }),
-    apiFetch<unknown>(`${PORTFOLIO_ENDPOINTS.closedPositions}?${params.toString()}`, {
-      headers: authHeaders,
-    }),
-  ]);
-
-  // Backend contract is still evolving; keep strict UI shape guard.
-  const maybePortfolio = {
-    ...(typeof openPositions === "object" && openPositions !== null ? openPositions : {}),
-    ...(typeof closedPositions === "object" && closedPositions !== null ? closedPositions : {}),
-  };
-
-  if (
-    !("kpis" in maybePortfolio) ||
-    !("exposure" in maybePortfolio) ||
-    !("riskMetrics" in maybePortfolio) ||
-    !("tradeHistory" in maybePortfolio)
-  ) {
-    throw new Error("Portfolio response shape is incomplete.");
+  const params = new URLSearchParams({ walletAddress });
+  const headers: Record<string, string> = {};
+  if (env.apiToken) {
+    headers["Authorization"] = `Bearer ${env.apiToken}`;
   }
 
-  return maybePortfolio as PortfolioData;
+  const summary = await apiFetch<ApiPortfolioResponse>(
+    `${API_ENDPOINTS.portfolio.summary}?${params.toString()}`,
+    { headers }
+  );
+
+  const s = summary.summary;
+
+  return {
+    kpis: {
+      balance:       s.balance,
+      openExposure:  s.open_exposure,
+      deployedPct:   s.deployment_rate_pct,
+      unrealizedPnl: s.unrealized_pnl,
+      realized30d:   s.realized_30d,
+      rewardsEarned: s.rewards_earned,
+      rewardsPct:    s.rewards_pct_of_pnl,
+    },
+    // Exposure and risk metrics still use mock — dedicated endpoints not yet available.
+    exposure:   MOCK_PORTFOLIO.exposure,
+    riskMetrics: MOCK_PORTFOLIO.riskMetrics,
+    // TradeHistoryPanel fetches its own data and manages its own empty state.
+    tradeHistory:      [],
+    tradeHistoryTotal: 1, // non-zero so PortfolioView always renders the full layout
+  };
 }

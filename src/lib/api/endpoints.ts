@@ -3,7 +3,8 @@ export const API_ENDPOINTS = {
     login: "/auth/login",
   },
   portfolio: {
-    summary: "/portfolio/summary",
+    summary: "/api/portfolio/summary",
+    trades: "/api/portfolio/trades",
   },
   users: {},
   payments: {},

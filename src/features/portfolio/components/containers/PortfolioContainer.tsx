@@ -18,6 +18,7 @@ export default function PortfolioContainer({
             portfolio={portfolio}
             loading={loading}
             kpiLoading={kpiLoading}
+            walletAddress={userWalletAddress}
             venueUnavailable={venueUnavailable}
         />
     );

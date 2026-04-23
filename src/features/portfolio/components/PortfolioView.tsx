@@ -12,6 +12,7 @@ type PortfolioViewProps = {
     portfolio: PortfolioData | null;
     loading: boolean;
     kpiLoading?: boolean;
+    walletAddress: string;
     venueUnavailable?: boolean;
 };
 
@@ -19,12 +20,13 @@ export function PortfolioView({
     portfolio,
     loading,
     kpiLoading = false,
+    walletAddress,
     venueUnavailable = false,
 }: PortfolioViewProps) {
+    // tradeHistoryTotal comes from a cheap perPage=1 fetch in getPortfolio.
+    // If it's 0 (and not still loading) this is a brand-new account.
     const isNewUserNoTrades =
-        !loading &&
-        (portfolio?.tradeHistory.length ?? 0) === 0 &&
-        (portfolio?.tradeHistoryTotal ?? 0) === 0;
+        !loading && (portfolio?.tradeHistoryTotal ?? 0) === 0;
 
     return (
         <>
@@ -50,7 +52,7 @@ export function PortfolioView({
                         <RiskSection portfolio={portfolio} loading={loading} venueUnavailable={venueUnavailable} />
                     </>
                 )}
-                <TradeHistorySection portfolio={portfolio} loading={loading} />
+                <TradeHistorySection walletAddress={walletAddress} loading={loading} />
             </main>
         </>
     );
