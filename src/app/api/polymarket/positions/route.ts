@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 const POLYMARKET_DATA_API_BASE_URL =
   process.env.NEXT_PUBLIC_POLYMARKET_DATA_API_BASE_URL ?? 'https://data-api.polymarket.com'
 
+const UPSTREAM_TIMEOUT_MS = 8_000
+
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams
   const user = params.get('user')?.trim().toLowerCase()
@@ -20,19 +24,48 @@ export async function GET(request: NextRequest) {
     sortDirection: params.get('sortDirection') ?? 'DESC',
   })
 
-  const response = await fetch(`${POLYMARKET_DATA_API_BASE_URL}/positions?${upstreamParams.toString()}`, {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-    cache: 'no-store',
-  })
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
 
-  if (!response.ok) {
-    return NextResponse.json(
-      { message: `Polymarket positions request failed with status ${response.status}` },
-      { status: response.status },
+  try {
+    const upstream = await fetch(
+      `${POLYMARKET_DATA_API_BASE_URL}/positions?${upstreamParams.toString()}`,
+      {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+        signal: controller.signal,
+      },
     )
-  }
 
-  const payload = await response.json()
-  return NextResponse.json(payload)
+    if (!upstream.ok) {
+      const fallbackBody = await upstream.text().catch(() => '')
+      return NextResponse.json(
+        {
+          message: `Polymarket positions request failed with status ${upstream.status}`,
+          upstream: fallbackBody.slice(0, 500),
+        },
+        { status: upstream.status },
+      )
+    }
+
+    const payload = await upstream.json()
+    return NextResponse.json(payload, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3, stale-while-revalidate=10',
+      },
+    })
+  } catch (err) {
+    const isAbort = err instanceof Error && err.name === 'AbortError'
+    return NextResponse.json(
+      {
+        message: isAbort
+          ? 'Polymarket positions request timed out'
+          : 'Polymarket positions request failed',
+      },
+      { status: isAbort ? 504 : 502 },
+    )
+  } finally {
+    clearTimeout(timeout)
+  }
 }
