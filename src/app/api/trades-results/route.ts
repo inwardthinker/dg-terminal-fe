@@ -49,6 +49,12 @@ export async function GET(request: NextRequest) {
     `${DATA_API}/closed-positions?user=${encodeURIComponent(user)}` +
     `&limit=${encodeURIComponent(limit)}&offset=0&sortBy=TIMESTAMP&sortDirection=DESC`
 
+  async function parseArrayResult<T>(result: PromiseSettledResult<Response>): Promise<T[]> {
+    if (result.status !== 'fulfilled' || !result.value.ok) return []
+    const json: unknown = await result.value.json()
+    return Array.isArray(json) ? (json as T[]) : []
+  }
+
   const [openRes, redeemRes, activityRes, closedRes] = await Promise.allSettled([
     fetch(openPositionsUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
     fetch(redeemablePositionsUrl, {
@@ -59,36 +65,27 @@ export async function GET(request: NextRequest) {
     fetch(closedUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
   ])
 
-  let openData: RawPolymarketPosition[] = []
-  let redeemData: RawPolymarketPosition[] = []
-  let activityData: Activity[] = []
-  let closedData: RawPolymarketPosition[] = []
-
-  if (openRes.status === 'fulfilled' && openRes.value.ok) {
-    const json = await openRes.value.json()
-    if (Array.isArray(json)) openData = json as RawPolymarketPosition[]
-  }
-  if (redeemRes.status === 'fulfilled' && redeemRes.value.ok) {
-    const json = await redeemRes.value.json()
-    if (Array.isArray(json)) redeemData = json as RawPolymarketPosition[]
-  }
-  if (activityRes.status === 'fulfilled' && activityRes.value.ok) {
-    const json = await activityRes.value.json()
-    if (Array.isArray(json)) activityData = json as Activity[]
-  }
-  if (closedRes.status === 'fulfilled' && closedRes.value.ok) {
-    const json = await closedRes.value.json()
-    if (Array.isArray(json)) closedData = json as RawPolymarketPosition[]
-  }
+  const [openData, redeemData, activityData, closedData] = await Promise.all([
+    parseArrayResult<RawPolymarketPosition>(openRes),
+    parseArrayResult<RawPolymarketPosition>(redeemRes),
+    parseArrayResult<Activity>(activityRes),
+    parseArrayResult<RawPolymarketPosition>(closedRes),
+  ])
 
   const mergedRaw = mergeOpenAndRedeemablePositions(openData, redeemData)
 
   const settledFromPositions: TradeResultRow[] = []
   const settledMergeKeys = new Set<string>()
+  // legKey → unrealized P&L for non-redeemable open positions, built in the same pass.
+  const openPositionPnl = new Map<string, number>()
 
   for (const raw of mergedRaw) {
     const parsed = parseMergedPositionRow(raw)
-    if (!parsed?.redeemable) continue
+    if (!parsed) continue
+    if (!parsed.redeemable) {
+      openPositionPnl.set(`leg:${parsed.conditionId}:${parsed.outcomeIndex}`, parsed.pnl)
+      continue
+    }
     settledMergeKeys.add(positionMergeKey(raw))
     settledMergeKeys.add(`leg:${parsed.conditionId}:${parsed.outcomeIndex}`)
     const row = parsedRowToTradeResult(parsed, 'pos')
@@ -135,8 +132,10 @@ export async function GET(request: NextRequest) {
       exitPrice: a.price ?? 0,
       shares: a.size,
       amount: Math.abs(a.usdcSize),
-      pnl: 0,
+      pnl: openPositionPnl.get(legKey) ?? 0,
       result: 'UNRESOLVED',
+      // 'open' only when this leg still exists in the /positions endpoint (currently held).
+      status: openPositionPnl.has(legKey) ? 'open' : undefined,
       closedAt: ts,
     })
   }

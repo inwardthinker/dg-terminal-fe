@@ -23,8 +23,7 @@ export function PortfolioView({
   walletAddress,
   venueUnavailable = false,
 }: PortfolioViewProps) {
-  // tradeHistoryTotal comes from a cheap perPage=1 fetch in getPortfolio.
-  // If it's 0 (and not still loading) this is a brand-new account.
+  // If tradeHistoryTotal is 0 (and not still loading) this is a brand-new account.
   const isNewUserNoTrades = !loading && (portfolio?.tradeHistoryTotal ?? 0) === 0
 
   return (

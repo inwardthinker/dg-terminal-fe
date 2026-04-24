@@ -8,7 +8,7 @@ type PortfolioContainerProps = {
 }
 
 export default function PortfolioContainer({ userWalletAddress }: PortfolioContainerProps) {
-  const { portfolio, loading, kpiLoading, error } = usePortfolio(userWalletAddress)
+  const { portfolio, loading, kpiLoading, error } = usePortfolio()
   const venueUnavailable = Boolean(error)
 
   return (
