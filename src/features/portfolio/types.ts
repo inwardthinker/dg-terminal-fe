@@ -1,5 +1,5 @@
 // Portfolio feature types — all shapes designed to match future API contracts.
-// Data fetching is centralized in hooks/usePortfolio.ts and api/getPortfolio.ts.
+// Data bootstrapping is centralized in hooks/usePortfolio.ts.
 
 export type PortfolioKpis = {
   /** Total account balance in USD */

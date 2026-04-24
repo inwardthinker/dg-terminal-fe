@@ -1,36 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { usePortfolio } from '@/features/portfolio/components/hooks/usePortfolio'
+import { usePortfolioBalance } from '@/features/portfolio/context/PortfolioBalanceContext'
+import { usePortfolioKpis } from '@/features/portfolio/context/PortfolioKpisContext'
 
 const fmtCurrency = (n: number) => `$${n.toLocaleString('en-US')}`
 const fmtSigned = (n: number) => `${n >= 0 ? '+' : '-'}$${Math.abs(n).toLocaleString('en-US')}`
-const fmtPct = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(1)}%`
 
 type TopBarProps = {
   userInitials?: string
 }
 
 export function TopBar({ userInitials = 'DC' }: TopBarProps) {
-  const { portfolio, loading } = usePortfolio()
-  const kpis = portfolio?.kpis
-  const balance = !loading ? kpis?.balance : undefined
-  const todayPnl = !loading ? kpis?.todayPnl : undefined
-  const openCount = !loading ? kpis?.openCount : undefined
-  const portfolioPct = !loading ? kpis?.portfolioPct : undefined
-  const [throttledPortfolioPct, setThrottledPortfolioPct] = useState<number | undefined>(
-    portfolioPct,
-  )
-  const [portfolioTick, setPortfolioTick] = useState(0)
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setThrottledPortfolioPct(portfolioPct)
-      setPortfolioTick(Date.now())
-    }, 1_000)
-
-    return () => window.clearTimeout(timeoutId)
-  }, [portfolioPct])
+  const { balance, loading: balanceLoading } = usePortfolioBalance()
+  const { kpis, loading: kpisLoading } = usePortfolioKpis()
+  const loading = balanceLoading || kpisLoading
 
   return (
     <header className="w-full shrink-0 border-b border-line-c bg-bg-0">
@@ -47,33 +30,33 @@ export function TopBar({ userInitials = 'DC' }: TopBarProps) {
             <span className="text-g-3">PREDICT</span>
           </div>
 
-          {/* Quick stats */}
-          <div className="hidden lg:flex gap-[18px]">
-            <div className="flex flex-col">
-              <span className="text-label">Balance</span>
-              <span className="text-secondary leading-[1.2]">
-                {balance !== undefined ? fmtCurrency(balance) : '--'}
-              </span>
-            </div>
+          {/* Quick stats — hidden until data loaded */}
+          {!loading && (
+            <div className="hidden lg:flex gap-[18px]">
+              <div className="flex flex-col">
+                <span className="text-label">Balance</span>
+                <span className="text-secondary leading-[1.2]">
+                  {balance !== undefined ? fmtCurrency(balance) : '--'}
+                </span>
+              </div>
 
-            <div className="flex flex-col">
-              <span className="text-label">Today P&amp;L</span>
-              <span
-                className={`text-secondary leading-[1.2] ${
-                  todayPnl !== undefined && todayPnl < 0 ? 'text-neg' : 'text-pos'
-                }`}
-              >
-                {todayPnl !== undefined ? fmtSigned(todayPnl) : '--'}
-              </span>
-            </div>
+              <div className="flex flex-col">
+                <span className="text-label">Today P&amp;L</span>
+                <span
+                  className={`text-secondary leading-[1.2] ${
+                    kpis?.todayPnl !== undefined && kpis.todayPnl < 0 ? 'text-neg' : 'text-pos'
+                  }`}
+                >
+                  {kpis?.todayPnl !== undefined ? fmtSigned(kpis.todayPnl) : '--'}
+                </span>
+              </div>
 
-            <div className="flex flex-col">
-              <span className="text-label">Open</span>
-              <span className="text-secondary leading-[1.2]">
-                {openCount !== undefined ? openCount : '--'}
-              </span>
+              <div className="flex flex-col">
+                <span className="text-label">Open</span>
+                <span className="text-secondary leading-[1.2]">{kpis?.openCount ?? '--'}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* ── Centre: search (hidden below md — mobile uses FAB + sheet) ── */}
@@ -113,21 +96,6 @@ export function TopBar({ userInitials = 'DC' }: TopBarProps) {
           <button className="min-h-8 px-[11px] py-[6px] bg-[rgba(205,189,112,0.15)] border border-line-g rounded-r4 text-button text-g-3 whitespace-nowrap cursor-pointer hover:bg-[rgba(205,189,112,0.22)] transition-colors">
             <span className="hidden xs:inline">+ </span>Deposit
           </button>
-
-          {/* Portfolio pill */}
-          <div className="hidden sm:flex px-[11px] py-[5px] border border-line-g rounded-r9 text-[10.5px] items-center gap-[6px]">
-            <span className="text-label">Portfolio</span>
-            <span
-              key={`portfolio-pill-${portfolioTick}`}
-              className={`text-secondary live-value-flash px-1 ${
-                throttledPortfolioPct !== undefined && throttledPortfolioPct < 0
-                  ? 'text-neg'
-                  : 'text-pos'
-              }`}
-            >
-              {throttledPortfolioPct !== undefined ? fmtPct(throttledPortfolioPct) : '--'}
-            </span>
-          </div>
 
           {/* Avatar */}
           <div className="w-[30px] h-[30px] rounded-full bg-[rgba(205,189,112,0.2)] border border-line-g flex items-center justify-center text-[11px] font-bold text-g-3 select-none">

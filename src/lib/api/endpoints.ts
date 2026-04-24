@@ -3,7 +3,6 @@ export const API_ENDPOINTS = {
     login: '/auth/login',
   },
   portfolio: {
-    summary: '/api/portfolio/summary',
     polymarketTrades: '/api/trades-results',
   },
   users: {},
