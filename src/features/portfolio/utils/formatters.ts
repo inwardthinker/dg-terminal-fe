@@ -1,7 +1,15 @@
-export const formatBalance = (value: number): string => `$${value.toLocaleString('en-US')}`
+const CURRENCY_FMT: Intl.NumberFormatOptions = {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}
 
-export const formatSignedCurrency = (value: number): string =>
-  `${value >= 0 ? '+' : ''}$${Math.abs(value).toLocaleString('en-US')}`
+export const formatBalance = (value: number): string =>
+  `$${value.toLocaleString('en-US', CURRENCY_FMT)}`
+
+export const formatSignedCurrency = (value: number): string => {
+  const abs = Math.abs(value).toLocaleString('en-US', CURRENCY_FMT)
+  return `${value >= 0 ? '+' : '-'}$${abs}`
+}
 
 export const formatSignedPercent = (value: number): string =>
   `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`
