@@ -41,7 +41,7 @@ export type ExposureCategory = {
   color: string
 }
 
-export type RiskMetricValueType = 'positive' | 'negative' | 'neutral' | 'gold'
+export type RiskMetricValueType = 'positive' | 'warning' | 'negative' | 'neutral' | 'muted'
 
 export type RiskMetric = {
   /** Unique identifier for this metric */
@@ -56,7 +56,7 @@ export type RiskMetric = {
   tooltip: string
 }
 
-export type TradeResult = 'WON' | 'LOST' | 'PUSHED'
+export type TradeResult = 'WON' | 'LOST' | 'UNRESOLVED'
 export type TradeSide = 'YES' | 'NO'
 export type TradeHistoryPeriod = '7d' | '30d' | '90d' | 'All'
 
@@ -129,4 +129,13 @@ export type PortfolioKpiUpdateEvent = {
   wallet: string
   ts: string
   kpis: PortfolioKpiUpdate
+}
+
+export type ApiRiskResponse = {
+  sharpe90d?: number
+  sortino90d?: number
+  maxDrawdown90dPct?: number
+  var95Dollar?: number
+  largestPositionPct?: number | null
+  correlationClusterCount?: number | null
 }

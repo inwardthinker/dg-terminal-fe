@@ -56,6 +56,8 @@ export function usePortfolio(walletAddress = ''): UsePortfolioResult {
       } finally {
         if (!isMounted) return
         setLoading(false)
+        // Tiles can render from REST data immediately; socket updates on top.
+        setKpiLoading(false)
       }
     }
 

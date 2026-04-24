@@ -4,7 +4,7 @@ export const API_ENDPOINTS = {
   },
   portfolio: {
     summary: '/api/portfolio/summary',
-    trades: '/api/portfolio/trades',
+    polymarketTrades: '/api/trades-results',
   },
   users: {},
   payments: {},

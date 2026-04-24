@@ -42,11 +42,7 @@ export function PortfolioView({
           <SummaryPanelContainer limit={3} forceEmptyState />
         ) : (
           <>
-            <ExposureSection
-              portfolio={portfolio}
-              loading={loading}
-              venueUnavailable={venueUnavailable}
-            />
+            <ExposureSection portfolio={portfolio} loading={loading} />
             <RiskSection
               portfolio={portfolio}
               loading={loading}

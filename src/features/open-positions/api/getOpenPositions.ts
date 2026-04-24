@@ -30,16 +30,26 @@ function toNumber(value: number | null | undefined): number {
 
 function inferCategory(title: string, slug?: string): PositionCategory {
   const raw = `${title} ${slug ?? ''}`.toLowerCase()
-  if (/(nba|nfl|mlb|fifa|soccer|football|tennis|match|tournament|cup|league|playoff|super bowl)/.test(raw)) {
+  if (
+    /(nba|nfl|mlb|fifa|soccer|football|tennis|match|tournament|cup|league|playoff|super bowl)/.test(
+      raw,
+    )
+  ) {
     return 'Sports'
   }
-  if (/(election|president|senate|house|policy|government|vote|trump|biden|democrat|republican)/.test(raw)) {
+  if (
+    /(election|president|senate|house|policy|government|vote|trump|biden|democrat|republican)/.test(
+      raw,
+    )
+  ) {
     return 'Politics'
   }
   if (/(btc|bitcoin|eth|ethereum|sol|crypto|token|defi|blockchain)/.test(raw)) {
     return 'Crypto'
   }
-  if (/(cpi|inflation|fed|fomc|rates|gdp|recession|treasury|economy|macro|sp500|nasdaq)/.test(raw)) {
+  if (
+    /(cpi|inflation|fed|fomc|rates|gdp|recession|treasury|economy|macro|sp500|nasdaq)/.test(raw)
+  ) {
     return 'Macro'
   }
   return 'Other'
@@ -58,7 +68,9 @@ function isActiveOpenPosition(position: ApiPosition): boolean {
   return true
 }
 
-export async function getOpenPositions({ userAddress }: GetOpenPositionsParams): Promise<ApiPosition[]> {
+export async function getOpenPositions({
+  userAddress,
+}: GetOpenPositionsParams): Promise<ApiPosition[]> {
   const params = new URLSearchParams({
     user: userAddress,
     limit: '500',
@@ -68,9 +80,12 @@ export async function getOpenPositions({ userAddress }: GetOpenPositionsParams):
     sortDirection: 'DESC',
   })
 
-  const positions = await apiFetch<ApiPosition[]>(`/api/polymarket/positions?${params.toString()}`, {
-    baseUrl: '',
-  })
+  const positions = await apiFetch<ApiPosition[]>(
+    `/api/polymarket/positions?${params.toString()}`,
+    {
+      baseUrl: '',
+    },
+  )
 
   return positions.filter(isActiveOpenPosition)
 }
@@ -84,7 +99,8 @@ export function mapApiPositionToViewModel(position: ApiPosition) {
   const pnlPct = toNumber(position.percentPnl)
   const outcome = String(position.outcome ?? '')
   const normalizedOutcome = outcome.trim().toUpperCase()
-  const side = normalizedOutcome === 'YES' || normalizedOutcome === 'NO' ? normalizedOutcome : outcome
+  const side =
+    normalizedOutcome === 'YES' || normalizedOutcome === 'NO' ? normalizedOutcome : outcome
 
   return {
     id: `${position.conditionId}-${position.asset}`,
