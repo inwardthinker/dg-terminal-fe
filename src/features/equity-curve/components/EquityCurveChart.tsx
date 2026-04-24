@@ -1,7 +1,11 @@
 'use client'
 
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getChartPoints } from '../utils'
+
+const CHART_HEIGHT = 220
+const TOOLTIP_HORIZONTAL_PADDING = 40
+const TOOLTIP_Y_OFFSET = 44
 
 type EquityCurvePoint = {
   date: string
@@ -11,7 +15,6 @@ type EquityCurvePoint = {
 type EquityCurveChartProps = {
   data: EquityCurvePoint[]
   width: number
-  loading: boolean
   color: 'pos' | 'neg'
 }
 
@@ -20,16 +23,12 @@ type InsufficientHistoryStateProps = {
   height: number
 }
 
-function EquityCurveChartComponent({ data, width, loading, color }: EquityCurveChartProps) {
-  const CHART_HEIGHT = 220
-  const TOOLTIP_HORIZONTAL_PADDING = 40
-  const TOOLTIP_Y_OFFSET = 44
-
+function EquityCurveChartComponent({ data, width, color }: EquityCurveChartProps) {
   const pathRef = useRef<SVGPathElement | null>(null)
   const [length, setLength] = useState(0)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
 
-  const computed = getChartPoints(data, width, CHART_HEIGHT)
+  const computed = useMemo(() => getChartPoints(data, width, CHART_HEIGHT), [data, width])
 
   useEffect(() => {
     if (pathRef.current) {
@@ -48,10 +47,6 @@ function EquityCurveChartComponent({ data, width, loading, color }: EquityCurveC
     },
     [data.length, width],
   )
-
-  if (loading) {
-    return <div className="w-full h-full bg-bg-2 rounded-r4 animate-pulse" />
-  }
 
   if (!computed) {
     return <InsufficientHistoryState width={width} height={CHART_HEIGHT} />
