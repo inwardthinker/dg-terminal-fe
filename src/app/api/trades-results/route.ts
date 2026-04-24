@@ -51,7 +51,10 @@ export async function GET(request: NextRequest) {
 
   const [openRes, redeemRes, activityRes, closedRes] = await Promise.allSettled([
     fetch(openPositionsUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
-    fetch(redeemablePositionsUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
+    fetch(redeemablePositionsUrl, {
+      headers: { Accept: 'application/json' },
+      next: { revalidate: 30 },
+    }),
     fetch(activityUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
     fetch(closedUrl, { headers: { Accept: 'application/json' }, next: { revalidate: 30 } }),
   ])
@@ -139,7 +142,7 @@ export async function GET(request: NextRequest) {
   }
 
   const rows = [...settledRows, ...unresolvedRows].sort((a, b) =>
-    b.closedAt.localeCompare(a.closedAt)
+    b.closedAt.localeCompare(a.closedAt),
   )
   return NextResponse.json(rows)
 }

@@ -83,7 +83,7 @@ export function positionMergeKey(p: RawPolymarketPosition): string {
  */
 export function mergeOpenAndRedeemablePositions(
   openList: RawPolymarketPosition[],
-  redeemableList: RawPolymarketPosition[]
+  redeemableList: RawPolymarketPosition[],
 ): RawPolymarketPosition[] {
   const seen = new Set<string>()
   const merged: RawPolymarketPosition[] = []
@@ -132,7 +132,7 @@ export function redeemableStyleIsWon(args: {
 
 export function parseMergedPositionRow(
   p: RawPolymarketPosition,
-  opts?: ParsePositionOptions
+  opts?: ParsePositionOptions,
 ): ParsedPositionRow | null {
   const conditionId = p.conditionId ?? p.condition_id
   if (!conditionId) return null

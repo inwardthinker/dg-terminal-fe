@@ -54,7 +54,6 @@ export function TradeDetailModal({ trade }: Props) {
   const returnPct = trade.size > 0 ? (trade.pnl / trade.size) * 100 : 0
   const returnSign = returnPct > 0 ? '+' : returnPct < 0 ? '−' : ''
 
-
   return (
     <BaseModal variant="modal" onClose={closeModal} showClose={false}>
       {/* ── Header ── */}
