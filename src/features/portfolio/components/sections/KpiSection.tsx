@@ -84,7 +84,9 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
             isEmptyState ? formatBalance(0) : formatKpiFallback(kpis?.openExposure, formatBalance)
           }
           sub={
-            isEmptyState ? '0% deployed' : formatKpiFallback(kpis?.deployedPct, formatSignedPercent)
+            isEmptyState
+              ? '0% deployed'
+              : formatKpiFallback(kpis?.deployedPct, (v) => `${Math.round(v)}% deployed`)
           }
           dimmed={isEmptyState}
           tooltip="Total cost basis of all open positions. This is the capital currently at risk."
