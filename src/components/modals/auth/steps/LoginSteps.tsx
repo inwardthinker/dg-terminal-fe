@@ -2,6 +2,7 @@
 
 import { ArrowRight, Lock, Wallet } from 'lucide-react'
 import { memo, useEffect, useRef, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { BaseModal } from '@/components/modals/BaseModal'
 import { useModal } from '@/lib/modals/hooks/useModal'
 import { useLoginWithOAuth, usePrivy, type User } from '@privy-io/react-auth'
@@ -10,6 +11,7 @@ import Image from 'next/image'
 import { LoaderHeader } from '../../../ui/loaders/TerminalLoader/components/header/LoaderHeader'
 import Steps from '../components/Steps'
 import { IdentitySteps } from './IdentitySteps'
+import { Calibrate } from './CalibrateStep'
 import { LOGIN_OPTIONS_CONFIG } from '../config'
 import {
   OAUTH_INIT_STEPS,
@@ -26,13 +28,23 @@ type LoginOption = {
   isWallet?: boolean
 }
 type OAuthProvider = 'google' | 'twitter' | 'discord'
+type AuthStep = 'auth' | 'identity' | 'calibrate' | 'done'
 
 const BG_COLOR = 'bg-bg-3/25'
 const AUTH_TITLE_ID = 'login-modal-title'
 const AUTH_DESC_ID = 'login-modal-description'
 const AUTH_PROVIDER_STORAGE_KEY = 'auth_provider'
 const AUTH_MODAL_OPEN_STORAGE_KEY = 'auth_modal_open'
+const AUTH_STEP_QUERY_KEY = 'step'
 const RESTORE_CANCEL_TIMEOUT_MS = 2500
+const IDENTITY_TO_CALIBRATE_STEPS = [
+  { text: 'Syncing identity profile...', duration: 220 },
+  { text: 'Bootstrapping signal engine...', duration: 260 },
+  { text: 'Loading calibrator...', duration: 220 },
+]
+
+const normalizeAuthStep = (value: string | null): AuthStep =>
+  value === 'identity' || value === 'calibrate' || value === 'done' ? value : 'auth'
 
 const extractUserName = (
   oauthUser: User,
@@ -61,17 +73,51 @@ const extractUserName = (
 
 export function LoginModal() {
   const { closeModal } = useModal()
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
   const { login, ready, user } = usePrivy()
 
-  const [isIdentityStep, setIsIdentityStep] = useState(false)
+  const [activeStep, setActiveStep] = useState<AuthStep>(() =>
+    normalizeAuthStep(
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('step')
+        : null,
+    ),
+  )
   const [providerUserName, setProviderUserName] = useState<string | null>(null)
   const [authError, setAuthError] = useState<string | null>(null)
   const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null)
+  const [isTransitioningToCalibrate, setIsTransitioningToCalibrate] = useState(false)
 
   const [restoredProvider, setRestoredProvider] = useState<OAuthProvider | null>(null)
   const [failedProvider, setFailedProvider] = useState<OAuthProvider | null>(null)
   const lastOAuthAttemptRef = useRef<OAuthProvider | null>(null)
   const shouldGoToIdentityRef = useRef(false)
+  const stepFromQuery = normalizeAuthStep(searchParams.get(AUTH_STEP_QUERY_KEY))
+
+  const setModalStep = (step: AuthStep) => {
+    setActiveStep(step)
+    const next = new URLSearchParams(searchParams.toString())
+    next.set('modal', 'login')
+    next.set(AUTH_STEP_QUERY_KEY, step)
+    router.replace(`${pathname}?${next.toString()}`)
+  }
+
+  useEffect(() => {
+    if (activeStep !== stepFromQuery) {
+      setActiveStep(stepFromQuery)
+    }
+  }, [stepFromQuery, activeStep])
+
+  useEffect(() => {
+    if (!searchParams.get(AUTH_STEP_QUERY_KEY)) {
+      const next = new URLSearchParams(searchParams.toString())
+      next.set('modal', 'login')
+      next.set(AUTH_STEP_QUERY_KEY, activeStep)
+      router.replace(`${pathname}?${next.toString()}`)
+    }
+  }, [searchParams, activeStep, router, pathname])
 
   useEffect(() => {
     const storedProvider = sessionStorage.getItem(AUTH_PROVIDER_STORAGE_KEY)
@@ -88,7 +134,7 @@ export function LoginModal() {
   }, [])
 
   useEffect(() => {
-    if (!restoredProvider || !loadingProvider || isIdentityStep) return
+    if (!restoredProvider || !loadingProvider || activeStep === 'identity') return
 
     const timeout = window.setTimeout(() => {
       const attempted = lastOAuthAttemptRef.current
@@ -101,7 +147,7 @@ export function LoginModal() {
     }, RESTORE_CANCEL_TIMEOUT_MS)
 
     return () => window.clearTimeout(timeout)
-  }, [restoredProvider, loadingProvider, isIdentityStep])
+  }, [restoredProvider, loadingProvider, activeStep])
 
   const { initOAuth } = useLoginWithOAuth({
     onComplete: ({ user: callbackUser, loginMethod }) => {
@@ -117,7 +163,7 @@ export function LoginModal() {
       if (restoredProvider) {
         shouldGoToIdentityRef.current = true
       } else {
-        setIsIdentityStep(true)
+        setModalStep('identity')
       }
 
       setRestoredProvider(null)
@@ -164,6 +210,10 @@ export function LoginModal() {
     void handleOAuth(failedProvider)
   }
 
+  const handleSkipToCalibrate = () => {
+    setIsTransitioningToCalibrate(true)
+  }
+
   const options = LOGIN_OPTIONS_CONFIG.map((opt) => ({
     ...opt,
     onClick:
@@ -183,11 +233,35 @@ export function LoginModal() {
     return null
   }
 
-  if (isIdentityStep) {
-    return <IdentitySteps userName={providerUserName} />
+  if (isTransitioningToCalibrate) {
+    return (
+      <BaseModal
+        onClose={closeModal}
+        variant="modal"
+        showClose={false}
+        contentClassName="p-0"
+        className="rounded-none! md:w-[620px]! md:max-w-[700px]!"
+      >
+        <TerminalLoader
+          steps={IDENTITY_TO_CALIBRATE_STEPS}
+          onComplete={() => {
+            setIsTransitioningToCalibrate(false)
+            setModalStep('calibrate')
+          }}
+        />
+      </BaseModal>
+    )
   }
 
-  if (loadingProvider && !isIdentityStep) {
+  if (activeStep === 'identity') {
+    return <IdentitySteps userName={providerUserName} onSkipToCalibrate={handleSkipToCalibrate} />
+  }
+
+  if (activeStep === 'calibrate') {
+    return <Calibrate />
+  }
+
+  if (loadingProvider) {
     const isRestored = restoredProvider !== null
 
     return (
@@ -202,7 +276,7 @@ export function LoginModal() {
           steps={isRestored ? OAUTH_RETURN_STEPS : OAUTH_INIT_STEPS}
           onComplete={() => {
             if (shouldGoToIdentityRef.current) {
-              setIsIdentityStep(true)
+              setModalStep('identity')
               shouldGoToIdentityRef.current = false
             } else {
               setLoadingProvider(null)

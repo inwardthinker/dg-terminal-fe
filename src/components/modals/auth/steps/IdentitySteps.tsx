@@ -19,9 +19,10 @@ type AvailabilityState = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
 
 type IdentityStepsProps = ModalParams & {
   userName?: string | null
+  onSkipToCalibrate?: () => void
 }
 
-export function IdentitySteps({ userName = null }: IdentityStepsProps) {
+export function IdentitySteps({ userName = null, onSkipToCalibrate }: IdentityStepsProps) {
   const { closeModal } = useModal()
 
   const normalizedUserName = userName?.trim().split(/\s+/)[0].toLowerCase() ?? ''
@@ -226,7 +227,7 @@ export function IdentitySteps({ userName = null }: IdentityStepsProps) {
                 CONFIRM IDENTITY <ArrowRight size={12} />
               </Button>
 
-              <Button variant="muted" className="text-[12px]">
+              <Button variant="muted" className="text-[12px]" onClick={onSkipToCalibrate}>
                 skip for now
               </Button>
             </div>
