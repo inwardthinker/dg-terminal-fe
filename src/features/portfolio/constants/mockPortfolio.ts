@@ -244,7 +244,7 @@ export const MOCK_PORTFOLIO: PortfolioData = {
       entry: 0.44,
       exit: 0.5,
       size: 1000,
-      result: 'PUSHED',
+      result: 'UNRESOLVED',
       pnl: 0,
       settlementDate: 'Mar 31',
       closeType: 'manual',

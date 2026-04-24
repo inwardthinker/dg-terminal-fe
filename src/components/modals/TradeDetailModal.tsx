@@ -14,17 +14,17 @@ type Props = ModalParams & {
 const BADGE: Record<TradeHistoryEntry['result'], string> = {
   WON: 'bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]  text-pos',
   LOST: 'bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]   text-neg',
-  PUSHED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)] text-t-3',
+  UNRESOLVED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)] text-t-3',
 }
 
 // P&L hero text colour
 const PNL_COLOR: Record<TradeHistoryEntry['result'], string> = {
   WON: 'text-pos',
   LOST: 'text-neg',
-  PUSHED: 'text-t-2',
+  UNRESOLVED: 'text-t-2',
 }
 
-const fmtUsd = (n: number, decimals = 0) =>
+const fmtUsd = (n: number, decimals = 2) =>
   new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -39,7 +39,7 @@ export function TradeDetailModal({ trade }: Props) {
 
   const isManual = trade.closeType === 'manual'
   const closeVerb = isManual ? 'Exited' : 'Settled'
-  const venue = trade.venue
+  const venue = trade.venue ?? 'Polymarket'
   const feePaid = trade.feePaid ?? 0
   const rewardsEarned = trade.rewardsEarned ?? 0
 
@@ -53,9 +53,6 @@ export function TradeDetailModal({ trade }: Props) {
   const pnlColor = PNL_COLOR[trade.result]
   const returnPct = trade.size > 0 ? (trade.pnl / trade.size) * 100 : 0
   const returnSign = returnPct > 0 ? '+' : returnPct < 0 ? '−' : ''
-
-  // Exit price label: "Exit price" per spec
-  const exitPriceLabel = isManual ? 'Exit price' : 'Exit price'
 
   return (
     <BaseModal variant="modal" onClose={closeModal} showClose={false}>
@@ -88,7 +85,7 @@ export function TradeDetailModal({ trade }: Props) {
         <div className="text-[9px] text-t-3 uppercase tracking-[.08em] mb-[4px]">
           Realized P&amp;L
         </div>
-        <div className={`text-[28px] font-[800] leading-none tracking-[-0.5px] ${pnlColor}`}>
+        <div className={`text-[28px] font-extrabold leading-none tracking-[-0.5px] ${pnlColor}`}>
           {pnlSign}
           {fmtUsd(trade.pnl)}
         </div>
@@ -108,7 +105,7 @@ export function TradeDetailModal({ trade }: Props) {
         <DataRow label="Entry price">
           <span>{trade.entry.toFixed(2)}</span>
         </DataRow>
-        <DataRow label={exitPriceLabel}>
+        <DataRow label="Exit price">
           <span>{trade.exit.toFixed(2)}</span>
         </DataRow>
         <DataRow label="Size (cost basis)">

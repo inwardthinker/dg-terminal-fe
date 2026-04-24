@@ -30,7 +30,7 @@ function ResultBadge({ result }: { result: TradeHistoryEntry['result'] }) {
   const cls = {
     WON: 'bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos',
     LOST: 'bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg',
-    PUSHED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3',
+    UNRESOLVED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3',
   }[result]
 
   return (
@@ -67,7 +67,7 @@ function RowsSkeleton() {
   )
 }
 
-function exportCsv(trades: TradeHistoryEntry[]) {
+function downloadCsv(trades: TradeHistoryEntry[], filename: string) {
   const headers = ['Date', 'Market', 'Side', 'Entry', 'Exit', 'Size (USD)', 'Result', 'P&L (USD)']
   const rows = trades.map((t) => [
     t.date,
@@ -75,18 +75,40 @@ function exportCsv(trades: TradeHistoryEntry[]) {
     t.side,
     t.entry.toFixed(2),
     t.exit.toFixed(2),
-    t.size,
+    t.size.toFixed(2),
     t.result,
-    t.pnl,
+    t.pnl.toFixed(2),
   ])
   const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = 'trade-history.csv'
+  a.download = filename
   a.click()
   URL.revokeObjectURL(url)
+}
+
+async function fetchAllTradesForExport(
+  walletAddress: string,
+  period: TradeHistoryPeriod,
+): Promise<TradeHistoryEntry[]> {
+  const EXPORT_PAGE_SIZE = 100
+  const all: TradeHistoryEntry[] = []
+
+  // Fetch first page to learn totalPages, then fetch the rest in parallel.
+  const first = await getTrades({ walletAddress, period, page: 1, perPage: EXPORT_PAGE_SIZE })
+  all.push(...first.trades)
+
+  if (first.totalPages > 1) {
+    const remaining = Array.from({ length: first.totalPages - 1 }, (_, i) =>
+      getTrades({ walletAddress, period, page: i + 2, perPage: EXPORT_PAGE_SIZE }),
+    )
+    const results = await Promise.all(remaining)
+    for (const r of results) all.push(...r.trades)
+  }
+
+  return all
 }
 
 export function TradeHistoryPanel({
@@ -101,8 +123,21 @@ export function TradeHistoryPanel({
   const [totalPages, setTotalPages] = useState(1)
   const [fetching, setFetching] = useState(false)
   const [fetchError, setFetchError] = useState<string | null>(null)
+  const [exporting, setExporting] = useState(false)
 
   const { openModal } = useModal()
+
+  async function handleExport() {
+    if (exporting || !walletAddress) return
+    setExporting(true)
+    try {
+      const all = await fetchAllTradesForExport(walletAddress, period)
+      const filename = `trade-history-${period.toLowerCase()}.csv`
+      downloadCsv(all, filename)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   useEffect(() => {
     if (!walletAddress) return
@@ -195,11 +230,11 @@ export function TradeHistoryPanel({
           </div>
 
           <button
-            className="text-action"
-            onClick={() => exportCsv(trades)}
-            title="Exports current page only"
+            className="text-action disabled:opacity-40 disabled:cursor-default"
+            onClick={handleExport}
+            disabled={exporting}
           >
-            Export page ↓
+            {exporting ? 'Exporting…' : 'Export CSV ↓'}
           </button>
         </div>
       </div>
@@ -267,9 +302,11 @@ export function TradeHistoryPanel({
                 </span>
 
                 <span
-                  className={`text-right font-semibold ${trade.pnl >= 0 ? 'text-pos' : 'text-neg'}`}
+                  className={`text-right font-semibold ${
+                    trade.result === 'LOST' || trade.pnl < 0 ? 'text-neg' : 'text-pos'
+                  }`}
                 >
-                  {trade.pnl >= 0 ? '+' : ''}
+                  {trade.result === 'LOST' || trade.pnl < 0 ? '-' : '+'}
                   {formatUsd(trade.pnl)}
                 </span>
               </div>
