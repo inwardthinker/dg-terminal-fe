@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { env } from '@/lib/constants/env'
 
-const DEFAULT_POLYGON_RPC_URL = 'https://polygon-rpc.com'
 const USDC_E_ADDRESS = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
 
 const ERC20_ABI = [
@@ -10,7 +9,11 @@ const ERC20_ABI = [
 ]
 
 export async function getUsdceBalance(address: string): Promise<number> {
-  const provider = new ethers.JsonRpcProvider(env.polygonRpcUrl || DEFAULT_POLYGON_RPC_URL)
+  if (!env.polygonRpcUrl) {
+    throw new Error('Missing NEXT_PUBLIC_POLYGON_RPC_URL')
+  }
+
+  const provider = new ethers.JsonRpcProvider(env.polygonRpcUrl)
   const contract = new ethers.Contract(USDC_E_ADDRESS, ERC20_ABI, provider)
 
   const [balance, decimals] = await Promise.all([

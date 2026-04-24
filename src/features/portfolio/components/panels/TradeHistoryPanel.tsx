@@ -9,8 +9,8 @@ const PERIODS: TradeHistoryPeriod[] = ['7d', '30d', '90d', 'All']
 const PER_PAGE = 10
 
 const TRADE_HISTORY_GRID_TEMPLATE =
-  'grid-cols-[minmax(64px,0.9fr)_minmax(220px,2.5fr)_minmax(48px,0.7fr)_minmax(64px,0.9fr)_minmax(56px,0.8fr)_minmax(72px,0.9fr)_minmax(90px,1.1fr)_minmax(76px,1fr)]'
-const TRADE_HISTORY_GRID_CLASS = `grid ${TRADE_HISTORY_GRID_TEMPLATE} gap-sp2`
+  'grid-cols-[72px_minmax(180px,2.5fr)_52px_54px_54px_74px_82px_84px]'
+const TRADE_HISTORY_GRID_CLASS = `grid ${TRADE_HISTORY_GRID_TEMPLATE} gap-[6px]`
 
 type TradeHistoryPanelProps = {
   walletAddress: string
@@ -241,7 +241,7 @@ export function TradeHistoryPanel({
 
       {/* ── Table (rows replaced by skeleton while fetching) ── */}
       <div className="overflow-x-auto -mx-sp5 px-sp5">
-        <div className="min-w-[720px]">
+        <div className="min-w-[690px]">
           {/* Column headers */}
           <div
             className={`${TRADE_HISTORY_GRID_CLASS} text-support pb-[5px] border-b border-line-c mb-[2px]`}
