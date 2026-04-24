@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+import { AuthButton } from '@/components/auth/AuthButton'
 import { usePortfolioBalance } from '@/features/portfolio/context/PortfolioBalanceContext'
 import { usePortfolioKpis } from '@/features/portfolio/context/PortfolioKpisContext'
 
@@ -26,8 +28,7 @@ export function TopBar({ userInitials = 'DC' }: TopBarProps) {
             role="img"
             aria-label="DG Predict logo"
           >
-            <span className=" text-t-1 ">DG</span>
-            <span className="text-g-3">PREDICT</span>
+            <Image src="/images/logo.webp" alt="DG Predict logo" width={100} height={100} />
           </div>
 
           {/* Quick stats — hidden until data loaded */}
@@ -102,6 +103,8 @@ export function TopBar({ userInitials = 'DC' }: TopBarProps) {
             {userInitials}
           </div>
         </div>
+
+        <AuthButton />
       </div>
     </header>
   )

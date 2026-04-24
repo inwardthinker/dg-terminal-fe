@@ -1,14 +1,35 @@
 'use client'
 
 import { Suspense } from 'react'
+import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useModalStore } from '@/lib/modals/store'
 import { getModalComponent } from '@/lib/modals/registry'
+import { useModal } from '@/lib/modals/hooks/useModal'
 import { useModalSync } from '@/lib/modals/hooks/useModalSync'
+
+const AUTH_MODAL_OPEN_STORAGE_KEY = 'auth_modal_open'
 
 // ─── Inner component (uses useSearchParams via useModalSync) ──────────────────
 // Must be a separate component so the <Suspense> boundary above it works.
 function ModalSyncBoundary() {
   useModalSync()
+  const { openModal } = useModal()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const shouldRestore = sessionStorage.getItem(AUTH_MODAL_OPEN_STORAGE_KEY)
+    const isAnyModalOpen = Boolean(searchParams.get('modal'))
+
+    if (shouldRestore && !isAnyModalOpen) {
+      openModal('login')
+    }
+
+    if (shouldRestore) {
+      sessionStorage.removeItem(AUTH_MODAL_OPEN_STORAGE_KEY)
+    }
+  }, [openModal, searchParams])
+
   return null
 }
 

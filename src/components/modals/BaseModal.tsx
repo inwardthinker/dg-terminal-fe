@@ -8,6 +8,8 @@ type BaseModalProps = {
   onClose: () => void
   title?: string
   showClose?: boolean
+  className?: string
+  contentClassName?: string
 
   variant?: 'drawer' | 'modal' // 👈 NEW
 }
@@ -17,6 +19,8 @@ export function BaseModal({
   onClose,
   title,
   showClose = true,
+  className,
+  contentClassName,
   variant = 'modal',
 }: BaseModalProps) {
   const sheetRef = useRef<HTMLDivElement>(null)
@@ -131,8 +135,8 @@ export function BaseModal({
       onClick={onClose}
       onTouchMove={(e) => e.preventDefault()}
       className={`
-        fixed inset-0 z-50
-        bg-black/75
+        fixed inset-0 z-50 outline-none focus:outline-none
+        bg-black/40 backdrop-blur-sm
 
         /* Mobile */
         flex items-end
@@ -151,6 +155,8 @@ export function BaseModal({
         tabIndex={-1}
         className={`
           w-full bg-bg-0 shadow-xl border max-md:border-b-0 border-line-c
+          outline-none focus:outline-none focus-visible:outline-none
+          ring-0 focus:ring-0 focus-visible:ring-0
 
           /* Mobile: bottom sheet */
           rounded-t-2xl max-h-[85vh] overflow-y-auto
@@ -162,7 +168,6 @@ export function BaseModal({
               ? `
                 md:h-full md:w-[420px]
                 md:rounded-none
-                md:animate-slide-in-right
               `
               : ''
           }
@@ -173,13 +178,13 @@ export function BaseModal({
               ? `
                 md:max-w-lg md:w-full
                 md:rounded-xl
-                md:animate-fade-in
               `
               : ''
           }
 
           will-change-transform transform-gpu
           transition-transform duration-200 ease-out
+          ${className ?? ''}
         `}
       >
         {/* Mobile handle */}
@@ -209,7 +214,7 @@ export function BaseModal({
           </div>
         )}
 
-        <div className="p-4">{children}</div>
+        <div className={contentClassName ?? 'p-4'}>{children}</div>
       </div>
     </div>
   )

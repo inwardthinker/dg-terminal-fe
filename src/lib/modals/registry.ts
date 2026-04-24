@@ -4,6 +4,8 @@ import type { ModalType, ModalParams } from './types'
 // ─── Import modal components ──────────────────────────────────────────────────
 // Each modal receives the URL params as props.
 import { ClosePositionModal } from '@/components/modals/ClosePositionModal'
+import { LoginModal } from '@/components/modals/auth/steps/LoginSteps'
+import { IdentitySteps } from '@/components/modals/auth/steps/IdentitySteps'
 import { TradeDetailModal } from '@/components/modals/TradeDetailModal'
 
 // ─── Registry ─────────────────────────────────────────────────────────────────
@@ -11,6 +13,8 @@ import { TradeDetailModal } from '@/components/modals/TradeDetailModal'
 // Adding a new modal type without registering it here is a compile error.
 export const MODAL_REGISTRY: Record<ModalType, ComponentType<ModalParams>> = {
   close: ClosePositionModal,
+  login: LoginModal,
+  identity: IdentitySteps,
   tradeDetail: TradeDetailModal,
 }
 
