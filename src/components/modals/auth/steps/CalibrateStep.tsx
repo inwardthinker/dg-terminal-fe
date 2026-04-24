@@ -80,7 +80,7 @@ export function Calibrate() {
             <div className="grid grid-cols-3 items-start justify-between gap-2">
               <div className="flex flex-col gap-1 col-span-2">
                 <h2 className="text-[19px] font-extrabold text-t-1 uppercase tracking-tighter font-ibm-plex">
-                  Calibrate Signal Emgine
+                  Calibrate Signal Engine
                 </h2>
                 <p className="text-[12px] tracking-tight text-t-3 font-jetbrains">
                   Select up to 5 markets. Your feed and edge scanner will be tuned accordingly.

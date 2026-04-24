@@ -6,13 +6,14 @@ import { useMemo } from 'react'
 import type { Position, UsePositionsParams, UsePositionsResult } from '../types'
 import { getOpenPositions, mapApiPositionToViewModel } from '../api/getOpenPositions'
 import { ApiError } from '@/lib/api/client'
+import { normalizeEvmAddress } from '@/lib/polymarket/walletAddress'
 
 const REFRESH_INTERVAL_MS = 5_000
 const STALE_TIME_MS = REFRESH_INTERVAL_MS
 const GC_TIME_MS = 5 * 60_000
 
 function normalizeWalletAddress(value?: string): string {
-  return (value ?? '').trim().toLowerCase()
+  return normalizeEvmAddress(value)
 }
 
 function resolveWalletAddress(userAddress?: string): string {
@@ -28,6 +29,7 @@ export function usePositions({
   sortBy = 'pnl',
   userAddress,
 }: UsePositionsParams = {}): UsePositionsResult {
+  const hasInputAddress = typeof userAddress === 'string' && userAddress.trim().length > 0
   const wallet = resolveWalletAddress(userAddress)
 
   const query = useQuery({
@@ -65,11 +67,13 @@ export function usePositions({
   }, [allPositions, limit, sortBy])
 
   const error = useMemo<string | null>(() => {
-    if (wallet.length === 0) return 'Wallet address is not configured'
+    if (wallet.length === 0) {
+      return hasInputAddress ? 'Wallet address is invalid' : 'Wallet address is not configured'
+    }
     if (query.error instanceof ApiError) return `${query.error.status}: ${query.error.message}`
     if (query.error instanceof Error) return query.error.message
     return null
-  }, [wallet, query.error])
+  }, [hasInputAddress, wallet, query.error])
 
   const connectionState = error
     ? 'disconnected'
