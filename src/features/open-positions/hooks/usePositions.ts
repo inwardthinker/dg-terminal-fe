@@ -20,12 +20,7 @@ function resolveWalletAddress(userAddress?: string): string {
     return normalizeWalletAddress(userAddress)
   }
 
-  return normalizeWalletAddress(
-    process.env.NEXT_PUBLIC_PORTFOLIO_KPIS_SOCKET_WALLET_ADDRESS ??
-      process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ??
-      process.env.NEXT_PUBLIC_PORTFOLIO_KPI_WALLET_ADDRESS ??
-      '',
-  )
+  return normalizeWalletAddress(process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ?? '')
 }
 
 export function usePositions({

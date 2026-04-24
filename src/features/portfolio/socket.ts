@@ -25,10 +25,7 @@ export function resolvePortfolioKpiSocketWalletAddress(
   explicitWalletAddress?: string,
 ): string | null {
   const rawAddress =
-    explicitWalletAddress ??
-    process.env.NEXT_PUBLIC_PORTFOLIO_KPIS_SOCKET_WALLET_ADDRESS ??
-    process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ??
-    null
+    explicitWalletAddress ?? process.env.NEXT_PUBLIC_POSITIONS_SOCKET_USER_ADDRESS ?? null
 
   if (!rawAddress) {
     return null
