@@ -20,9 +20,10 @@ export class ApiError extends Error {
 
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
   const { body, headers, baseUrl, ...rest } = options
-  const resolvedBaseUrl = baseUrl === '' ? '' : (baseUrl ?? env.apiBaseUrl)
+  const useRelativePath = baseUrl === ''
+  const resolvedBaseUrl = useRelativePath ? '' : (baseUrl ?? env.apiBaseUrl)
 
-  if (!resolvedBaseUrl) {
+  if (!useRelativePath && !resolvedBaseUrl) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured.')
   }
 

@@ -1,24 +1,20 @@
 'use client'
 
 import OpenPositionView from '@/features/open-positions/OpenPositionView'
+import { useMemo } from 'react'
 import { usePositions } from '../hooks/usePositions'
-import { useOpenPositionsSummary } from '../hooks/useOpenPositionsSummary'
 import { mapKpisToCards } from '../utils/mapKpisToCards'
+import { computeSummaryKpis } from '../utils/summary'
 
 export default function OpenPositionContainer() {
   const { positions, loading, error } = usePositions({ realtimeOnly: true })
-  const {
-    kpis: summaryKpis,
-    loading: summaryLoading,
-    error: summaryError,
-  } = useOpenPositionsSummary()
-
-  const cards = summaryKpis ? mapKpisToCards(summaryKpis, Boolean(summaryError)) : []
+  const summaryKpis = useMemo(() => computeSummaryKpis(positions), [positions])
+  const cards = useMemo(() => mapKpisToCards(summaryKpis, Boolean(error)), [summaryKpis, error])
 
   return (
     <OpenPositionView
-      summaryLoading={summaryLoading}
-      summaryError={summaryError}
+      summaryLoading={loading}
+      summaryError={error}
       cards={cards}
       positions={positions}
       loading={loading}
