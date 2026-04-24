@@ -56,7 +56,7 @@ export type RiskMetric = {
   tooltip: string
 }
 
-export type TradeResult = 'WON' | 'LOST' | 'PUSHED'
+export type TradeResult = 'WON' | 'LOST' | 'UNRESOLVED'
 export type TradeSide = 'YES' | 'NO'
 export type TradeHistoryPeriod = '7d' | '30d' | '90d' | 'All'
 

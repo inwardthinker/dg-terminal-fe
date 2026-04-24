@@ -30,7 +30,7 @@ function ResultBadge({ result }: { result: TradeHistoryEntry['result'] }) {
   const cls = {
     WON: 'bg-[rgba(76,175,125,0.18)]  border border-[rgba(76,175,125,0.3)]   text-pos',
     LOST: 'bg-[rgba(224,92,92,0.18)]   border border-[rgba(224,92,92,0.3)]    text-neg',
-    PUSHED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3',
+    UNRESOLVED: 'bg-[rgba(154,148,136,0.15)] border border-[rgba(154,148,136,0.3)]  text-t-3',
   }[result]
 
   return (
@@ -95,7 +95,6 @@ async function fetchAllTradesForExport(
 ): Promise<TradeHistoryEntry[]> {
   const EXPORT_PAGE_SIZE = 100
   const all: TradeHistoryEntry[] = []
-  let currentPage = 1
 
   // Fetch first page to learn totalPages, then fetch the rest in parallel.
   const first = await getTrades({ walletAddress, period, page: 1, perPage: EXPORT_PAGE_SIZE })
@@ -303,9 +302,11 @@ export function TradeHistoryPanel({
                 </span>
 
                 <span
-                  className={`text-right font-semibold ${trade.pnl >= 0 ? 'text-pos' : 'text-neg'}`}
+                  className={`text-right font-semibold ${
+                    trade.result === 'LOST' || trade.pnl < 0 ? 'text-neg' : 'text-pos'
+                  }`}
                 >
-                  {trade.pnl >= 0 ? '+' : ''}
+                  {trade.result === 'LOST' || trade.pnl < 0 ? '-' : '+'}
                   {formatUsd(trade.pnl)}
                 </span>
               </div>
