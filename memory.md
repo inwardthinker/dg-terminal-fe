@@ -21,6 +21,7 @@
 ### 3. Component reuse
 
 Reused existing components without modification:
+
 - `EquityCurvePanel` — already had period selector, chart, loading state
 - `SummaryPanelContainer` — already handled loading/error/positions display
 - `InfoTooltip` — used inside `KpiTile` and `RiskMetricsPanel`
@@ -52,13 +53,13 @@ The KPI reference spec colours certain values differently (positive = green, gol
 
 ## Reusable Utilities / Hooks / Components for Future Features
 
-| Name | Location | Notes |
-|---|---|---|
-| `KpiTile` | `features/portfolio/components/KpiTile.tsx` | Generic — reuse wherever a metric tile is needed |
+| Name                    | Location                                                  | Notes                                                   |
+| ----------------------- | --------------------------------------------------------- | ------------------------------------------------------- |
+| `KpiTile`               | `features/portfolio/components/KpiTile.tsx`               | Generic — reuse wherever a metric tile is needed        |
 | `ExposureCategoryPanel` | `features/portfolio/components/ExposureCategoryPanel.tsx` | Accepts any `ExposureCategory[]`; colour is data-driven |
-| `RiskMetricsPanel` | `features/portfolio/components/RiskMetricsPanel.tsx` | Accepts any `RiskMetric[]`; value colour is data-driven |
-| `PortfolioTopBar` | `features/portfolio/components/PortfolioTopBar.tsx` | Extend for other pages once a shared layout is added |
-| `InfoTooltip` | `components/ui/InfoTooltip.tsx` | Already shared — use everywhere tooltip needed |
+| `RiskMetricsPanel`      | `features/portfolio/components/RiskMetricsPanel.tsx`      | Accepts any `RiskMetric[]`; value colour is data-driven |
+| `PortfolioTopBar`       | `features/portfolio/components/PortfolioTopBar.tsx`       | Extend for other pages once a shared layout is added    |
+| `InfoTooltip`           | `components/ui/InfoTooltip.tsx`                           | Already shared — use everywhere tooltip needed          |
 
 ---
 

@@ -1,28 +1,28 @@
-"use client";
+'use client'
 
-import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
-import type { Toast as ToastTypeFromStore, ToastType } from "@/store/useToastStore";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
+import type { Toast as ToastTypeFromStore, ToastType } from '@/store/useToastStore'
 
 type ToastProps = {
-  toast: ToastTypeFromStore;
-  onRemove: (id: string) => void;
-};
+  toast: ToastTypeFromStore
+  onRemove: (id: string) => void
+}
 
-const EXIT_MS = 220;
+const EXIT_MS = 220
 
 const toastToneStyles: Record<ToastType, string> = {
-  success: "border-emerald-500/35 bg-emerald-500/10 text-emerald-50",
-  error: "border-red-500/35 bg-red-500/10 text-red-50",
-  warning: "border-amber-400/45 bg-amber-400/10 text-amber-50",
-  info: "border-sky-500/35 bg-sky-500/10 text-sky-50",
-};
+  success: 'border-emerald-500/35 bg-emerald-500/10 text-emerald-50',
+  error: 'border-red-500/35 bg-red-500/10 text-red-50',
+  warning: 'border-amber-400/45 bg-amber-400/10 text-amber-50',
+  info: 'border-sky-500/35 bg-sky-500/10 text-sky-50',
+}
 
 const progressToneStyles: Record<ToastType, string> = {
-  success: "bg-emerald-400",
-  error: "bg-red-400",
-  warning: "bg-amber-300",
-  info: "bg-sky-400",
-};
+  success: 'bg-emerald-400',
+  error: 'bg-red-400',
+  warning: 'bg-amber-300',
+  info: 'bg-sky-400',
+}
 
 const iconByType: Record<ToastType, ReactElement> = {
   success: (
@@ -61,65 +61,65 @@ const iconByType: Record<ToastType, ReactElement> = {
       />
     </svg>
   ),
-};
+}
 
 export function Toast({ toast, onRemove }: ToastProps) {
-  const [isPaused, setIsPaused] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
-  const [remainingMs, setRemainingMs] = useState(toast.duration);
+  const [isPaused, setIsPaused] = useState(false)
+  const [isExiting, setIsExiting] = useState(false)
+  const [remainingMs, setRemainingMs] = useState(toast.duration)
 
-  const lastTickRef = useRef<number | null>(null);
+  const lastTickRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (isExiting || isPaused) {
-      return;
+      return
     }
 
     const tick = window.setInterval(() => {
-      const now = Date.now();
-      const previousTick = lastTickRef.current ?? now;
-      const delta = now - previousTick;
-      lastTickRef.current = now;
+      const now = Date.now()
+      const previousTick = lastTickRef.current ?? now
+      const delta = now - previousTick
+      lastTickRef.current = now
 
-      setRemainingMs((prev) => Math.max(0, prev - delta));
-    }, 50);
+      setRemainingMs((prev) => Math.max(0, prev - delta))
+    }, 50)
 
     return () => {
-      window.clearInterval(tick);
-      lastTickRef.current = null;
-    };
-  }, [isExiting, isPaused]);
+      window.clearInterval(tick)
+      lastTickRef.current = null
+    }
+  }, [isExiting, isPaused])
 
   useEffect(() => {
     if (remainingMs > 0 || isExiting) {
-      return;
+      return
     }
 
-    setIsExiting(true);
+    setIsExiting(true)
     const timeout = window.setTimeout(() => {
-      onRemove(toast.id);
-    }, EXIT_MS);
+      onRemove(toast.id)
+    }, EXIT_MS)
 
-    return () => window.clearTimeout(timeout);
-  }, [isExiting, onRemove, remainingMs, toast.id]);
+    return () => window.clearTimeout(timeout)
+  }, [isExiting, onRemove, remainingMs, toast.id])
 
   const progressPercent = useMemo(
     () => Math.max(0, Math.min(100, (remainingMs / toast.duration) * 100)),
     [remainingMs, toast.duration],
-  );
+  )
 
-  const announceRole = toast.type === "error" ? "alert" : "status";
+  const announceRole = toast.type === 'error' ? 'alert' : 'status'
 
   return (
     <article
       role={announceRole}
-      aria-live={toast.type === "error" ? "assertive" : "polite"}
+      aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
       className={[
-        "group relative w-full overflow-hidden rounded-r8 border shadow-lg backdrop-blur-sm",
-        "transition-all duration-200 ease-out",
+        'group relative w-full overflow-hidden rounded-r8 border shadow-lg backdrop-blur-sm',
+        'transition-all duration-200 ease-out',
         toastToneStyles[toast.type],
-        isExiting ? "translate-x-4 opacity-0" : "translate-x-0 opacity-100",
-      ].join(" ")}
+        isExiting ? 'translate-x-4 opacity-0' : 'translate-x-0 opacity-100',
+      ].join(' ')}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -136,9 +136,9 @@ export function Toast({ toast, onRemove }: ToastProps) {
           className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 text-t-2 transition hover:border-white/25 hover:bg-white/10 hover:text-t-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
           aria-label="Dismiss notification"
           onClick={() => {
-            if (isExiting) return;
-            setIsExiting(true);
-            window.setTimeout(() => onRemove(toast.id), EXIT_MS);
+            if (isExiting) return
+            setIsExiting(true)
+            window.setTimeout(() => onRemove(toast.id), EXIT_MS)
           }}
         >
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden="true">
@@ -153,12 +153,13 @@ export function Toast({ toast, onRemove }: ToastProps) {
 
       <div className="h-1 w-full bg-white/10">
         <div
-          className={["h-full transition-[width] duration-75 ease-linear", progressToneStyles[toast.type]].join(
-            " ",
-          )}
+          className={[
+            'h-full transition-[width] duration-75 ease-linear',
+            progressToneStyles[toast.type],
+          ].join(' ')}
           style={{ width: `${progressPercent}%` }}
         />
       </div>
     </article>
-  );
+  )
 }

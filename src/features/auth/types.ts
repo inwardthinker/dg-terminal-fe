@@ -1,14 +1,14 @@
 export type LoginRequest = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-};
+  id: string
+  email: string
+  name: string
+}
 
 export type LoginResponse = {
-  user: AuthUser;
-};
+  user: AuthUser
+}

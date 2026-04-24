@@ -6,10 +6,10 @@ import { useModalStore } from '@/lib/modals/store'
 import type { ModalEntry, ModalType } from '@/lib/modals/types'
 
 // ─── Valid modal types (runtime guard) ───────────────────────────────────────
-const VALID_MODAL_TYPES = new Set<ModalType>(['close', 'login', 'identity'])
+const VALID_MODAL_TYPES = new Set<ModalType>(['close', 'login', 'identity', 'tradeDetail'])
 
 function isValidModalType(value: string | null): value is ModalType {
-    return value !== null && VALID_MODAL_TYPES.has(value as ModalType)
+  return value !== null && VALID_MODAL_TYPES.has(value as ModalType)
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -21,32 +21,32 @@ function isValidModalType(value: string | null): value is ModalType {
 //   ?modal=position&id=123            → single modal
 //   ?modal=position&id=123&over=confirm → stacked modal (confirm on top)
 export function useModalSync() {
-    const searchParams = useSearchParams()
-    const setStack = useModalStore((s) => s.setStack)
-    const transientParamsByType = useModalStore((s) => s.transientParamsByType)
+  const searchParams = useSearchParams()
+  const setStack = useModalStore((s) => s.setStack)
+  const transientParamsByType = useModalStore((s) => s.transientParamsByType)
 
-    useEffect(() => {
-        const modalParam = searchParams.get('modal')
-        const overParam = searchParams.get('over')
-        const id = searchParams.get('id') ?? undefined
+  useEffect(() => {
+    const modalParam = searchParams.get('modal')
+    const overParam = searchParams.get('over')
+    const id = searchParams.get('id') ?? undefined
 
-        const stack: ModalEntry[] = []
+    const stack: ModalEntry[] = []
 
-        if (isValidModalType(modalParam)) {
-            stack.push({
-                type: modalParam,
-                params: { ...transientParamsByType[modalParam], id },
-            })
-        }
+    if (isValidModalType(modalParam)) {
+      stack.push({
+        type: modalParam,
+        params: { ...transientParamsByType[modalParam], id },
+      })
+    }
 
-        if (isValidModalType(overParam)) {
-            // 'over' sits on top of the base modal
-            stack.push({
-                type: overParam,
-                params: { ...transientParamsByType[overParam], id },
-            })
-        }
+    if (isValidModalType(overParam)) {
+      // 'over' sits on top of the base modal
+      stack.push({
+        type: overParam,
+        params: { ...transientParamsByType[overParam], id },
+      })
+    }
 
-        setStack(stack)
-    }, [searchParams, setStack, transientParamsByType])
+    setStack(stack)
+  }, [searchParams, setStack, transientParamsByType])
 }

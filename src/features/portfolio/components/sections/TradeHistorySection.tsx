@@ -1,20 +1,10 @@
-import { TradeHistoryPanel } from "@/features/portfolio/components/panels/TradeHistoryPanel";
-import type { PortfolioData } from "@/features/portfolio/types";
+import { TradeHistoryPanel } from '@/features/portfolio/components/panels/TradeHistoryPanel'
 
 type TradeHistorySectionProps = {
-  portfolio: PortfolioData | null;
-  loading: boolean;
-};
+  walletAddress: string
+  loading: boolean
+}
 
-export function TradeHistorySection({
-  portfolio,
-  loading,
-}: TradeHistorySectionProps) {
-  return (
-    <TradeHistoryPanel
-      trades={portfolio?.tradeHistory ?? []}
-      total={portfolio?.tradeHistoryTotal ?? 0}
-      loading={loading}
-    />
-  );
+export function TradeHistorySection({ walletAddress, loading }: TradeHistorySectionProps) {
+  return <TradeHistoryPanel walletAddress={walletAddress} loading={loading} />
 }

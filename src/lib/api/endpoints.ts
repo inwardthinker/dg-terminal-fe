@@ -1,10 +1,11 @@
 export const API_ENDPOINTS = {
   auth: {
-    login: "/auth/login",
+    login: '/auth/login',
   },
   portfolio: {
-    summary: "/portfolio/summary",
+    summary: '/api/portfolio/summary',
+    polymarketTrades: '/api/trades-results',
   },
   users: {},
   payments: {},
-} as const;
+} as const

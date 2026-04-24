@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "./animations.css";
+@import 'tailwindcss';
+@import './animations.css';
 
 /* =========================
 ROOT DESIGN TOKENS
@@ -249,11 +249,11 @@ a {
 }
 
 button,
-input[type="checkbox"],
-input[type="radio"],
+input[type='checkbox'],
+input[type='radio'],
 select {
-  min-width: 32px;
-  min-height: 32px;
+  min-width: 16px;
+  min-height: 16px;
 }
 
 /* =========================
@@ -342,8 +342,7 @@ select {
 }
 
 .font-jetbrains {
-  font-family:
-    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 .font-ibm-plex {
@@ -406,4 +405,18 @@ select {
   background: var(--g3);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes live-value-flash {
+  0% {
+    background-color: color-mix(in srgb, var(--g3) 38%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.live-value-flash {
+  animation: live-value-flash 700ms ease-out;
+  border-radius: var(--radius-2);
 }

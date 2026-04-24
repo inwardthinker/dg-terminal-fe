@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { SummaryPanelContainer } from "@/features/open-positions";
-import { EquityCurvePanel } from "@/features/equity-curve/components/EquityCurvePanel";
-import { useRouter } from "next/navigation";
+import { SummaryPanelContainer } from '@/features/open-positions'
+import { EquityCurvePanel } from '@/features/equity-curve/components/EquityCurvePanel'
+import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
   const router = useRouter()
@@ -10,10 +10,7 @@ export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-0 px-sp8x py-sp8y">
       <section className="flex flex-col gap-sp6 rounded-r7 border border-line-c bg-bg-1 p-sp5">
-
-        <h1 className="text-title">
-          DG Terminal Frontend Homepage
-        </h1>
+        <h1 className="text-title">DG Terminal Frontend Homepage</h1>
 
         <p className="text-secondary bg-bg-2 p-sp3 rounded-r4">
           Design-system foundation using centralized CSS variables and Tailwind token mapping.
@@ -30,18 +27,16 @@ export default function HomePage() {
           <div className="bg-orange h-full w-1/3 rounded-r2" />
         </div>
 
-
         <SummaryPanelContainer />
         <EquityCurvePanel />
 
         <button
-          onClick={() => router.push("/?modal=close&id=456")}
+          onClick={() => router.push('/?modal=close&id=456')}
           className="ml-3 rounded-lg border border-zinc-300 px-4 py-2 text-sm"
         >
           Close position #456
         </button>
-
       </section>
     </main>
-  );
+  )
 }

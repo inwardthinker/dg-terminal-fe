@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/Button";
-import { KpiCard } from "@/features/portfolio/components/cards/KpiCard";
-import type { PortfolioKpis } from "@/features/portfolio/types";
+import { Button } from '@/components/ui/Button'
+import { KpiCard } from '@/features/portfolio/components/cards/KpiCard'
+import type { PortfolioKpis } from '@/features/portfolio/types'
 import {
   formatBalance,
   formatKpiFallback,
@@ -8,13 +8,13 @@ import {
   formatSignedCurrency,
   formatSignedPercent,
   getKpiVariant,
-} from "@/features/portfolio/utils/formatters";
+} from '@/features/portfolio/utils/formatters'
 
 type KpiSectionProps = {
-  kpis?: PortfolioKpis;
-  loading?: boolean;
-  venueUnavailable?: boolean;
-};
+  kpis?: PortfolioKpis
+  loading?: boolean
+  venueUnavailable?: boolean
+}
 
 function KpiSkeletonTile() {
   return (
@@ -23,7 +23,7 @@ function KpiSkeletonTile() {
       <div className="h-[24px] w-1/2 rounded-r2 bg-bg-2 mb-sp2" />
       <div className="h-[12px] w-1/4 rounded-r1 bg-bg-2" />
     </div>
-  );
+  )
 }
 
 export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSectionProps) {
@@ -46,14 +46,14 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           <KpiSkeletonTile />
         </div>
       </div>
-    );
+    )
   }
 
   const isEmptyState =
     kpis?.openExposure === undefined &&
     kpis?.unrealizedPnl === undefined &&
     kpis?.realized30d === undefined &&
-    kpis?.rewardsEarned === undefined;
+    kpis?.rewardsEarned === undefined
 
   return (
     <div className="grid max-md:grid-cols-6 gap-2 md:grid-cols-3 lg:grid-cols-5">
@@ -63,6 +63,7 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           value={formatKpiFallback(kpis?.balance, formatBalance)}
           sub={formatKpiFallback(kpis?.change24h, formatSignedCurrency)}
           subVariant={getKpiVariant(kpis?.change24h)}
+          tooltip="Cash available on your connected venues. Does not include the value of open positions."
           footer={
             <div className="flex gap-sp2">
               <Button variant="accent" size="sm" className="flex-1">
@@ -80,44 +81,44 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
         <KpiCard
           label="Open Exposure"
           value={
-            isEmptyState
-              ? formatBalance(0)
-              : formatKpiFallback(kpis?.openExposure, formatBalance)
+            isEmptyState ? formatBalance(0) : formatKpiFallback(kpis?.openExposure, formatBalance)
           }
           sub={
             isEmptyState
-              ? "0% deployed"
-              : formatKpiFallback(kpis?.deployedPct, formatSignedPercent)
+              ? '0% deployed'
+              : formatKpiFallback(kpis?.deployedPct, (v) => `${Math.round(v)}% deployed`)
           }
           dimmed={isEmptyState}
-          tooltip="Total cost basis of all open positions. Capital currently at risk."
+          tooltip="Total cost basis of all open positions. This is the capital currently at risk."
         />
       </div>
 
       <div className="h-full max-md:order-2 max-md:col-span-3 md:col-span-1">
         <KpiCard
           label="Unrealized P&L"
-          value={venueUnavailable ? "?" : formatKpiFallback(kpis?.unrealizedPnl, formatSignedCurrency)}
-          valueVariant={venueUnavailable ? "default" : getKpiVariant(kpis?.unrealizedPnl)}
-          sub={venueUnavailable ? "Prices are stale" : formatKpiFallback(kpis?.unrealizedPct, formatSignedPercent)}
-          subVariant={venueUnavailable ? "default" : getKpiVariant(kpis?.unrealizedPct)}
+          value={
+            venueUnavailable ? '?' : formatKpiFallback(kpis?.unrealizedPnl, formatSignedCurrency)
+          }
+          valueVariant={venueUnavailable ? 'default' : getKpiVariant(kpis?.unrealizedPnl)}
+          sub={
+            venueUnavailable
+              ? 'Prices are stale'
+              : formatKpiFallback(kpis?.unrealizedPct, formatSignedPercent)
+          }
+          subVariant={venueUnavailable ? 'default' : getKpiVariant(kpis?.unrealizedPct)}
           dimmed={isEmptyState || venueUnavailable}
-          tooltip="Mark-to-market gain or loss on open positions at current mid price."
+          tooltip="Mark-to-market gain or loss on open positions, calculated at current mid price."
         />
       </div>
 
       <div className="h-full max-md:order-4 max-md:col-span-2 md:col-span-1">
         <KpiCard
           label="Realized 30D"
-          value={
-            isEmptyState
-              ? "--"
-              : formatKpiFallback(kpis?.realized30d, formatSignedCurrency)
-          }
-          valueVariant={isEmptyState ? "default" : getKpiVariant(kpis?.realized30d)}
+          value={isEmptyState ? '--' : formatKpiFallback(kpis?.realized30d, formatSignedCurrency)}
+          valueVariant={isEmptyState ? 'default' : getKpiVariant(kpis?.realized30d)}
           sub={
             isEmptyState
-              ? "0 trades"
+              ? '0 trades'
               : formatKpiFallback(kpis?.trades30d, (value) => `${value} trades`)
           }
           dimmed={isEmptyState}
@@ -129,16 +130,14 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
         <KpiCard
           label="Rewards Earned"
           value={
-            isEmptyState
-              ? formatBalance(0)
-              : formatKpiFallback(kpis?.rewardsEarned, formatBalance)
+            isEmptyState ? formatBalance(0) : formatKpiFallback(kpis?.rewardsEarned, formatBalance)
           }
           valueVariant="accent"
           sub={formatKpiFallback(kpis?.rewardsPct, formatRewardsShare)}
           dimmed={isEmptyState}
-          tooltip="Maker rebates and referral bonuses earned in the last 30 days."
+          tooltip="Maker rebates and volume bonuses earned. Paid out by the venue, not deducted from your P&L."
         />
       </div>
     </div>
-  );
+  )
 }

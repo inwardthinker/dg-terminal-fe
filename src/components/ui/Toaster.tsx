@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { Toast } from "@/components/ui/Toast";
-import { useToastStore } from "@/store/useToastStore";
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { Toast } from '@/components/ui/Toast'
+import { useToastStore } from '@/store/useToastStore'
 
 export function Toaster() {
-  const [mounted, setMounted] = useState(false);
-  const toasts = useToastStore((state) => state.toasts);
-  const removeToast = useToastStore((state) => state.removeToast);
+  const [mounted, setMounted] = useState(false)
+  const toasts = useToastStore((state) => state.toasts)
+  const removeToast = useToastStore((state) => state.removeToast)
 
   useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   if (!mounted) {
-    return null;
+    return null
   }
 
   return createPortal(
@@ -32,5 +32,5 @@ export function Toaster() {
       </div>
     </section>,
     document.body,
-  );
+  )
 }

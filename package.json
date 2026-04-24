@@ -6,30 +6,45 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@privy-io/react-auth": "^3.22.1",
+    "@tanstack/react-query": "^5.100.0",
     "@tanstack/react-virtual": "^3.13.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
-    "next": "15.3.1",
+    "next": "^15.5.15",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "socket.io-client": "^4.8.3",
+    "speakeasy": "^2.0.0",
     "tailwind-merge": "^3.5.0",
     "zustand": "5.0.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "22.15.3",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
-    "eslint": "9.25.1",
+    "@types/speakeasy": "^2.0.10",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
     "eslint-config-next": "15.3.1",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "jsdom": "^29.0.2",
     "postcss": "^8.5.9",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4.2.2",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "^4.1.5"
   }
 }

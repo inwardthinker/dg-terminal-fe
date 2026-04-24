@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { SUMMARY_GRID_COLUMNS, SUMMARY_GRID_COLUMNS_MOBILE } from "../constants/layout";
+import { SUMMARY_GRID_COLUMNS, SUMMARY_GRID_COLUMNS_MOBILE } from '../constants/layout'
 
-const SKELETON_ROW_KEYS = ["row-a", "row-b", "row-c"] as const;
+const SKELETON_ROW_KEYS = ['row-a', 'row-b', 'row-c'] as const
 
 export function SummarySkeleton() {
   return (
@@ -69,5 +69,5 @@ export function SummarySkeleton() {
         </div>
       </div>
     </section>
-  );
+  )
 }
