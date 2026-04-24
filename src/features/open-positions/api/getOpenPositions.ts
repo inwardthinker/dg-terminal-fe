@@ -56,16 +56,8 @@ function inferCategory(title: string, slug?: string): PositionCategory {
 }
 
 function isActiveOpenPosition(position: ApiPosition): boolean {
-  if (position.redeemable || position.mergeable) {
-    return false
-  }
-
-  const currentPrice = toNumber(position.curPrice)
-  if (currentPrice <= 0) {
-    return false
-  }
-
-  return true
+  const pnlPct = toNumber(position.percentPnl)
+  return pnlPct > -99
 }
 
 export async function getOpenPositions({
