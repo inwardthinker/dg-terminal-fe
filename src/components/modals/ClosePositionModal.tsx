@@ -185,7 +185,7 @@ export function ClosePositionModal({
             onClick={handleClose}
             className="w-full"
             size="md"
-            variant="muted"
+            variant="tertiary"
             disabled={isSubmitting}
           >
             Cancel
@@ -385,7 +385,7 @@ export function ClosePositionModal({
           onClick={handleClose}
           className="w-full"
           size="md"
-          variant="muted"
+          variant="tertiary"
           disabled={isSubmitting}
         >
           Cancel

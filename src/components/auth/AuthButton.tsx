@@ -30,7 +30,7 @@ function PrivyAuthButton() {
       : 'Login'
 
   return (
-    <Button variant="default" size="sm" onClick={handleAuthClick} disabled={!ready}>
+    <Button variant="primary" size="sm" onClick={handleAuthClick} disabled={!ready}>
       {label}
     </Button>
   )
@@ -40,7 +40,7 @@ export function AuthButton() {
   if (!env.privyAppId) {
     return (
       <Button
-        variant="default"
+        variant="primary"
         size="sm"
         disabled
         title="Set NEXT_PUBLIC_PRIVY_APP_ID to enable auth"

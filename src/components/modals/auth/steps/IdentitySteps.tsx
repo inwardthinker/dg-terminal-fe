@@ -223,11 +223,11 @@ export function IdentitySteps({ userName = null, onSkipToCalibrate }: IdentitySt
             ) : null}
 
             <div className="flex flex-col gap-1 mt-4">
-              <Button variant="accent" className="text-[12px]">
+              <Button variant="primary" className="text-[12px]">
                 CONFIRM IDENTITY <ArrowRight size={12} />
               </Button>
 
-              <Button variant="muted" className="text-[12px]" onClick={onSkipToCalibrate}>
+              <Button variant="tertiary" className="text-[12px]" onClick={onSkipToCalibrate}>
                 skip for now
               </Button>
             </div>

@@ -5,44 +5,55 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils/cn'
 
 const buttonVariants = cva(
-  'inline-flex min-h-8 min-w-8 items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
+  'inline-flex min-h-8 min-w-8 items-center justify-center rounded-[2px] font-jetbrains text-[11px] font-medium tracking-[0.02em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
   {
     variants: {
       variant: {
-        default: 'bg-black text-white hover:bg-black/90',
-        destructive:
-          'bg-neg/10 hover:bg-neg/20 ' +
-          'text-neg font-semibold ' +
-          'border border-neg/40 hover:border-neg/60 ' +
-          'transition-all duration-200',
-        subtle:
-          'text-g-3 hover:text-[#e6c97a] ' +
-          'bg-transparent border-none shadow-none ' +
-          'p-0 h-auto hover:bg-transparent ' +
-          'focus-visible:ring-0 focus-visible:outline-none ' +
-          'transition-colors duration-200',
+        // 🔥 PRIMARY (Continue)
+        primary:
+          'bg-g-3 text-black font-semibold border border-g-4 ' +
+          'hover:bg-g-4 hover:opacity-[0.88] active:bg-g-4 active:opacity-75',
 
-        accent:
+        // 🟡 SECONDARY (Check Availability)
+        secondary:
+          'border border-[var(--glowb)] ' +
           'text-g-3 font-semibold ' +
-          'border border-[rgba(205,189,112,0.35)] ' +
-          'bg-[rgba(205,189,112,0.12)] ' +
-          'hover:bg-[rgba(205,189,112,0.18)] ' +
-          'transition-colors duration-200',
-
-        // ✅ NEW: Withdraw button
-        muted:
-          'text-t-3 text-secondary text-t-3! ' +
-          'border border-line-c ' +
           'bg-transparent ' +
-          'hover:text-t-2 ' +
-          'hover:border-[rgba(255,255,255,0.18)] ' +
-          'transition-all duration-200',
+          'hover:bg-[var(--glow)] ' +
+          'hover:border-g-4 ' +
+          'active:bg-[var(--glow)] ' +
+          'active:border-g-4',
 
-        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-        outline: 'border border-gray-300 hover:bg-gray-100',
-        ghost: 'hover:bg-gray-100',
-        link: 'text-blue-600 underline-offset-4 hover:underline',
+        // ⚪ TERTIARY (Skip for now)
+        tertiary:
+          'bg-transparent border-none shadow-none ' +
+          'text-[#9ca3af] ' +
+          'hover:text-t-3 ' +
+          'p-0 h-auto',
+
+        // 🟨 TAB ACTIVE (Overview)
+        'tab-active':
+          'bg-[var(--glow)] ' + 'border border-[var(--glowb)] ' + 'text-g-3 font-semibold',
+
+        // ⚫ TAB DEFAULT (Markets)
+        'tab-default':
+          'bg-transparent ' +
+          'border border-transparent ' +
+          'text-[#9ca3af] ' +
+          'hover:text-white ' +
+          'hover:border-[rgba(255,255,255,0.12)]',
+
+        // 🚫 DISABLED (explicit styling if needed)
+        disabled: 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed',
+
+        // ❌ DESTRUCTIVE (Delete)
+        destructive:
+          'bg-transparent ' +
+          'text-red-500 font-semibold ' +
+          'border border-red-500/40 ' +
+          'hover:bg-[var(--negg)] hover:border-[var(--negg)]',
       },
+
       size: {
         xs: 'h-8 px-2 text-[10px]',
         sm: 'h-8 px-3 text-xs',
@@ -50,13 +61,15 @@ const buttonVariants = cva(
         lg: 'h-12 px-6 text-base',
         icon: 'h-10 w-10 text-sm',
       },
+
       loading: {
         true: 'cursor-not-allowed',
         false: '',
       },
     },
+
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
       size: 'md',
       loading: false,
     },

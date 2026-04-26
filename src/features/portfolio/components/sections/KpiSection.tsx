@@ -66,10 +66,10 @@ export function KpiSection({ kpis, loading, venueUnavailable = false }: KpiSecti
           tooltip="Cash available on your connected venues. Does not include the value of open positions."
           footer={
             <div className="flex gap-sp2">
-              <Button variant="accent" size="sm" className="flex-1">
+              <Button variant="secondary" size="sm" className="flex-1">
                 Deposit
               </Button>
-              <Button variant="muted" size="sm" className="flex-1">
+              <Button variant="secondary" size="sm" className="flex-1">
                 Withdraw
               </Button>
             </div>

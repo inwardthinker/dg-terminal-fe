@@ -3,7 +3,6 @@ export const TAXONOMY = {
     {
       id: 'cricket',
       name: 'Cricket',
-      icon: '🏏',
       streamPrefix: 'sport:cricket',
       subcategories: [
         { id: 'ipl', name: 'IPL', stream: 'sport:cricket:ipl' },
@@ -19,7 +18,6 @@ export const TAXONOMY = {
     {
       id: 'soccer',
       name: 'Soccer',
-      icon: '⚽',
       streamPrefix: 'sport:soccer',
       subcategories: [
         { id: 'epl', name: 'EPL', stream: 'sport:soccer:epl' },
@@ -36,7 +34,6 @@ export const TAXONOMY = {
     {
       id: 'basketball',
       name: 'Basketball',
-      icon: '🏀',
       streamPrefix: 'sport:basketball',
       subcategories: [
         { id: 'nba', name: 'NBA', stream: 'sport:basketball:nba' },
@@ -52,7 +49,6 @@ export const TAXONOMY = {
     {
       id: 'nfl',
       name: 'NFL',
-      icon: '🏈',
       streamPrefix: 'sport:nfl',
       subcategories: [
         { id: 'superbowl', name: 'Super Bowl', stream: 'sport:nfl:superbowl' },
@@ -69,7 +65,6 @@ export const TAXONOMY = {
     {
       id: 'baseball',
       name: 'Baseball',
-      icon: '⚾',
       streamPrefix: 'sport:baseball',
       subcategories: [
         { id: 'mlb', name: 'MLB', stream: 'sport:baseball:mlb' },
@@ -84,7 +79,6 @@ export const TAXONOMY = {
     {
       id: 'hockey',
       name: 'Hockey',
-      icon: '🏒',
       streamPrefix: 'sport:hockey',
       subcategories: [
         { id: 'nhl', name: 'NHL', stream: 'sport:hockey:nhl' },
@@ -98,7 +92,6 @@ export const TAXONOMY = {
     {
       id: 'tennis',
       name: 'Tennis',
-      icon: '🎾',
       streamPrefix: 'sport:tennis',
       subcategories: [
         { id: 'wimbledon', name: 'Wimbledon', stream: 'sport:tennis:wimbledon' },
@@ -113,7 +106,6 @@ export const TAXONOMY = {
     {
       id: 'f1',
       name: 'F1',
-      icon: '🏎️',
       streamPrefix: 'sport:f1',
       subcategories: [
         { id: 'wdc', name: 'World Champion', stream: 'sport:f1:wdc' },
@@ -127,7 +119,6 @@ export const TAXONOMY = {
     {
       id: 'combat',
       name: 'MMA & Boxing',
-      icon: '🥊',
       streamPrefix: 'sport:combat',
       subcategories: [
         { id: 'ufc', name: 'UFC', stream: 'sport:combat:ufc' },
@@ -141,7 +132,6 @@ export const TAXONOMY = {
     {
       id: 'golf',
       name: 'Golf',
-      icon: '⛳',
       streamPrefix: 'sport:golf',
       subcategories: [
         { id: 'masters', name: 'Masters', stream: 'sport:golf:masters' },
@@ -156,7 +146,6 @@ export const TAXONOMY = {
     {
       id: 'esports',
       name: 'Esports',
-      icon: '🎮',
       streamPrefix: 'esports',
       subcategories: [
         { id: 'cs2', name: 'CS2', stream: 'esports:cs2' },
@@ -170,7 +159,6 @@ export const TAXONOMY = {
     {
       id: 'rugby',
       name: 'Rugby',
-      icon: '🏉',
       streamPrefix: 'sport:rugby',
       subcategories: [
         { id: 'sixnations', name: 'Six Nations', stream: 'sport:rugby:sixnations' },
@@ -183,7 +171,6 @@ export const TAXONOMY = {
     {
       id: 'politics',
       name: 'Politics',
-      icon: '🏛️',
       streamPrefix: 'politics',
       subcategories: [
         { id: 'trump', name: 'Trump', stream: 'politics:trump' },
@@ -199,7 +186,6 @@ export const TAXONOMY = {
     {
       id: 'elections',
       name: 'Elections',
-      icon: '🗳️',
       streamPrefix: 'elections',
       subcategories: [
         { id: 'us_midterms', name: 'US Midterms', stream: 'elections:us:midterms' },
@@ -216,7 +202,6 @@ export const TAXONOMY = {
     {
       id: 'crypto',
       name: 'Crypto',
-      icon: '₿',
       streamPrefix: 'crypto',
       subcategories: [
         { id: 'btc', name: 'Bitcoin', stream: 'crypto:btc' },
@@ -233,7 +218,6 @@ export const TAXONOMY = {
     {
       id: 'economics',
       name: 'Economics',
-      icon: '📊',
       streamPrefix: 'economics',
       subcategories: [
         { id: 'fed', name: 'Fed rates', stream: 'economics:fed' },
@@ -249,7 +233,6 @@ export const TAXONOMY = {
     {
       id: 'companies',
       name: 'Companies',
-      icon: '🏢',
       streamPrefix: 'companies',
       subcategories: [
         { id: 'earnings', name: 'Earnings', stream: 'companies:earnings' },
@@ -263,9 +246,8 @@ export const TAXONOMY = {
       marketTypes: ['beat_miss', 'eps', 'deal_outcome', 'futures'],
     },
     {
-      id: 'tech',
+      id: 'tech-ai',
       name: 'Tech & AI',
-      icon: '🤖',
       streamPrefix: 'tech',
       subcategories: [
         { id: 'aimodels', name: 'AI Models', stream: 'tech:aimodels' },
@@ -281,7 +263,6 @@ export const TAXONOMY = {
     {
       id: 'world',
       name: 'World',
-      icon: '🌍',
       streamPrefix: 'world',
       subcategories: [
         { id: 'middleeast', name: 'Middle East', stream: 'world:middleeast' },
@@ -297,7 +278,6 @@ export const TAXONOMY = {
     {
       id: 'culture',
       name: 'Culture',
-      icon: '🎭',
       streamPrefix: 'culture',
       subcategories: [
         { id: 'oscars', name: 'Oscars', stream: 'culture:oscars' },
@@ -313,7 +293,6 @@ export const TAXONOMY = {
     {
       id: 'science',
       name: 'Science',
-      icon: '🔬',
       streamPrefix: 'science',
       subcategories: [
         { id: 'space', name: 'Space missions', stream: 'science:space' },

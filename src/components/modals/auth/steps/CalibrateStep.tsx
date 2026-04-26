@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowRight, BowArrow, Check, Lock, Terminal, X } from 'lucide-react'
+import { ArrowRight, Check, Lock, Terminal, X } from 'lucide-react'
 import { useState } from 'react'
 
 import { BaseModal } from '@/components/modals/BaseModal'
@@ -9,17 +9,20 @@ import { TAXONOMY } from '@/lib/constants/taxonomy'
 import { LoaderHeader } from '../../../ui/loaders/TerminalLoader/components/header/LoaderHeader'
 import Steps from '../components/Steps'
 import { Button } from '@/components/ui/Button'
+import { SPORTS_ICON_MAP } from '@/lib/constants/iconMap'
 
 const BG_COLOR = 'bg-bg-3/25'
 const SPORT_CATEGORIES = TAXONOMY.categories
-const SPORTS = SPORT_CATEGORIES.map((category) => category.name)
 
 export function Calibrate() {
   const { closeModal } = useModal()
-  const [selectedSport, setSelectedSport] = useState<string | null>(null)
+  const [selectedSportId, setSelectedSportId] = useState<string | null>(null)
   const [selectedMarketsBySport, setSelectedMarketsBySport] = useState<Record<string, string[]>>({})
-  const selectedMarkets = selectedSport ? (selectedMarketsBySport[selectedSport] ?? []) : []
-  const selectedCategory = SPORT_CATEGORIES.find((category) => category.name === selectedSport)
+  const selectedMarkets = selectedSportId ? (selectedMarketsBySport[selectedSportId] ?? []) : []
+  const selectedCategory = SPORT_CATEGORIES.find((category) => category.id === selectedSportId)
+  const SelectedSportIcon = selectedSportId
+    ? SPORTS_ICON_MAP[selectedSportId as keyof typeof SPORTS_ICON_MAP]
+    : null
   const availableMarkets =
     selectedCategory?.subcategories.map((subcategory) => subcategory.name) ?? []
   const allSelectedMarkets = Object.entries(selectedMarketsBySport).flatMap(([sport, markets]) =>
@@ -28,10 +31,10 @@ export function Calibrate() {
   const totalSelectedCount = allSelectedMarkets.length
 
   const toggleMarketSelection = (market: string) => {
-    if (!selectedSport) return
+    if (!selectedSportId) return
 
     setSelectedMarketsBySport((prevBySport) => {
-      const currentSelections = prevBySport[selectedSport] ?? []
+      const currentSelections = prevBySport[selectedSportId] ?? []
       const totalSelections = Object.values(prevBySport).reduce(
         (acc, markets) => acc + markets.length,
         0,
@@ -39,7 +42,7 @@ export function Calibrate() {
       if (currentSelections.includes(market)) {
         return {
           ...prevBySport,
-          [selectedSport]: currentSelections.filter((item) => item !== market),
+          [selectedSportId]: currentSelections.filter((item) => item !== market),
         }
       }
       if (totalSelections >= 5) {
@@ -47,7 +50,7 @@ export function Calibrate() {
       }
       return {
         ...prevBySport,
-        [selectedSport]: [...currentSelections, market],
+        [selectedSportId]: [...currentSelections, market],
       }
     })
   }
@@ -76,7 +79,7 @@ export function Calibrate() {
         <div className="px-6 pb-6 pt-4 bg-bg-3/10">
           <Steps step={3} />
 
-          <div className="mb-8 space-y-2">
+          <div className="mb-3 space-y-2">
             <div className="grid grid-cols-3 items-start justify-between gap-2">
               <div className="flex flex-col gap-1 col-span-2">
                 <h2 className="text-[19px] font-extrabold text-t-1 uppercase tracking-tighter font-ibm-plex">
@@ -108,24 +111,30 @@ export function Calibrate() {
           </div>
           <div className="grid grid-cols-[175px_1fr] items-start justify-between gap-2 h-[300px] border border-line-c divide-x divide-line-c">
             <div className="h-full overflow-y-auto">
-              {SPORTS.map((sport) => {
-                const isActive = selectedSport === sport
+              {SPORT_CATEGORIES.map((sport) => {
+                const isActive = selectedSportId === sport.id
+                const SportIcon = SPORTS_ICON_MAP[sport.id as keyof typeof SPORTS_ICON_MAP]
                 return (
                   <button
-                    key={sport}
+                    key={sport.id}
                     type="button"
-                    onClick={() => setSelectedSport(sport)}
+                    onClick={() => setSelectedSportId(sport.id)}
                     className={`w-full text-left font-jetbrains p-3 flex gap-3 items-center cursor-pointer border-l transition-colors text-xs uppercase tracking-wide ${
                       isActive
                         ? 'border-l-g-3 bg-bg-3/20 text-t-1'
                         : 'border-l-transparent text-t-3 hover:bg-bg-3/20'
                     }`}
                   >
-                    <BowArrow size={16} className={`${isActive ? 'text-g-3' : 'text-t-3/70'}`} />
-                    {sport}
-                    {(selectedMarketsBySport[sport]?.length ?? 0) > 0 ? (
+                    {SportIcon ? (
+                      <SportIcon className={`w-4 h-4 ${isActive ? 'text-g-3!' : 'text-t-3/70!'}`} />
+                    ) : null}
+                    <span className={`${isActive ? 'text-g-3!' : 'text-t-3/70!'}`}>
+                      {sport.name}
+                    </span>
+
+                    {(selectedMarketsBySport[sport.id]?.length ?? 0) > 0 ? (
                       <span className="ml-auto text-g-3">
-                        {selectedMarketsBySport[sport]?.length}
+                        {selectedMarketsBySport[sport.id]?.length}
                       </span>
                     ) : null}
                   </button>
@@ -133,11 +142,11 @@ export function Calibrate() {
               })}
             </div>
             <div className="h-full p-3 space-y-2">
-              {selectedSport ? (
+              {selectedSportId ? (
                 <>
                   <div className="flex items-center gap-2 font-ibm-plex text-t-1 text-[15px] font-bold tracking-tight">
-                    <BowArrow size={16} className="text-t-3/70" />
-                    {selectedSport}
+                    {SelectedSportIcon && <SelectedSportIcon className={`w-4 h-4`} />}
+                    {selectedCategory?.name ?? selectedSportId}
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 font-jetbrains text-xs">
@@ -188,15 +197,27 @@ export function Calibrate() {
           </div>
           <div className={`px-5 py-3 ${BG_COLOR} flex flex-col gap-2`}>
             <div className="flex items-center justify-between">
-              <p className="text-[12px] tracking-tight text-t-3 font-jetbrains">
-                Select At least 1 market to continue
-              </p>
-              <p className="text-[12px] font-bold tracking-widest text-g-3 font-jetbrains">
+              {totalSelectedCount === 0 ? (
+                <p className="text-[12px] tracking-tight text-t-3 font-jetbrains uppercase">
+                  Select At least 1 market to continue
+                </p>
+              ) : totalSelectedCount === 5 ? (
+                <p className="text-[12px] tracking-tight text-pos font-jetbrains uppercase flex items-center gap-1">
+                  CAP REACHED — DESELECT TO SWAP <Check size={12} />
+                </p>
+              ) : (
+                <p className="text-[12px] tracking-tight text-pos font-jetbrains flex items-center gap-1 uppercase">
+                  Ready <Check size={12} />
+                </p>
+              )}
+              <p
+                className={`text-[12px] font-bold tracking-widest text-g-3 font-jetbrains ${totalSelectedCount === 5 ? 'text-pos' : 'text-g-3'}`}
+              >
                 {totalSelectedCount}/5
               </p>
             </div>
             <Button
-              variant="accent"
+              variant="primary"
               size="lg"
               disabled={totalSelectedCount === 0}
               className="w-full font-jetbrains uppercase"

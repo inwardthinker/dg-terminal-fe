@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter">
+
+  <circle cx="12" cy="12" r="9"></circle>
+  <path d="M4.5 17 Q12 12 19.5 7" stroke-dasharray="1.4 1.6"></path>
+  <path d="M3.5 15 Q12 10.5 18.5 5.5" stroke-dasharray="1.4 1.6"></path>
+</svg>

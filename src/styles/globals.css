@@ -9,22 +9,28 @@ ROOT DESIGN TOKENS
   /* =========================
    SURFACE LAYERS
   ========================= */
-  --bg0: #080808; /* App background (root layer) */
-  --bg1: #121212; /* Primary surface (panels, nav) */
-  --bg2: #1c1b16; /* Secondary surface (cards, tiles) */
-  --bg3: #41403a; /* Disabled / deep surface */
+  --bg0: #060604; /* App background (root layer) */
+  --bg1: #0e0e0c; /* Primary surface (panels, nav) */
+  --bg2: #161512; /* Secondary surface (cards, tiles) */
+  --bg3: #1e1d18; /* Disabled / deep surface */
+  --bg4: #282720; /* Disabled / deep surface */
 
   /* =========================
    TEXT COLORS
   ========================= */
   --t1: #f5f2e8; /* Primary text */
   --t2: #c9c3b4; /* Secondary text */
-  --t3: #9a9488; /* Muted / labels */
+  --t3: #afa99c; /* Muted / labels */
+  --t4: #706a62; /* Muted / labels */
 
   /* =========================
    ACCENTS & DIVIDERS
   ========================= */
   --g3: #cdbd70; /* Brand gold */
+  --g4: #b9a750; /* Button borders, pressed */
+  --g5: #8a7a38; /* Inverted logo only */
+  --glow: rgba(205, 189, 112, 0.07); /* Subtle active fill */
+  --glowb: rgba(205, 189, 112, 0.25); /* Gold border */
   --linec: #ffffff14; /* rgba(255,255,255,0.08) subtle divider */
   --lineg: #cdbd7066; /* rgba(205,189,112,0.4) gold divider */
 
@@ -32,7 +38,9 @@ ROOT DESIGN TOKENS
    SEMANTIC COLORS
   ========================= */
   --pos: #4caf7d; /* Positive / profit */
+  --posg: #4caf7dcc;
   --neg: #e05c5c; /* Negative / loss */
+  --negg: #e05c5ccc;
   --warn: #cdbd70; /* Warning */
   --blue: #4a90d9; /* Informational */
 
@@ -61,72 +69,46 @@ ROOT DESIGN TOKENS
   /* =========================
    BORDER RADIUS SCALE
   ========================= */
-  --radius-1: 3px; /* kbd, inline code */
-  --radius-2: 4px; /* badges, checkbox */
-  --radius-3: 5px; /* small buttons */
-  --radius-4: 6px; /* callouts, banners */
-  --radius-5: 7px; /* confirm/cancel buttons */
-  --radius-6: 8px; /* KPI tiles, table wrapper */
-  --radius-7: 10px; /* panels (primary cards) */
-  --radius-8: 13px; /* modals, drawers */
-  --radius-9: 20px; /* portfolio pill */
-
-  /* special */
+  --radius: 2px; /* kbd, inline code */
   --radius-full: 9999px; /* circles */
+
+  /* =========================
+   LINES SCALE
+  ========================= */
+  --line: #ffffff0f; /* rgba(255,255,255,0.06) subtle divider */
+  --line2: #ffffff1a; /* rgba(255,255,255,0.1) subtle divider */
 
   /* =========================
    TYPE SCALE (ROLE BASED)
   ========================= */
-  /* 1. Title — main page headings */
-  --type-title-size: 18px;
-  --type-title-weight: 700;
-  --type-title-track: -0.3px;
-  --type-title-color: var(--t1);
+  /* Typography roles */
+  --type-modal-headline-size: 19px;
+  --type-modal-headline-weight: 700;
+  --type-modal-headline-track: -0.4px;
 
-  /* 2. Panel heading — section/panel headings */
-  --type-panel-size: 14px;
-  --type-panel-weight: 600;
-  --type-panel-color: var(--t1);
+  --type-section-heading-size: 17px;
+  --type-section-heading-weight: 700;
+  --type-section-heading-track: -0.3px;
 
-  /* 3. Label group */
-  --type-label-size: 9px;
-  --type-label-weight: 700;
-  --type-label-track: 0.08em;
-  --type-label-color: var(--t3);
+  --type-mono-body-size: 13px;
+  --type-mono-body-weight: 400;
+  --type-mono-body-track: 0.02em;
 
-  /* 4. Primary data — heading-level values */
-  --type-primary-size: 18px;
-  --type-primary-weight: 700;
-  --type-primary-color: var(--t1);
+  --type-secondary-subtitle-size: 12px;
+  --type-secondary-subtitle-weight: 400;
+  --type-secondary-subtitle-track: 0.02em;
 
-  /* 5. Secondary data — sub-headings */
-  --type-secondary-size: 14px;
-  --type-secondary-weight: 600;
-  --type-secondary-color: var(--t1);
+  --type-nav-label-size: 11px;
+  --type-nav-label-weight: 500;
+  --type-nav-label-track: 0.02em;
 
-  /* 6. Supporting text — descriptions */
-  --type-support-size: 12px;
-  --type-support-weight: 400;
-  --type-support-color: var(--t3);
+  --type-field-label-size: 10px;
+  --type-field-label-weight: 500;
+  --type-field-label-track: 0.12em;
 
-  /* 7. Action text */
-  --type-action-size: 12px;
-  --type-action-weight: 600;
-  --type-action-color: var(--g3);
-
-  /* 8. Badge text */
-  --type-badge-size: 11px;
-  --type-badge-weight: 700;
-  --type-badge-track: 0.04em;
-
-  /* 9. Monospace */
-  --type-mono-size: 12px;
-  --type-mono-weight: 400;
-  --type-mono-color: var(--t2);
-
-  /* 10. Button text */
-  --type-button-size: 12px;
-  --type-button-weight: 700;
+  --type-col-header-size: 9px;
+  --type-col-header-weight: 500;
+  --type-col-header-track: 0.14em;
 }
 
 /* =========================
@@ -203,16 +185,30 @@ TAILWIND v4 THEME MAPPING
   /* =========================
      FONT SIZE SCALE
   ========================= */
-  --font-size-title: var(--type-title-size);
-  --font-size-panel: var(--type-panel-size);
-  --font-size-label: var(--type-label-size);
-  --font-size-primary: var(--type-primary-size);
-  --font-size-secondary: var(--type-secondary-size);
-  --font-size-support: var(--type-support-size);
-  --font-size-action: var(--type-action-size);
-  --font-size-badge: var(--type-badge-size);
-  --font-size-button: var(--type-button-size);
-  --font-size-mono: var(--type-mono-size);
+  --font-size-title: var(--type-modal-headline-size);
+  --font-size-panel: var(--type-section-heading-size);
+  --font-size-label: var(--type-field-label-size);
+  --font-size-primary: var(--type-modal-headline-size);
+  --font-size-secondary: var(--type-section-heading-size);
+  --font-size-support: var(--type-secondary-subtitle-size);
+  --font-size-action: var(--type-nav-label-size);
+  --font-size-badge: var(--type-nav-label-size);
+  --font-size-button: var(--type-nav-label-size);
+  --font-size-mono: var(--type-mono-body-size);
+
+  --font-mono-ui: var(--font-jetbrains-mono);
+  --font-sans-ui: var(--font-ibm-plex-sans);
+
+  /* Enforce typefaces for Tailwind font utilities */
+  --font-sans: var(--font-ibm-plex-sans);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Enforce core scale across existing text-* usage */
+  --text-xs: var(--type-nav-label-size);
+  --text-sm: var(--type-mono-body-size);
+  --text-base: var(--type-mono-body-size);
+  --text-lg: var(--type-section-heading-size);
+  --text-xl: var(--type-modal-headline-size);
 }
 
 /* =========================
@@ -232,11 +228,7 @@ body {
 }
 
 body {
-  font-family:
-    var(--font-inter),
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-jetbrains-mono), monospace;
   background-color: var(--bg0);
   color: var(--t1);
   -webkit-font-smoothing: antialiased;
@@ -260,98 +252,116 @@ select {
    TYPOGRAPHY UTILITIES
 ========================= */
 .text-title {
-  font-size: var(--type-title-size);
-  font-weight: var(--type-title-weight);
-  letter-spacing: var(--type-title-track);
-  color: var(--type-title-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-modal-headline-size);
+  font-weight: var(--type-modal-headline-weight);
+  letter-spacing: var(--type-modal-headline-track);
+  color: var(--t1);
 }
 
 .text-panel {
-  font-size: var(--type-panel-size);
-  font-weight: var(--type-panel-weight);
-  color: var(--type-panel-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-section-heading-size);
+  font-weight: var(--type-section-heading-weight);
+  letter-spacing: var(--type-section-heading-track);
+  color: var(--t1);
 }
 
 .text-label {
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
-  letter-spacing: var(--type-label-track);
-  color: var(--type-label-color);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-field-label-size);
+  font-weight: var(--type-field-label-weight);
+  letter-spacing: var(--type-field-label-track);
+  color: var(--t3);
   text-transform: uppercase;
 }
 
 .text-primary {
-  font-size: var(--type-primary-size);
-  font-weight: var(--type-primary-weight);
-  color: var(--type-primary-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-modal-headline-size);
+  font-weight: var(--type-modal-headline-weight);
+  letter-spacing: var(--type-modal-headline-track);
+  color: var(--t1);
 }
 
 .text-primary-muted {
-  font-size: var(--type-primary-size);
-  font-weight: var(--type-primary-weight);
-  color: var(--type-support-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-modal-headline-size);
+  font-weight: var(--type-modal-headline-weight);
+  letter-spacing: var(--type-modal-headline-track);
+  color: var(--t3);
 }
 
 .text-secondary {
-  font-size: var(--type-secondary-size);
-  font-weight: var(--type-secondary-weight);
-  color: var(--type-secondary-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-section-heading-size);
+  font-weight: var(--type-section-heading-weight);
+  letter-spacing: var(--type-section-heading-track);
+  color: var(--t1);
 }
 
 .text-secondary-muted {
-  font-size: var(--type-secondary-size);
-  font-weight: var(--type-secondary-weight);
-  color: var(--type-support-color);
+  font-family: var(--font-ibm-plex-sans), sans-serif;
+  font-size: var(--type-section-heading-size);
+  font-weight: var(--type-section-heading-weight);
+  letter-spacing: var(--type-section-heading-track);
+  color: var(--t3);
 }
 
 .text-support {
-  font-size: var(--type-support-size);
-  font-weight: var(--type-support-weight);
-  color: var(--type-support-color);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-secondary-subtitle-size);
+  font-weight: var(--type-secondary-subtitle-weight);
+  letter-spacing: var(--type-secondary-subtitle-track);
+  color: var(--t3);
 }
 
 .text-action {
-  font-size: var(--type-action-size);
-  font-weight: var(--type-action-weight);
-  color: var(--type-action-color);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-nav-label-size);
+  font-weight: var(--type-nav-label-weight);
+  letter-spacing: var(--type-nav-label-track);
+  color: var(--g3);
   cursor: pointer;
 }
 
 .text-badge {
-  font-size: var(--type-badge-size);
-  font-weight: var(--type-badge-weight);
-  letter-spacing: var(--type-badge-track);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-col-header-size);
+  font-weight: var(--type-col-header-weight);
+  letter-spacing: var(--type-col-header-track);
+  text-transform: uppercase;
 }
 .text-badge-muted {
-  font-size: var(--type-badge-size);
-  font-weight: var(--type-badge-weight);
-  letter-spacing: var(--type-badge-track);
-  color: var(--type-support-color);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-col-header-size);
+  font-weight: var(--type-col-header-weight);
+  letter-spacing: var(--type-col-header-track);
+  color: var(--t3);
+  text-transform: uppercase;
 }
 
 .text-mono {
-  font-size: var(--type-mono-size);
-  font-weight: var(--type-mono-weight);
-  color: var(--type-mono-color);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-mono-body-size);
+  font-weight: var(--type-mono-body-weight);
+  letter-spacing: var(--type-mono-body-track);
+  color: var(--t2);
 }
 
 .text-button {
-  font-size: var(--type-button-size);
-  font-weight: var(--type-button-weight);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: var(--type-nav-label-size);
+  font-weight: var(--type-nav-label-weight);
+  letter-spacing: var(--type-nav-label-track);
 }
 
 .font-jetbrains {
-  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-jetbrains-mono), monospace;
 }
 
 .font-ibm-plex {
-  font-family:
-    var(--font-ibm-plex-sans),
-    var(--font-inter),
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-ibm-plex-sans), sans-serif;
 }
 
 .close-position-slider {

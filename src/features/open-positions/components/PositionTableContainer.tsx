@@ -186,7 +186,7 @@ export function PositionsTableContainer({
             <Button type="button" variant="destructive" size="sm" onClick={handleCloseSelected}>
               Close selected
             </Button>
-            <Button type="button" variant="muted" size="sm" onClick={handleDeselectAll}>
+            <Button type="button" variant="secondary" size="sm" onClick={handleDeselectAll}>
               Deselect all
             </Button>
           </div>
