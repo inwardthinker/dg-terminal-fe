@@ -7,6 +7,7 @@ import { ClosePositionModal } from '@/components/modals/ClosePositionModal'
 import { LoginModal } from '@/components/modals/auth/steps/LoginSteps'
 import { IdentitySteps } from '@/components/modals/auth/steps/IdentitySteps'
 import { TradeDetailModal } from '@/components/modals/TradeDetailModal'
+import { PositionDetailModal } from '@/components/modals/PositionDetailModal'
 
 // ─── Registry ─────────────────────────────────────────────────────────────────
 // TypeScript enforces that every ModalType key has a matching component.
@@ -16,6 +17,7 @@ export const MODAL_REGISTRY: Record<ModalType, ComponentType<ModalParams>> = {
   login: LoginModal,
   identity: IdentitySteps,
   tradeDetail: TradeDetailModal,
+  positionDetail: PositionDetailModal,
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
