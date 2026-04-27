@@ -158,16 +158,16 @@ export function BaseModal({
           outline-none focus:outline-none focus-visible:outline-none
           ring-0 focus:ring-0 focus-visible:ring-0
 
-          /* Mobile: bottom sheet */
-          rounded-t-2xl max-h-[85vh] overflow-y-auto
-          animate-slide-up
+          /* Mobile: always bottom-sheet (drawer + modal both slide up from bottom) */
+          rounded-t-2xl max-h-[85vh] overflow-y-auto animate-slide-up
 
-          /* Desktop: DRAWER */
+          /* Desktop: DRAWER (right side, full height, slides from right) */
           ${
             variant === 'drawer'
               ? `
-                md:h-full md:w-[420px]
-                md:rounded-none
+                md:h-screen md:max-h-screen md:w-[420px]
+                md:rounded-none md:overflow-hidden
+                md:animate-slide-in-right
               `
               : ''
           }
@@ -187,7 +187,7 @@ export function BaseModal({
           ${className ?? ''}
         `}
       >
-        {/* Mobile handle */}
+        {/* Mobile drag handle — both variants are bottom sheets on mobile */}
         <div
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}

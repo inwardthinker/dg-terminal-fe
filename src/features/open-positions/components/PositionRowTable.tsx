@@ -60,6 +60,15 @@ export const PositionRowTable = React.memo(function PositionRowTable({
     onOpen(position)
   }, [onOpen, position])
 
+  const handleRowClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      event.preventDefault()
+      event.stopPropagation()
+      handleOpen()
+    },
+    [handleOpen],
+  )
+
   const handleClose = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation()
@@ -85,7 +94,7 @@ export const PositionRowTable = React.memo(function PositionRowTable({
   return (
     <div
       className={`grid ${POSITION_TABLE_GRID_COLUMNS} items-center cursor-pointer overflow-hidden border-b border-line-c text-support transition-colors hover:bg-bg-2 ${POSITION_TABLE_GRID_COLUMNS_MOBILE} max-sm:text-[13px]`}
-      onClick={handleOpen}
+      onClick={handleRowClick}
       onKeyDown={handleRowKeyDown}
       role="button"
       tabIndex={0}

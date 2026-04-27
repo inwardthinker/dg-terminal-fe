@@ -1,6 +1,6 @@
 // ─── Modal type union ────────────────────────────────────────────────────────
 // Add every modal key here. TypeScript will catch unregistered keys everywhere.
-export type ModalType = 'close' | 'login' | 'identity' | 'tradeDetail'
+export type ModalType = 'close' | 'login' | 'identity' | 'tradeDetail' | 'positionDetail'
 
 // ─── Params passed through the URL ───────────────────────────────────────────
 export type ModalParams = {

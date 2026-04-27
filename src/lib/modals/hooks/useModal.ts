@@ -26,7 +26,11 @@ export function useModal() {
   const setTransientParams = useModalStore((s) => s.setTransientParams)
   const clearTransientParams = useModalStore((s) => s.clearTransientParams)
   const isModalType = (value: string | null): value is ModalType =>
-    value === 'close' || value === 'login' || value === 'identity'
+    value === 'close' ||
+    value === 'login' ||
+    value === 'identity' ||
+    value === 'tradeDetail' ||
+    value === 'positionDetail'
 
   // ── Open a modal ────────────────────────────────────────────────────────────
   const openModal = useCallback(

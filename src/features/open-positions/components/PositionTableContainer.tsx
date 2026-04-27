@@ -110,7 +110,11 @@ export function PositionsTableContainer({
   )
 
   function handleOpen(position: Position) {
-    console.info('M5 open trigger', position.id)
+    openModal('positionDetail', {
+      position,
+      categoryPresentation: categoryData.presentation,
+      onConfirmClose: scheduleRemovalAfterAnimation,
+    })
   }
 
   function handleClose(position: Position) {

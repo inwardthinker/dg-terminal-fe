@@ -1,9 +1,12 @@
 'use client'
 
+import { useMemo } from 'react'
 import { SummaryPanel } from '@/features/open-positions/components/SummaryPanel'
 import { SummarySkeleton } from '@/features/open-positions/components/SummarySkeleton'
 import { SummaryError } from '@/features/open-positions/components/SummaryError'
 import { usePositions } from '@/features/open-positions/hooks/usePositions'
+import { buildCategoryPresentation } from '@/features/open-positions/utils/categoryExposure'
+import { useModal } from '@/lib/modals/hooks/useModal'
 import type { Position } from '@/features/open-positions/types'
 
 type Props = {
@@ -21,13 +24,16 @@ export function SummaryPanelContainer({
     forceEmptyState ? { limit: 0, userAddress: '' } : { limit },
   )
   const venueUnavailable = venueUnavailableOverride || Boolean(error)
+  const { openModal } = useModal()
+
+  const categoryPresentation = useMemo(() => buildCategoryPresentation(positions), [positions])
 
   function handleOpen(position: Position) {
-    console.info('M5 open trigger', position.id)
+    openModal('positionDetail', { position, categoryPresentation })
   }
 
   function handleClose(position: Position) {
-    console.info('M1 close trigger', position.id)
+    openModal('close', { position })
   }
 
   if (!forceEmptyState && loading) return <SummarySkeleton />
